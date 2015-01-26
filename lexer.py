@@ -3,7 +3,7 @@
 ########## Lexer for C#  ################
 #########################################
 import ply.lex as lex
-
+from ply.lex import TOKEN
 
 # Reserved keywords
 # https://msdn.microsoft.com/en-us/library/x53a06bb.aspx
@@ -71,11 +71,14 @@ constants = [
     # String Literals
     # https://msdn.microsoft.com/en-us/library/aa691090(v=vs.71).aspx
     'SCONST'
+
     # NULL literal
     # https://msdn.microsoft.com/en-us/library/aa691092(v=vs.71).aspx
+    # null ; Already in keyword
 
     # Boolean literals
     # https://msdn.microsoft.com/en-us/library/aa664673(v=vs.71).aspx
+    # true | false ; Already a keyword
 ]
 
 # Identifiers
@@ -86,11 +89,11 @@ identifiers = [
 
 # # Unicode character escape sequences
 # # https://msdn.microsoft.com/en-us/library/aa664669(v=vs.71).aspx
-# uni_esc_sequence = []
+uni_esc_sequence = ['HEXDIGIT']
 
 # Tokens
 # https://msdn.microsoft.com/en-us/library/aa664668(v=vs.71).aspx
-tokens = reserved_keywords + operators_or_punctuators + identifiers + constants
+tokens = reserved_keywords + operators_or_punctuators + identifiers + constants + uni_esc_sequence
 
 # Newlines
 def t_NEWLINE(t):
@@ -106,34 +109,38 @@ t_MINUS            = r'-'
 t_TIMES            = r'\*'
 t_DIVIDE           = r'/'
 t_MOD              = r'%'
-t_OR               = r'\|'
 t_AND              = r'&'
-t_NOT              = r'~'
+t_OR               = r'\|'
 t_XOR              = r'\^'
+t_NOT              = r'~'
+t_LNOT             = r'!'
+
+# ?
+t_CONDOP           = r'\?'
+
+t_LAND             = r'&&'
+t_LOR              = r'\|\|'
 t_LSHIFT           = r'<<'
 t_RSHIFT           = r'>>'
-t_LOR              = r'\|\|'
-t_LAND             = r'&&'
-t_LNOT             = r'!'
 t_LT               = r'<'
-t_GT               = r'>'
 t_LE               = r'<='
+t_GT               = r'>'
 t_GE               = r'>='
 t_EQ               = r'=='
 t_NE               = r'!='
 
 # Assignment operators
 t_EQUALS           = r'='
+t_PLUSEQUAL        = r'\+='
+t_MINUSEQUAL       = r'-='
 t_TIMESEQUAL       = r'\*='
 t_DIVEQUAL         = r'/='
 t_MODEQUAL         = r'%='
-t_PLUSEQUAL        = r'\+='
-t_MINUSEQUAL       = r'-='
+t_ANDEQUAL         = r'&='
 t_LSHIFTEQUAL      = r'<<='
 t_RSHIFTEQUAL      = r'>>='
-t_ANDEQUAL         = r'&='
-t_OREQUAL          = r'\|='
 t_XOREQUAL         = r'^='
+t_OREQUAL          = r'\|='
 
 # Increment/decrement
 t_PLUSPLUS         = r'\+\+'
@@ -142,43 +149,61 @@ t_MINUSMINUS       = r'--'
 # ->
 t_ARROW            = r'->'
 
-# ?
-t_CONDOP           = r'\?'
-
 # Delimeters
-t_LPAREN           = r'\('
-t_RPAREN           = r'\)'
 t_LBRACKET         = r'\['
 t_RBRACKET         = r'\]'
 t_LBRACE           = r'\{'
 t_RBRACE           = r'\}'
-t_COMMA            = r','
+t_LPAREN           = r'\('
+t_RPAREN           = r'\)'
 t_PERIOD           = r'\.'
-t_SEMI             = r';'
+t_COMMA            = r','
 t_COLON            = r':'
+t_SEMI             = r';'
+
+# Hex Digit
+t_HEXDIGIT = r'\\u[0-9a-fA-F]+'
 
 # Identifiers and reserved words
-
 reserved_map = { }
 for r in reserved_keywords:
     reserved_map[r.lower()] = r
 
 def t_ID(t):
-    r'[A-Za-z_][\w_]*'
+    r'[A-Za-z_@][\w_]*'
     t.type = reserved_map.get(t.value,"ID")
     return t
 
-# Integer literal
-t_ICONST = r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
+# Real literals
+decimal_digits = r'([0-9]+)'
+exponent_part = r'([eE][+-]?\d+)'
+real_suffix = r'([fFdDmM])'
+literal1 = r'\d*'+ r'\.'+decimal_digits+exponent_part+r'?'+real_suffix+r'?'
+literal2 = decimal_digits + exponent_part + real_suffix + r'?'
+literal3 = decimal_digits + real_suffix
+fconst = literal1 + r'|' + literal2 + r'|' + literal3
+@TOKEN(fconst)
+def t_FCONST(t):
+    t.type = 'FCONST'
+    t.value = float(t.value)
+    return t
 
-# Floating literal
-t_FCONST = r'((\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
+# Integer Literals
+iconst = r'0[Xx][0-9a-fA-F]+' + r'|' + r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
+@TOKEN(iconst)
+def t_ICONST(t):
+    t.type = 'ICONST'
+    t.value = int(t.value, 0)
+    return t
+
+single_character = r'\.'
+simple_escape_sequence = r'\\[\'\"\0abfnrtv]'
+
+# Character constant 'c' or L'c'
+t_CCONST = r'\'([^\\\n]|(\\.))\''
 
 # String literal
 t_SCONST = r'\"([^\\\n]|(\\.))*?\"'
-
-# Character constant 'c' or L'c'
-t_CCONST = r'(L)?\'([^\\\n]|(\\.))*?\''
 
 # Comments
 def t_comment(t):
