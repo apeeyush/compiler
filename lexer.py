@@ -4,6 +4,7 @@
 #########################################
 import ply.lex as lex
 from ply.lex import TOKEN
+from sys import argv
 
 # Reserved keywords
 # https://msdn.microsoft.com/en-us/library/x53a06bb.aspx
@@ -227,7 +228,7 @@ def t_SCONST(t):
     return t
 
 # Comments
-comment = r'/\*(.|\n)*\*/' + r'|' + r'//(.)*'
+comment = r'/\*(.|\n)*?\*/' + r'|' + r'//(.)*'
 @TOKEN(comment)
 def t_comment(t):
     t.lexer.lineno += t.value.count('\n')
@@ -243,5 +244,29 @@ def t_error(t):
 
 lexer = lex.lex()
 
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+def runLexer(inputFile):
+    program = open(inputFile).read()
+    file_length = file_len(inputFile)
+    lexer.input(program)
+    for tok in iter(lexer.token, None):
+        print tok.type, tok.value, tok.lineno, tok.lexpos
+    # with open(inputFile) as f:
+    #     for i, l in enumerate(f):
+    #         print l.rstrip(),
+    #         print '\t\t\t\t\t\t\t// ',
+    #         print dir(lexer.token)
+    #         for tok in iter(lexer.token, None):
+    #             print tok.lineno
+    #             if tok.lineno == i:
+    #                 print tok.type, tok.value, tok.lineno, tok.lexpos,
+
 if __name__ == "__main__":
-    lex.runmain(lexer)
+    # lex.runmain(lexer)
+    inputFile = argv[1]
+    runLexer(inputFile)
