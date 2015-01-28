@@ -100,8 +100,8 @@ def t_NEWLINE(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
 
-# Completely ignored charactes (space, tab and \x0c)
-t_ignore = ' \t\x0c'
+# Completely ignored charactes (space and tab)
+t_ignore = ' \t'
 
 # Operators
 t_PLUS             = r'\+'
@@ -170,7 +170,7 @@ for r in reserved_keywords:
     reserved_map[r.lower()] = r
 
 def t_ID(t):
-    r'[A-Za-z_@][\w_]*'
+    r'@?[A-Za-z_][\w_]*'
     t.type = reserved_map.get(t.value,"ID")
     return t
 
@@ -189,36 +189,58 @@ def t_FCONST(t):
     return t
 
 # Integer Literals
-iconst = r'0[Xx][0-9a-fA-F]+' + r'|' + r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
+decimal_integer_literal = r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
+hexadecimal_integer_literal = r'0[Xx][0-9a-fA-F]+([uU]|[lL]|[uU][lL]|[lL][uU])?'
+iconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal
 @TOKEN(iconst)
 def t_ICONST(t):
     t.type = 'ICONST'
     t.value = int(t.value, 0)
     return t
 
-single_character = r'\.'
-simple_escape_sequence = r'\\[\'\"\0abfnrtv]'
+# Character literals
+single_character = r'[^\'\\\n]'
+simple_escape_sequence = r'\\[\'\"\\0abfnrtv]'
+hex_digit = r'[0-9a-fA-F]'
+hex_digit_opt = r'[0-9a-fA-F]?'
+hexadecimal_escape_sequence = r'\\x' + hex_digit + hex_digit_opt + hex_digit_opt + hex_digit_opt
+unicode_escape_sequence_small = r'\\u' + 4*hex_digit
+unicode_escape_sequence_large = r'\\U' + 8*hex_digit
+unicode_escape_sequence = unicode_escape_sequence_small + r'|' + unicode_escape_sequence_large
+cconst = single_character + r'|' + simple_escape_sequence + r'|' + hexadecimal_escape_sequence + r'|' + unicode_escape_sequence
+@TOKEN(r'\'(' + cconst + r')\'')
+def t_CCONST(t):
+    t.type = 'CCONST'
+    return t
 
-# Character constant 'c' or L'c'
-t_CCONST = r'\'([^\\\n]|(\\.))\''
-
-# String literal
-t_SCONST = r'\"([^\\\n]|(\\.))*?\"'
+# String Literals
+single_scharacter = r'[^\"\\\n]'
+scconst = single_scharacter + r'|' + simple_escape_sequence + r'|' + hexadecimal_escape_sequence + r'|' + unicode_escape_sequence
+scconsts = r'(' + scconst + r')' + r'*'
+regular_string_literal = r'\"' + scconsts + '\"'
+vconsts = r'([^\"]|[\"][\"])*'
+verbatim_string_literal = r'@\"' + vconsts + '\"'
+sconst = regular_string_literal + r'|' + verbatim_string_literal
+@TOKEN(sconst)
+def t_SCONST(t):
+    t.type = 'SCONST'
+    return t
 
 # Comments
+comment = r'/\*(.|\n)*\*/' + r'|' + r'//(.)*'
+@TOKEN(comment)
 def t_comment(t):
-    r'/\*(.|\n)*?\*/'
     t.lexer.lineno += t.value.count('\n')
 
-# Preprocessor directive (ignored)
+# Ignore Preprocessor
 def t_preprocessor(t):
     r'\#(.)*?\n'
     t.lexer.lineno += 1
-    
+
 def t_error(t):
     print("Illegal character %s" % repr(t.value[0]))
     t.lexer.skip(1)
-    
+
 lexer = lex.lex()
 
 if __name__ == "__main__":
