@@ -225,6 +225,7 @@ sconst = regular_string_literal + r'|' + verbatim_string_literal
 @TOKEN(sconst)
 def t_SCONST(t):
     t.type = 'SCONST'
+    t.lexer.lineno += t.value.count('\n')
     return t
 
 # Comments
