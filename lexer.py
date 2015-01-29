@@ -62,20 +62,22 @@ operators_or_punctuators = [
 constants = [
     # Integer literals
     # https://msdn.microsoft.com/en-us/library/aa664674(v=vs.71).aspx
-    'ICONST',
-    'UICONST',
-    'LICONST',
-    'ULICONST',
+    'ICONST',   # signed integer
+    'UICONST',  # unsigned integer
+    'LICONST',  # long integer
+    'ULICONST', # unsigned long integer
     # Real literals
     # https://msdn.microsoft.com/en-us/library/aa691085(v=vs.71).aspx
-    'FCONST',
+    'FCONST',   # float
+    'DCONST',   # double 
+    'MCONST',   # decimal
     # Character literals
     # https://msdn.microsoft.com/en-us/library/aa691087(v=vs.71).aspx
     'CCONST',
     # String Literals
     # https://msdn.microsoft.com/en-us/library/aa691090(v=vs.71).aspx
-    'SCONST'
-
+    'SCONST',    # regular string
+    'VSCONST'   # varbatim string
     # NULL literal
     # https://msdn.microsoft.com/en-us/library/aa691092(v=vs.71).aspx
     # null ; Already in keyword
@@ -188,8 +190,18 @@ literal3 = decimal_digits + real_suffix
 fconst = literal1 + r'|' + literal2 + r'|' + literal3
 @TOKEN(fconst)
 def t_FCONST(t):
-    t.type = 'FCONST'
-    t.value = float(t.value)
+    if t.value[-1].lower() == 'd':
+        t.type = 'DCONST'
+        t.value = float(t.value[:-1])
+    elif t.value[-1].lower() == 'm':
+        t.type = 'MCONST'
+        t.value = float(t.value[:-1])
+    elif t.value[-1].lower() == 'f':
+        t.type = 'FCONST'
+        t.value = float(t.value[:-1])
+    else:
+        t.type = 'FCONST'
+        t.value = float(t.value)
     return t
 
 # Integer Literals
@@ -243,12 +255,18 @@ scconsts = r'(' + scconst + r')' + r'*'
 regular_string_literal = r'\"' + scconsts + '\"'
 vconsts = r'([^\"]|[\"][\"])*'
 verbatim_string_literal = r'@\"' + vconsts + '\"'
-sconst = regular_string_literal + r'|' + verbatim_string_literal
-@TOKEN(sconst)
+#sconst = regular_string_literal + r'|' + verbatim_string_literal
+@TOKEN(regular_string_literal)
 def t_SCONST(t):
     t.type = 'SCONST'
     t.lexer.lineno += t.value.count('\n')
     return t
+@TOKEN(verbatim_string_literal)
+def t_VSCONST(t):
+    t.type = 'VSCONST'
+    t.lexer.lineno += t.value.count('\n')
+    return t
+
 
 # Comments
 comment = r'/\*(.|\n)*?\*/' + r'|' + r'//(.)*'
