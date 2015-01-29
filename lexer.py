@@ -32,8 +32,8 @@ operators_or_punctuators = [
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD',
     'AND', 'OR', 'XOR', 'LNOT', 'NOT',
 
-    # ?
-    'CONDOP',
+    # ?,??
+    'CONDOP','COALESCE',
 
     # &&,||,<<,>>
     # <, <=, >, >=, ==, !=
@@ -47,14 +47,14 @@ operators_or_punctuators = [
     # ++,--
     'PLUSPLUS', 'MINUSMINUS',
 
-    # ->
-    'ARROW',
+    # ->,=>
+    'ARROW','LAMBDA_ARROW',
 
     # { } [ ] ( ) . , : ;
     'LBRACE', 'RBRACE',
     'LBRACKET', 'RBRACKET',
     'LPAREN', 'RPAREN',
-    'PERIOD', 'COMMA', 'COLON', 'SEMI'
+    'PERIOD', 'COMMA', 'COLON', 'SEMI','NS_QNTFR'
 ]
 
 # https://msdn.microsoft.com/en-us/library/aa664672(v=vs.71).aspx
@@ -123,7 +123,7 @@ t_LNOT             = r'!'
 
 # ?
 t_CONDOP           = r'\?'
-
+t_COALESCE         = r'\?\?'
 t_LAND             = r'&&'
 t_LOR              = r'\|\|'
 t_LSHIFT           = r'<<'
@@ -152,8 +152,9 @@ t_OREQUAL          = r'\|='
 t_PLUSPLUS         = r'\+\+'
 t_MINUSMINUS       = r'--'
 
-# ->
+# ->,=>
 t_ARROW            = r'->'
+t_LAMBDA_ARROW          = r'=>'
 
 # Delimeters
 t_LBRACKET         = r'\['
@@ -164,6 +165,7 @@ t_LPAREN           = r'\('
 t_RPAREN           = r'\)'
 t_PERIOD           = r'\.'
 t_COMMA            = r','
+t_NS_QNTFR         = r'::'
 t_COLON            = r':'
 t_SEMI             = r';'
 
