@@ -254,17 +254,23 @@ def runLexer(inputFile):
     program = open(inputFile).read()
     file_length = file_len(inputFile)
     lexer.input(program)
-    for tok in iter(lexer.token, None):
-        print tok.type, tok.value, tok.lineno, tok.lexpos
-    # with open(inputFile) as f:
-    #     for i, l in enumerate(f):
-    #         print l.rstrip(),
-    #         print '\t\t\t\t\t\t\t// ',
-    #         print dir(lexer.token)
-    #         for tok in iter(lexer.token, None):
-    #             print tok.lineno
-    #             if tok.lineno == i:
-    #                 print tok.type, tok.value, tok.lineno, tok.lexpos,
+    # for tok in iter(lexer.token, None):
+    #     print tok.type, tok.value, tok.lineno, tok.lexpos
+    token = lexer.token()
+    token_line_number = token.lineno if token else -1
+    with open(inputFile) as f:
+        for i, l in enumerate(f):
+            print l.rstrip(),
+            print '\t\t\t\t\t// ',
+            if i+1 == token_line_number:
+                print token.type,
+                token = lexer.token()
+                token_line_number = token.lineno if token else -1
+                while token_line_number == i+1 :
+                    print token.type,
+                    token = lexer.token()
+                    token_line_number = token.lineno if token else -1
+            print ''
 
 if __name__ == "__main__":
     # lex.runmain(lexer)
