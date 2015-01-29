@@ -1,6 +1,6 @@
 abd = 34;
 qq3 = -32;
-dsdv_@cds = 342UL;
+@cds = 342UL;
 cds = 233U;
 ds = 32L;
 
@@ -65,3 +65,6 @@ x =x>y?x:y;
 ->
 ??
 =>
+#define
+#cdss
+#define

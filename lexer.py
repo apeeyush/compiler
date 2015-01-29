@@ -29,32 +29,32 @@ reserved_keywords = [
 # https://msdn.microsoft.com/en-us/library/aa691093(v=vs.71).aspx
 operators_or_punctuators = [
     # +,-,*,/,%,&,|,^ ,!,~
-    'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD',
-    'AND', 'OR', 'XOR', 'LNOT', 'NOT',
+    'PLUS', 'MINUS', 'TIMES', 'DIV', 'MOD',
+    'BITAND', 'BITOR', 'BITXOR', 'BITNOT', 'BITCOMP',
 
     # ?,??
     'CONDOP','COALESCE',
 
     # &&,||,<<,>>
     # <, <=, >, >=, ==, !=
-    'LAND', 'LOR', 'LSHIFT', 'RSHIFT',
+    'LOGAND', 'LOGOR', 'LSHIFT', 'RSHIFT',
     'LT', 'LE', 'GT', 'GE', 'EQ', 'NE',
 
     # =, +=,-=,*=,/=,%=,&=, <<=,>>=, ^=, |=
-    'EQUALS', 'PLUSEQUAL', 'MINUSEQUAL', 'TIMESEQUAL', 'DIVEQUAL', 'MODEQUAL',
-    'ANDEQUAL', 'LSHIFTEQUAL', 'RSHIFTEQUAL', 'XOREQUAL', 'OREQUAL',
+    'ASSIGN', 'PLUSEQUAL', 'MINUSEQUAL', 'TIMESEQUAL', 'DIVEQUAL', 'MODEQUAL',
+    'BITANDEQUAL', 'LSHIFTEQUAL', 'RSHIFTEQUAL', 'BITXOREQUAL', 'BITOREQUAL',
 
     # ++,--
-    'PLUSPLUS', 'MINUSMINUS',
+    'INCRE', 'DECRE',
 
     # ->,=>
     'ARROW','LAMBDA_ARROW',
 
     # { } [ ] ( ) . , : ;
-    'LBRACE', 'RBRACE',
-    'LBRACKET', 'RBRACKET',
-    'LPAREN', 'RPAREN',
-    'PERIOD', 'COMMA', 'COLON', 'SEMI','NS_QNTFR'
+    'BLOCK_BEGIN', 'BLOCK_END',
+    'OPEN_BRACKET', 'CLOSE_BRACKET',
+    'OPEN_PAREN', 'CLOSE_PAREN',
+    'DOT', 'COMMA', 'COLON', 'DELIM','NS_QNTFR'
 ]
 
 # https://msdn.microsoft.com/en-us/library/aa664672(v=vs.71).aspx
@@ -90,7 +90,7 @@ constants = [
 # Identifiers
 # https://msdn.microsoft.com/en-us/library/aa664670(v=vs.71).aspx
 identifiers = [
-    'ID'
+    'IDENTIFIER'
 ]
 
 # # Unicode character escape sequences
@@ -113,19 +113,19 @@ t_ignore = ' \t'
 t_PLUS             = r'\+'
 t_MINUS            = r'-'
 t_TIMES            = r'\*'
-t_DIVIDE           = r'/'
+t_DIV              = r'/'
 t_MOD              = r'%'
-t_AND              = r'&'
-t_OR               = r'\|'
-t_XOR              = r'\^'
-t_NOT              = r'~'
-t_LNOT             = r'!'
+t_BITAND           = r'&'
+t_BITOR            = r'\|'
+t_BITXOR           = r'\^'
+t_BITCOMP          = r'~'
+t_BITNOT           = r'!'
 
 # ?
 t_CONDOP           = r'\?'
 t_COALESCE         = r'\?\?'
-t_LAND             = r'&&'
-t_LOR              = r'\|\|'
+t_LOGAND             = r'&&'
+t_LOGOR              = r'\|\|'
 t_LSHIFT           = r'<<'
 t_RSHIFT           = r'>>'
 t_LT               = r'<'
@@ -136,38 +136,38 @@ t_EQ               = r'=='
 t_NE               = r'!='
 
 # Assignment operators
-t_EQUALS           = r'='
+t_ASSIGN           = r'='
 t_PLUSEQUAL        = r'\+='
 t_MINUSEQUAL       = r'-='
 t_TIMESEQUAL       = r'\*='
 t_DIVEQUAL         = r'/='
 t_MODEQUAL         = r'%='
-t_ANDEQUAL         = r'&='
+t_BITANDEQUAL         = r'&='
 t_LSHIFTEQUAL      = r'<<='
 t_RSHIFTEQUAL      = r'>>='
-t_XOREQUAL         = r'^='
-t_OREQUAL          = r'\|='
+t_BITXOREQUAL      = r'^='
+t_BITOREQUAL       = r'\|='
 
 # Increment/decrement
-t_PLUSPLUS         = r'\+\+'
-t_MINUSMINUS       = r'--'
+t_INCRE         = r'\+\+'
+t_DECRE       = r'--'
 
 # ->,=>
 t_ARROW            = r'->'
 t_LAMBDA_ARROW          = r'=>'
 
 # Delimeters
-t_LBRACKET         = r'\['
-t_RBRACKET         = r'\]'
-t_LBRACE           = r'\{'
-t_RBRACE           = r'\}'
-t_LPAREN           = r'\('
-t_RPAREN           = r'\)'
-t_PERIOD           = r'\.'
+t_OPEN_BRACKET         = r'\['
+t_CLOSE_BRACKET         = r'\]'
+t_BLOCK_BEGIN           = r'\{'
+t_BLOCK_END           = r'\}'
+t_OPEN_PAREN           = r'\('
+t_CLOSE_PAREN           = r'\)'
+t_DOT           = r'\.'
 t_COMMA            = r','
 t_NS_QNTFR         = r'::'
 t_COLON            = r':'
-t_SEMI             = r';'
+t_DELIM             = r';'
 
 # Hex Digit
 t_HEXDIGIT = r'\\u[0-9a-fA-F]+'
@@ -177,9 +177,9 @@ reserved_map = { }
 for r in reserved_keywords:
     reserved_map[r.lower()] = r
 
-def t_ID(t):
+def t_IDENTIFIER(t):
     r'@?[A-Za-z_][\w_]*'
-    t.type = reserved_map.get(t.value,"ID")
+    t.type = reserved_map.get(t.value,"IDENTIFIER")
     return t
 
 # Real literals
@@ -278,7 +278,7 @@ def t_comment(t):
 
 # Ignore Preprocessor
 def t_preprocessor(t):
-    r'\#(.)*?\n'
+    r'\#(.)*?(\n)|\#(.)*?'
     t.lexer.lineno += 1
 
 def t_error(t):
