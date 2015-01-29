@@ -63,6 +63,9 @@ constants = [
     # Integer literals
     # https://msdn.microsoft.com/en-us/library/aa664674(v=vs.71).aspx
     'ICONST',
+    'UICONST',
+    'LICONST',
+    'ULICONST',
     # Real literals
     # https://msdn.microsoft.com/en-us/library/aa691085(v=vs.71).aspx
     'FCONST',
@@ -190,14 +193,33 @@ def t_FCONST(t):
     return t
 
 # Integer Literals
-decimal_integer_literal = r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
-hexadecimal_integer_literal = r'0[Xx][0-9a-fA-F]+([uU]|[lL]|[uU][lL]|[lL][uU])?'
+decimal_integer_literal = r'\d+'
+hexadecimal_integer_literal = r'0[Xx][0-9a-fA-F]+'
+uliconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[uU][lL]|[lL][uU]'
+uiconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[Uu]' 
+liconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[Ll]'
 iconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal
+@TOKEN(uliconst)
+def t_ULICONST(t):
+    t.type = 'ULICONST'
+    t.value = int(t.value[:-2], 0)
+    return t
+@TOKEN(liconst)
+def t_LICONST(t):
+    t.type = 'LICONST'
+    t.value = int(t.value[:-1], 0)
+    return t
+@TOKEN(uiconst)
+def t_UICONST(t):
+    t.type = 'UICONST'
+    t.value = int(t.value[:-1], 0)
+    return t
 @TOKEN(iconst)
 def t_ICONST(t):
     t.type = 'ICONST'
     t.value = int(t.value, 0)
     return t
+
 
 # Character literals
 single_character = r'[^\'\\\n]'
