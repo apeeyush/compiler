@@ -14,4 +14,11 @@ bin/lexer test/test1.cs
 We have tested our code extensively using test programs numbered from test1 to test23.
 
 ## Important Note
-The tokens are displayed on next line.
+1. Install ply on your system.
+	sudo apt-get install python-ply
+2. The tokens are displayed on next line.
+3. Use 
+	python bin/lexer.py test/test1.cs 
+   if
+	bin/lexer test/test1.cs
+   is not working on your system.
