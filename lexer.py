@@ -194,16 +194,16 @@ fconst = literal1 + r'|' + literal2 + r'|' + literal3
 def t_FCONST(t):
     if t.value[-1].lower() == 'd':
         t.type = 'DCONST'
-        t.value = float(t.value[:-1])
+        #t.value = float(t.value[:-1])
     elif t.value[-1].lower() == 'm':
         t.type = 'MCONST'
-        t.value = float(t.value[:-1])
+        #t.value = float(t.value[:-1])
     elif t.value[-1].lower() == 'f':
         t.type = 'FCONST'
-        t.value = float(t.value[:-1])
+        #t.value = float(t.value[:-1])
     else:
-        t.type = 'FCONST'
-        t.value = float(t.value)
+        t.type = 'DCONST'
+        #t.value = float(t.value)
     return t
 
 # Integer Literals
@@ -216,22 +216,22 @@ iconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal
 @TOKEN(uliconst)
 def t_ULICONST(t):
     t.type = 'ULICONST'
-    t.value = int(t.value[:-2], 0)
+    #t.value = int(t.value[:-2], 0)
     return t
 @TOKEN(liconst)
 def t_LICONST(t):
     t.type = 'LICONST'
-    t.value = int(t.value[:-1], 0)
+    #t.value = int(t.value[:-1], 0)
     return t
 @TOKEN(uiconst)
 def t_UICONST(t):
     t.type = 'UICONST'
-    t.value = int(t.value[:-1], 0)
+    #t.value = int(t.value[:-1], 0)
     return t
 @TOKEN(iconst)
 def t_ICONST(t):
     t.type = 'ICONST'
-    t.value = int(t.value, 0)
+    #t.value = int(t.value, 0)
     return t
 
 
@@ -304,7 +304,8 @@ def runLexer(inputFile):
     with open(inputFile) as f:
         for i, l in enumerate(f):
             print l.rstrip(),
-            print '\t\t\t\t\t// ',
+            #print '\t\t\t\t\t// ',
+            print '\n//',
             if i+1 == token_line_number:
                 print token.type,
                 token = lexer.token()
