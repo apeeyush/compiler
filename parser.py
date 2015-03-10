@@ -15,8 +15,9 @@ precedence = (
 
 def p_statement_assign(p):
     'statement : IDENTIFIER ASSIGN expression'
-    variables[p[1]] = p[3]
-    p[0] = None
+    p[0] = ('ASSIGN', p[1], p[3])
+    # variables[p[1]] = p[3]
+    # p[0] = None
 
 def p_statement_expr(p):
     'statement : expression'
@@ -25,8 +26,10 @@ def p_statement_expr(p):
 def p_expression_binop(p):
     '''expression : expression PLUS expression
                   | expression MINUS expression'''
-    if p[2] == '+'  : p[0] = p[1] + p[3]
-    elif p[2] == '-': p[0] = p[1] - p[3]
+    if p[2] == '+'  : p[0] = ('+', p[1], p[3])
+    elif p[2] == '-': p[0] = ('-', p[1], p[3])
+    # if p[2] == '+'  : p[0] = p[1] + p[3]
+    # elif p[2] == '-': p[0] = p[1] - p[3]
 
 def p_expression_number(p):
     "expression : ICONST"
