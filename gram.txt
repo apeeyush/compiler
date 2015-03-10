@@ -18,8 +18,6 @@ namespace-body:
         "{" namespace-member-declarations-opt "}"
 type-declaration:
         class-declaration
-        struct-declaration
-        enum-declaration
 class-declaration:
         "class" identifier class-base-opt class-body semi-opt
 class-base-opt:
@@ -28,11 +26,9 @@ class-base-opt:
 class-base:
         ":" class-type
 class-type:
-        type-name
+        identifier
         "object"
         "string"
-type-name:
-        identifier
 class-body:
         "{" class-member-declarations-opt "}"
 class-member-declarations-opt:
@@ -49,28 +45,11 @@ class-member-declaration:
         destructor-declaration
         type-declaration
 constant-declaration:
-        constant-modifiers-opt "const" type constant-declarators ";"
-constant-modifiers-opt:
-        constant-modifiers
-        empty
-constant-modifiers:
-        constant-modifier
-        constant-modifiers constant-modifier
-constant-modifier:
-        "new"
-        "public"
-        "protected"
-        "internal"
-        "private"
+        modifiers-opt "const" type constant-declarators ";"
 type:
-        value-type
-        reference-type
-value-type:
-        struct-type
-        enum-type
-struct-type:
-        type-name
         simple-type
+        class-type
+        array-type
 simple-type:
         numeric-type
         "bool"
@@ -91,18 +70,11 @@ integral-type:
 floating-point-type:
         "float"
         "double"
-enum-type:
-        type-name
-reference-type:
-        class-type
-        array-type
 array-type:
-        non-array-type rank-specifiers
+        non-array-type rank-specifier
 non-array-type:
-        type
-rank-specifiers:
-        rank-specifier
-        rank-specifiers rank-specifier
+        simple-type
+        class-type
 rank-specifier:
         "[" dim-separators-opt "]"
 dim-separators-opt:
@@ -176,11 +148,8 @@ primary-expression:
         array-creation-expression
         primary-no-array-creation-expression
 array-creation-expression:
-        "new" non-array-type "[" expression-list "]" rank-specifiers-opt array-initializer-opt
+        "new" non-array-type "[" expression-list "]" array-initializer-opt
         "new" array-type array-initializer
-rank-specifiers-opt:
-        rank-specifiers
-        empty
 array-initializer-opt:
         array-initializer
         empty
@@ -201,7 +170,7 @@ variable-initializer:
         array-initializer
 primary-no-array-creation-expression:
         literal
-        simple-name
+        identifier
         parenthesized-expression
         member-access
         invocation-expression
@@ -212,10 +181,6 @@ primary-no-array-creation-expression:
         post-decrement-expression
         object-creation-expression
         typeof-expression
-        checked-expression
-        unchecked-expression
-simple-name:
-        identifier
 parenthesized-expression:
         "(" expression ")"
 member-access:
@@ -267,10 +232,6 @@ object-creation-expression:
 typeof-expression:
         "typeof" "(" type ")"
         "typeof" "(" "void" ")"
-checked-expression:
-        "checked" "(" expression ")"
-unchecked-expression:
-        "unchecked" "(" expression ")"
 pre-increment-expression:
         "++" unary-expression
 pre-decrement-expression:
@@ -292,22 +253,19 @@ assignment-operator:
         "<<="
         ">>="
 field-declaration:
-        field-modifiers-opt type variable-declarators ";"
-field-modifiers-opt:
-        field-modifiers
+        modifiers-opt type variable-declarators ";"
+modifiers-opt:
+        modifiers
         empty
-field-modifiers:
-        field-modifier
-        field-modifiers field-modifier
-field-modifier:
+modifiers:
+        modifier
+        modifiers modifier
+modifier:
         "new"
         "public"
         "protected"
-        "internal"
         "private"
         "static"
-        "readonly"
-        "volatile"
 variable-declarators:
         variable-declarator
         variable-declarators "," variable-declarator
@@ -317,28 +275,10 @@ variable-declarator:
 method-declaration:
         method-header method-body
 method-header:
-        method-modifiers-opt return-type member-name "(" formal-parameter-list-opt ")"
-method-modifiers-opt:
-        method-modifiers
-        empty
+        modifiers-opt return-type member-name "(" formal-parameter-list-opt ")"
 formal-parameter-list-opt:
         formal-parameter-list
         empty
-method-modifiers:
-        method-modifier
-        method-modifiers method-modifier
-method-modifier:
-        "new"
-        "public"
-        "protected"
-        "internal"
-        "private"
-        "static"
-        "virtual"
-        "sealed"
-        "override"
-        "abstract"
-        "extern"
 return-type:
         type
         "void"
@@ -481,19 +421,7 @@ expression-opt:
         expression
         empty
 constructor-declaration:
-        constructor-modifiers-opt constructor-declarator constructor-body
-constructor-modifiers-opt:
-        constructor-modifiers
-        empty
-constructor-modifiers:
-        constructor-modifier
-        constructor-modifiers constructor-modifier
-constructor-modifier:
-        "public"
-        "protected"
-        "internal"
-        "private"
-        "extern"
+        constructor-declarator constructor-body
 constructor-declarator:
         identifier "(" formal-parameter-list-opt ")" 
 constructor-body:
@@ -504,60 +432,6 @@ destructor-declaration:
 destructor-body:
         block
         ";"
-struct-declaration:
-        struct-modifiers-opt "struct" identifier struct-body semi-opt
-struct-modifiers-opt:
-        struct-modifiers
-        empty
-struct-modifiers:
-        struct-modifier
-        struct-modifiers struct-modifier
-struct-modifier:
-        "new"
-        "public"
-        "protected"
-        "internal"
-        "private"
-struct-body:
-        "{" struct-member-declarations-opt "}"
-struct-member-declarations-opt:
-        struct-member-declarations
-        empty
-struct-member-declarations:
-        struct-member-declaration
-        struct-member-declarations struct-member-declaration
-struct-member-declaration:
-        constant-declaration
-        field-declaration
-        method-declaration
-        constructor-declaration
-        type-declaration
-enum-declaration:
-        enum-modifiers-opt "enum" identifier enum-body semi-opt
-enum-body:
-        "{" enum-member-declarations-opt "}"
-        "{" enum-member-declarations "," "}"
-enum-member-declarations-opt:
-        enum-member-declarations
-        empty
-enum-modifiers-opt:
-        enum-modifiers
-        empty
-enum-modifiers:
-        enum-modifier
-        enum-modifiers enum-modifier
-enum-modifier:
-        "new"
-        "public"
-        "protected"
-        "internal"
-        "private"
-enum-member-declarations:
-        enum-member-declaration
-        enum-member-declarations "," enum-member-declaration
-enum-member-declaration:
-        identifier
-        identifier "=" constant-expression
 literal:
     ICONST
     UICONST
