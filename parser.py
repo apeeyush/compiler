@@ -50,8 +50,6 @@ def p_class_base(p):
              '''
 def p_class_type(p):
     ''' class-type :         IDENTIFIER
-             |         OBJECT
-             |         STRING
              '''
 def p_class_body(p):
     ''' class-body :         BLOCK_BEGIN class-member-declarations-opt BLOCK_END
@@ -109,7 +107,6 @@ def p_array_type(p):
              '''
 def p_non_array_type(p):
     ''' non-array-type :         simple-type
-             |         class-type
              '''
 def p_rank_specifier(p):
     ''' rank-specifier :         OPEN_BRACKET dim-separators-opt CLOSE_BRACKET
