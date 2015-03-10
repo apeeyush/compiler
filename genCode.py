@@ -16,7 +16,7 @@ def addCode():
 	for i in range(2,len(rule)):
 		code+="\t\t\t | "+rule[i]
 	code+="\t\t\t \'\'\'"
-	code+="\n"
+	code+="\n\tp[0]=[" + "\'"+name+"\'" + "]" + "+" + "[p[i] for i in range(1,len(p))]\n\n"
 
 for l in f:
 	if l[0]=='\t' or l[0]==' ':
