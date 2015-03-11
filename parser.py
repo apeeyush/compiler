@@ -278,7 +278,6 @@ def p_unary_expression(p):
              |         TIMES unary-expression
              |         pre-increment-expression
              |         pre-decrement-expression
-             |         cast-expression
              '''
     p[0]=['unary_expression']+[p[i] for i in range(1,len(p))]
 
@@ -342,7 +341,6 @@ def p_primary_no_array_creation_expression(p):
              |         post-increment-expression
              |         post-decrement-expression
              |         object-creation-expression
-             |         typeof-expression
              '''
     p[0]=['primary_no_array_creation_expression']+[p[i] for i in range(1,len(p))]
 
@@ -436,12 +434,6 @@ def p_object_creation_expression(p):
              '''
     p[0]=['object_creation_expression']+[p[i] for i in range(1,len(p))]
 
-def p_typeof_expression(p):
-    ''' typeof-expression :         TYPEOF OPEN_PAREN type CLOSE_PAREN
-             |         TYPEOF OPEN_PAREN VOID CLOSE_PAREN
-             '''
-    p[0]=['typeof_expression']+[p[i] for i in range(1,len(p))]
-
 def p_pre_increment_expression(p):
     ''' pre-increment-expression :         INCRE unary-expression
              '''
@@ -451,11 +443,6 @@ def p_pre_decrement_expression(p):
     ''' pre-decrement-expression :         DECRE unary-expression
              '''
     p[0]=['pre_decrement_expression']+[p[i] for i in range(1,len(p))]
-
-def p_cast_expression(p):
-    ''' cast-expression :         OPEN_PAREN type CLOSE_PAREN unary-expression
-             '''
-    p[0]=['cast_expression']+[p[i] for i in range(1,len(p))]
 
 def p_assignment(p):
     ''' assignment :         unary-expression assignment-operator expression
@@ -521,7 +508,8 @@ def p_method_declaration(p):
     p[0]=['method_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_method_header(p):
-    ''' method-header :         modifiers-opt return-type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+    ''' method-header :         modifiers-opt type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+             |         modifiers-opt VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
     p[0]=['method_header']+[p[i] for i in range(1,len(p))]
 
@@ -530,12 +518,6 @@ def p_formal_parameter_list_opt(p):
              |         empty
              '''
     p[0]=['formal_parameter_list_opt']+[p[i] for i in range(1,len(p))]
-
-def p_return_type(p):
-    ''' return-type :         type
-             |         VOID
-             '''
-    p[0]=['return_type']+[p[i] for i in range(1,len(p))]
 
 def p_member_name(p):
     ''' member-name :         IDENTIFIER

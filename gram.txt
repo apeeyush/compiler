@@ -140,7 +140,6 @@ unary-expression:
         "*" unary-expression
         pre-increment-expression
         pre-decrement-expression
-        cast-expression
 primary-expression:
         array-creation-expression
         primary-no-array-creation-expression
@@ -177,7 +176,6 @@ primary-no-array-creation-expression:
         post-increment-expression
         post-decrement-expression
         object-creation-expression
-        typeof-expression
 parenthesized-expression:
         "(" expression ")"
 member-access:
@@ -226,15 +224,10 @@ post-decrement-expression:
         primary-expression "--"
 object-creation-expression:
         "new" type "(" argument-list-opt ")"
-typeof-expression:
-        "typeof" "(" type ")"
-        "typeof" "(" "void" ")"
 pre-increment-expression:
         "++" unary-expression
 pre-decrement-expression:
         "--" unary-expression
-cast-expression:
-        "(" type ")" unary-expression
 assignment:
         unary-expression assignment-operator expression
 assignment-operator:
@@ -272,13 +265,11 @@ variable-declarator:
 method-declaration:
         method-header method-body
 method-header:
-        modifiers-opt return-type member-name "(" formal-parameter-list-opt ")"
+        modifiers-opt type member-name "(" formal-parameter-list-opt ")"
+        modifiers-opt "void" member-name "(" formal-parameter-list-opt ")"
 formal-parameter-list-opt:
         formal-parameter-list
         empty
-return-type:
-        type
-        "void"
 member-name:
         identifier
 formal-parameter-list:
