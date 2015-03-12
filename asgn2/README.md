@@ -1,4 +1,4 @@
-C# Lexer (Assignment 1)
+C# Lexer (Assignment 2)
 
 ## Group Members
 Jaikishan Rupani			12308
