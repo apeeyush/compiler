@@ -2,7 +2,7 @@ namespace Program
 {
     class HelloWorld
     {
-        static void Main()
+        void Main()
         {
             /*my first program in C#*/
             Console.WriteLine("Hello World");

@@ -43,7 +43,8 @@ class-member-declaration:
         destructor-declaration
         type-declaration
 constant-declaration:
-        modifiers-opt "const" type constant-declarators ";"
+        modifier "const" type constant-declarators ";"
+        "const" type constant-declarators ";"        
 type:
         simple-type
         class-type
@@ -243,19 +244,11 @@ assignment-operator:
         "<<="
         ">>="
 field-declaration:
-        modifiers-opt type variable-declarators ";"
-modifiers-opt:
-        modifiers
-        empty
-modifiers:
-        modifier
-        modifiers modifier
+        modifier type variable-declarators ";"
+        type variable-declarators ";"
 modifier:
-        "new"
         "public"
-        "protected"
         "private"
-        "static"
 variable-declarators:
         variable-declarator
         variable-declarators "," variable-declarator
@@ -265,8 +258,10 @@ variable-declarator:
 method-declaration:
         method-header method-body
 method-header:
-        modifiers-opt type member-name "(" formal-parameter-list-opt ")"
-        modifiers-opt "void" member-name "(" formal-parameter-list-opt ")"
+        modifier type member-name "(" formal-parameter-list-opt ")"
+        modifier "void" member-name "(" formal-parameter-list-opt ")"
+        type member-name "(" formal-parameter-list-opt ")"
+        "void" member-name "(" formal-parameter-list-opt ")"
 formal-parameter-list-opt:
         formal-parameter-list
         empty

@@ -103,7 +103,8 @@ def p_class_member_declaration(p):
     p[0]=['class_member_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declaration(p):
-    ''' constant-declaration :         modifiers-opt CONST type constant-declarators DELIM
+    ''' constant-declaration :         modifier CONST type constant-declarators DELIM
+             |         CONST type constant-declarators DELIM        
              '''
     p[0]=['constant_declaration']+[p[i] for i in range(1,len(p))]
 
@@ -465,28 +466,14 @@ def p_assignment_operator(p):
     p[0]=['assignment_operator']+[p[i] for i in range(1,len(p))]
 
 def p_field_declaration(p):
-    ''' field-declaration :         modifiers-opt type variable-declarators DELIM
+    ''' field-declaration :         modifier type variable-declarators DELIM
+             |         type variable-declarators DELIM
              '''
     p[0]=['field_declaration']+[p[i] for i in range(1,len(p))]
 
-def p_modifiers_opt(p):
-    ''' modifiers-opt :         modifiers
-             |         empty
-             '''
-    p[0]=['modifiers_opt']+[p[i] for i in range(1,len(p))]
-
-def p_modifiers(p):
-    ''' modifiers :         modifier
-             |         modifiers modifier
-             '''
-    p[0]=['modifiers']+[p[i] for i in range(1,len(p))]
-
 def p_modifier(p):
-    ''' modifier :         NEW
-             |         PUBLIC
-             |         PROTECTED
+    ''' modifier :         PUBLIC
              |         PRIVATE
-             |         STATIC
              '''
     p[0]=['modifier']+[p[i] for i in range(1,len(p))]
 
@@ -508,8 +495,10 @@ def p_method_declaration(p):
     p[0]=['method_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_method_header(p):
-    ''' method-header :         modifiers-opt type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
-             |         modifiers-opt VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+    ''' method-header :         modifier type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+             |         modifier VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+             |         type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+             |         VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
     p[0]=['method_header']+[p[i] for i in range(1,len(p))]
 
