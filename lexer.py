@@ -10,16 +10,16 @@ from sys import argv
 # https://msdn.microsoft.com/en-us/library/x53a06bb.aspx
 # https://msdn.microsoft.com/en-us/library/aa664671(v=vs.71).aspx
 # Contextual keywords not included in this list as they are used to provide a specific meaning in the code, but are not a reserved word in C#.
-# sizeof, typeof, enum TBD
+# sizeof, TYPEOF, enum, STRUCT TBD
 reserved_keywords = [
-    'ABSTRACT', 'BASE', 'BOOL', 'BREAK',
+    'BASE', 'BOOL', 'BREAK',
     'CASE', 'CHAR', 'CLASS', 'CONST', 'CONTINUE', 
     'DEFAULT', 'DO', 'DOUBLE', 'ELSE', 
-    'FALSE', 'FIXED', 'FLOAT', 
-    'FOR', 'FOREACH', 'GOTO', 'IF', 'IMPLICIT', 'IN', 'INT', 
+    'FALSE', 'FLOAT', 
+    'FOR', 'FOREACH', 'GOTO', 'IF', 'IN', 'INT', 
     'LONG', 'NEW', 'OUT',
     'PRIVATE', 'PUBLIC', 'RETURN',
-    'STRUCT', 'SWITCH', 'THIS', 'TRUE', 'TYPEOF', 
+    'SWITCH', 'THIS', 'TRUE', 
     'UINT', 'ULONG', 'VOID', 'WHILE'
 ]
 
@@ -46,7 +46,7 @@ operators_or_punctuators = [
     'INCRE', 'DECRE',
 
     # ->,=>
-    'ARROW','LAMBDA_ARROW',
+    #'ARROW','LAMBDA_ARROW',
 
     # { } [ ] ( ) . , : ;
     'BLOCK_BEGIN', 'BLOCK_END',
@@ -93,11 +93,11 @@ identifiers = [
 
 # # Unicode character escape sequences
 # # https://msdn.microsoft.com/en-us/library/aa664669(v=vs.71).aspx
-uni_esc_sequence = ['HEXDIGIT']
+#uni_esc_sequence = ['HEXDIGIT']
 
 # Tokens
 # https://msdn.microsoft.com/en-us/library/aa664668(v=vs.71).aspx
-tokens = reserved_keywords + operators_or_punctuators + identifiers + constants + uni_esc_sequence
+tokens = reserved_keywords + operators_or_punctuators + identifiers + constants #+ uni_esc_sequence
 
 # Newlines
 def t_NEWLINE(t):
@@ -150,8 +150,8 @@ t_INCRE         = r'\+\+'
 t_DECRE       = r'--'
 
 # ->,=>
-t_ARROW            = r'->'
-t_LAMBDA_ARROW          = r'=>'
+#t_ARROW            = r'->'
+#t_LAMBDA_ARROW          = r'=>'
 
 # Delimeters
 t_OPEN_BRACKET         = r'\['
@@ -166,7 +166,7 @@ t_COLON            = r':'
 t_DELIM             = r';'
 
 # Hex Digit
-t_HEXDIGIT = r'\\u[0-9a-fA-F]+'
+#t_HEXDIGIT = r'\\u[0-9a-fA-F]+'
 
 # Identifiers and reserved words
 reserved_map = { }

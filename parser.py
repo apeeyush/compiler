@@ -83,8 +83,8 @@ def p_class_member_declaration(p):
     p[0]=['class_member_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declaration(p):
-    ''' constant-declaration :         modifier CONST type constant-declarators DELIM
-             |         CONST type constant-declarators DELIM        
+    ''' constant-declaration :         modifier CONST simple-type constant-declarators DELIM
+             |         CONST simple-type constant-declarators DELIM
              '''
     p[0]=['constant_declaration']+[p[i] for i in range(1,len(p))]
 
@@ -388,7 +388,7 @@ def p_pre_decrement_expression(p):
     p[0]=['pre_decrement_expression']+[p[i] for i in range(1,len(p))]
 
 def p_assignment(p):
-    ''' assignment :         unary-expression assignment-operator expression
+    ''' assignment :         primary-expression assignment-operator expression
              '''
     p[0]=['assignment']+[p[i] for i in range(1,len(p))]
 
@@ -778,7 +778,8 @@ def p_literal(p):
              |     CCONST
              |     SCONST
              |     VSCONST
-             '''
+             |     TRUE
+             |     FALSE             '''
     p[0]=['literal']+[p[i] for i in range(1,len(p))]
 
 
@@ -787,17 +788,36 @@ def p_empty(p):
     pass
 
 def p_error(p):
-    # global flag_for_error
-    # flag_for_error = 1
-    # if p is not None:
-    #     errors_list.append("Error %s"%(p.lineno))
-    #     yacc.errok()
-    # else:
-    #     print("Unexpected end of input")
     if p:
-        print "Syntax error at line " + str(p.lineno) + ' : ' + str(p.value)
+        print "Syntax error at line " + str(p.lineno)
+        print 'Token : {}'.format(p)
     else:
-        print("Syntax error at EOI")
+        print("Syntax error!")
+    # while True:
+    #     tok = yacc.token()
+    #     if not tok or tok.type == 'DELIM': break
+    # yacc.restart()
+    flag = 0
+    while 1:
+        token = yacc.token()
+        if not token:
+            break
+        elif token.type in ['DELIM']:
+            flag = 1
+            break
+    if flag == 1:
+        yacc.errok()
+        return token
+    # if flag:
+    #     yacc.errok()
+    #     return token
+    # # global flag_for_error
+    # # flag_for_error = 1
+    # # if p is not None:
+    # #     errors_list.append("Error %s"%(p.lineno))
+    # #     yacc.errok()
+    # # else:
+    # #     print("Unexpected end of input")
 
 parser = yacc.yacc()
 

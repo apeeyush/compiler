@@ -2,9 +2,14 @@ class HelloWorld
 {
     void Main()
     {
-        /*my first program in C#*/
-        Console.WriteLine("Hello World");
-        Console.ReadKey();
+		int a
+		int b=5;
+		int d = 34
+		int f = 12;
+        // /*my first program in C#*/
+        // Console.ReadKey();
+        // a.b.c();
+        // base.c();
+        // a=6;
     }
-
 }

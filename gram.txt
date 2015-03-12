@@ -34,8 +34,8 @@ class-member-declaration:
         destructor-declaration
         class-declaration
 constant-declaration:
-        modifier "const" type constant-declarators ";"
-        "const" type constant-declarators ";"        
+        modifier "const" simple-type constant-declarators ";"
+        "const" simple-type constant-declarators ";"
 type:
         simple-type
         class-type
@@ -192,7 +192,7 @@ pre-increment-expression:
 pre-decrement-expression:
         "--" unary-expression
 assignment:
-        unary-expression assignment-operator expression
+        primary-expression assignment-operator expression
 assignment-operator:
         "="
         "+="
@@ -301,8 +301,6 @@ if-statement:
         "if" "(" boolean-expression ")" embedded-statement "else" embedded-statement
 boolean-expression:
         expression
-        "true"
-        "false"
 switch-statement:
         "switch" "(" expression ")" switch-block
 switch-block:
@@ -392,3 +390,5 @@ literal:
     CCONST
     SCONST
     VSCONST
+    "true"
+    "false"

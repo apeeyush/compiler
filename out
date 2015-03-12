@@ -70,8 +70,8 @@ def p_class_member_declaration(p):
 	p[0]=['class_member_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declaration(p):
-	''' constant-declaration :         modifier CONST type constant-declarators DELIM
-			 |         CONST type constant-declarators DELIM        
+	''' constant-declaration :         modifier CONST simple-type constant-declarators DELIM
+			 |         CONST simple-type constant-declarators DELIM
 			 '''
 	p[0]=['constant_declaration']+[p[i] for i in range(1,len(p))]
 
@@ -375,7 +375,7 @@ def p_pre_decrement_expression(p):
 	p[0]=['pre_decrement_expression']+[p[i] for i in range(1,len(p))]
 
 def p_assignment(p):
-	''' assignment :         unary-expression assignment-operator expression
+	''' assignment :         primary-expression assignment-operator expression
 			 '''
 	p[0]=['assignment']+[p[i] for i in range(1,len(p))]
 
@@ -765,7 +765,8 @@ def p_literal(p):
 			 |     CCONST
 			 |     SCONST
 			 |     VSCONST
-			 '''
+			 |     TRUE
+			 |     FALSE			 '''
 	p[0]=['literal']+[p[i] for i in range(1,len(p))]
 
 
