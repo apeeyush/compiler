@@ -11,32 +11,9 @@ tokens = lexer.tokens
 lexer = lexer.lexer
 
 def p_compilation_unit(p):
-    ''' compilation-unit :         namespace-member-declarations-opt
+    ''' compilation-unit :         class-declarations-opt
              '''
     p[0]=['compilation_unit']+[p[i] for i in range(1,len(p))]
-
-def p_namespace_member_declarations_opt(p):
-    ''' namespace-member-declarations-opt :         namespace-member-declarations
-             |         empty
-             '''
-    p[0]=['namespace_member_declarations_opt']+[p[i] for i in range(1,len(p))]
-
-def p_namespace_member_declarations(p):
-    ''' namespace-member-declarations :         namespace-member-declaration
-             |         namespace-member-declarations namespace-member-declaration
-             '''
-    p[0]=['namespace_member_declarations']+[p[i] for i in range(1,len(p))]
-
-def p_namespace_member_declaration(p):
-    ''' namespace-member-declaration :         namespace-declaration
-             |         type-declaration
-             '''
-    p[0]=['namespace_member_declaration']+[p[i] for i in range(1,len(p))]
-
-def p_namespace_declaration(p):
-    ''' namespace-declaration :         NAMESPACE IDENTIFIER namespace-body semi-opt
-             '''
-    p[0]=['namespace_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_semi_opt(p):
     ''' semi-opt :         DELIM
@@ -44,15 +21,17 @@ def p_semi_opt(p):
              '''
     p[0]=['semi_opt']+[p[i] for i in range(1,len(p))]
 
-def p_namespace_body(p):
-    ''' namespace-body :         BLOCK_BEGIN namespace-member-declarations-opt BLOCK_END
+def p_class_declarations_opt(p):
+    ''' class-declarations-opt :         class-declarations
+             |         empty
              '''
-    p[0]=['namespace_body']+[p[i] for i in range(1,len(p))]
+    p[0]=['class_declarations_opt']+[p[i] for i in range(1,len(p))]
 
-def p_type_declaration(p):
-    ''' type-declaration :         class-declaration
+def p_class_declarations(p):
+    ''' class-declarations :         class-declaration
+             |         class-declarations class-declaration
              '''
-    p[0]=['type_declaration']+[p[i] for i in range(1,len(p))]
+    p[0]=['class_declarations']+[p[i] for i in range(1,len(p))]
 
 def p_class_declaration(p):
     ''' class-declaration :         CLASS IDENTIFIER class-base-opt class-body semi-opt
@@ -98,7 +77,7 @@ def p_class_member_declaration(p):
              |         method-declaration
              |         constructor-declaration
              |         destructor-declaration
-             |         type-declaration
+             |         class-declaration
              '''
     p[0]=['class_member_declaration']+[p[i] for i in range(1,len(p))]
 
@@ -124,16 +103,11 @@ def p_simple_type(p):
 def p_numeric_type(p):
     ''' numeric-type :         integral-type
              |         floating-point-type
-             |         DECIMAL
              '''
     p[0]=['numeric_type']+[p[i] for i in range(1,len(p))]
 
 def p_integral_type(p):
-    ''' integral-type :         SBYTE
-             |         BYTE
-             |         SHORT
-             |         USHORT
-             |         INT
+    ''' integral-type :         INT
              |         UINT
              |         LONG
              |         ULONG
@@ -148,14 +122,9 @@ def p_floating_point_type(p):
     p[0]=['floating_point_type']+[p[i] for i in range(1,len(p))]
 
 def p_array_type(p):
-    ''' array-type :         non-array-type rank-specifier
+    ''' array-type :         simple-type rank-specifier
              '''
     p[0]=['array_type']+[p[i] for i in range(1,len(p))]
-
-def p_non_array_type(p):
-    ''' non-array-type :         simple-type
-             '''
-    p[0]=['non_array_type']+[p[i] for i in range(1,len(p))]
 
 def p_rank_specifier(p):
     ''' rank-specifier :         OPEN_BRACKET dim-separators-opt CLOSE_BRACKET
@@ -181,14 +150,9 @@ def p_constant_declarators(p):
     p[0]=['constant_declarators']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declarator(p):
-    ''' constant-declarator :         IDENTIFIER ASSIGN constant-expression
+    ''' constant-declarator :         IDENTIFIER ASSIGN expression
              '''
     p[0]=['constant_declarator']+[p[i] for i in range(1,len(p))]
-
-def p_constant_expression(p):
-    ''' constant-expression :         expression
-             '''
-    p[0]=['constant_expression']+[p[i] for i in range(1,len(p))]
 
 def p_expression(p):
     ''' expression :         conditional-expression
@@ -289,8 +253,7 @@ def p_primary_expression(p):
     p[0]=['primary_expression']+[p[i] for i in range(1,len(p))]
 
 def p_array_creation_expression(p):
-    ''' array-creation-expression :         NEW non-array-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
-             |         NEW array-type array-initializer
+    ''' array-creation-expression :         NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
              '''
     p[0]=['array_creation_expression']+[p[i] for i in range(1,len(p))]
 
@@ -308,7 +271,6 @@ def p_expression_list(p):
 
 def p_array_initializer(p):
     ''' array-initializer :         BLOCK_BEGIN variable-initializer-list-opt BLOCK_END
-             |         BLOCK_BEGIN variable-initializer-list COMMA BLOCK_END
              '''
     p[0]=['array_initializer']+[p[i] for i in range(1,len(p))]
 
@@ -352,28 +314,8 @@ def p_parenthesized_expression(p):
 
 def p_member_access(p):
     ''' member-access :         primary-expression DOT IDENTIFIER
-             |         predefined-type DOT IDENTIFIER
              '''
     p[0]=['member_access']+[p[i] for i in range(1,len(p))]
-
-def p_predefined_type(p):
-    ''' predefined-type :         BOOL
-             |         BYTE
-             |         CHAR
-             |         DECIMAL
-             |         DOUBLE
-             |         FLOAT
-             |         INT
-             |         LONG
-             |         OBJECT
-             |         SBYTE
-             |         SHORT
-             |         STRING
-             |         UINT
-             |         ULONG
-             |         USHORT
-             '''
-    p[0]=['predefined_type']+[p[i] for i in range(1,len(p))]
 
 def p_invocation_expression(p):
     ''' invocation-expression :         primary-expression OPEN_PAREN argument-list-opt CLOSE_PAREN
@@ -394,7 +336,6 @@ def p_argument_list(p):
 
 def p_argument(p):
     ''' argument :         expression
-             |         REF variable-reference
              |         OUT variable-reference
              '''
     p[0]=['argument']+[p[i] for i in range(1,len(p))]
@@ -536,8 +477,7 @@ def p_parameter_modifier_opt(p):
     p[0]=['parameter_modifier_opt']+[p[i] for i in range(1,len(p))]
 
 def p_parameter_modifier(p):
-    ''' parameter-modifier :         REF
-             |         OUT
+    ''' parameter-modifier :         OUT
              '''
     p[0]=['parameter_modifier']+[p[i] for i in range(1,len(p))]
 
@@ -692,7 +632,7 @@ def p_switch_labels(p):
     p[0]=['switch_labels']+[p[i] for i in range(1,len(p))]
 
 def p_switch_label(p):
-    ''' switch-label :         CASE constant-expression COLON
+    ''' switch-label :         CASE expression COLON
              |         DEFAULT COLON
              '''
     p[0]=['switch_label']+[p[i] for i in range(1,len(p))]
@@ -701,6 +641,7 @@ def p_iteration_statement(p):
     ''' iteration-statement :         while-statement
              |         for-statement
              |         foreach-statement
+             |         do-statement
              '''
     p[0]=['iteration_statement']+[p[i] for i in range(1,len(p))]
 
@@ -708,6 +649,11 @@ def p_while_statement(p):
     ''' while-statement :         WHILE OPEN_PAREN boolean-expression CLOSE_PAREN embedded-statement
              '''
     p[0]=['while_statement']+[p[i] for i in range(1,len(p))]
+
+def p_do_statement(p):
+    ''' do-statement :         DO embedded-statement WHILE OPEN_PAREN boolean-expression CLOSE_PAREN DELIM
+             '''
+    p[0]=['do_statement']+[p[i] for i in range(1,len(p))]
 
 def p_for_statement(p):
     ''' for-statement :         FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt CLOSE_PAREN embedded-statement
@@ -833,8 +779,6 @@ def p_literal(p):
              |     VSCONST
              '''
     p[0]=['literal']+[p[i] for i in range(1,len(p))]
-
-
 
 
 def p_empty(p):

@@ -1,23 +1,14 @@
 compilation-unit:
-        namespace-member-declarations-opt
-namespace-member-declarations-opt:
-        namespace-member-declarations
-        empty
-namespace-member-declarations:
-        namespace-member-declaration
-        namespace-member-declarations namespace-member-declaration
-namespace-member-declaration:
-        namespace-declaration
-        type-declaration
-namespace-declaration:
-        "namespace" identifier namespace-body semi-opt
+        class-declarations-opt
 semi-opt:
         ";"
         empty
-namespace-body:
-        "{" namespace-member-declarations-opt "}"
-type-declaration:
+class-declarations-opt:
+        class-declarations
+        empty
+class-declarations:
         class-declaration
+        class-declarations class-declaration
 class-declaration:
         "class" identifier class-base-opt class-body semi-opt
 class-base-opt:
@@ -41,7 +32,7 @@ class-member-declaration:
         method-declaration
         constructor-declaration
         destructor-declaration
-        type-declaration
+        class-declaration
 constant-declaration:
         modifier "const" type constant-declarators ";"
         "const" type constant-declarators ";"        
@@ -55,12 +46,7 @@ simple-type:
 numeric-type:
         integral-type
         floating-point-type
-        "decimal"
 integral-type:
-        "sbyte"
-        "byte"
-        "short"
-        "ushort"
         "int"
         "uint"
         "long"
@@ -70,9 +56,7 @@ floating-point-type:
         "float"
         "double"
 array-type:
-        non-array-type rank-specifier
-non-array-type:
-        simple-type
+        simple-type rank-specifier
 rank-specifier:
         "[" dim-separators-opt "]"
 dim-separators-opt:
@@ -85,9 +69,7 @@ constant-declarators:
         constant-declarator
         constant-declarators "," constant-declarator
 constant-declarator:
-        identifier "=" constant-expression
-constant-expression:
-        expression
+        identifier "=" expression
 expression:
         conditional-expression
         assignment
@@ -145,8 +127,7 @@ primary-expression:
         array-creation-expression
         primary-no-array-creation-expression
 array-creation-expression:
-        "new" non-array-type "[" expression-list "]" array-initializer-opt
-        "new" array-type array-initializer
+        "new" simple-type "[" expression-list "]" array-initializer-opt
 array-initializer-opt:
         array-initializer
         empty
@@ -155,7 +136,6 @@ expression-list:
         expression-list "," expression
 array-initializer:
         "{" variable-initializer-list-opt "}"
-        "{" variable-initializer-list "," "}"
 variable-initializer-list-opt:
         variable-initializer-list
         empty
@@ -181,23 +161,6 @@ parenthesized-expression:
         "(" expression ")"
 member-access:
         primary-expression "." identifier
-        predefined-type "." identifier
-predefined-type:
-        "bool"
-        "byte"
-        "char"
-        "decimal"
-        "double"
-        "float"
-        "int"
-        "long"
-        "object"
-        "sbyte"
-        "short"
-        "string"
-        "uint"
-        "ulong"
-        "ushort"
 invocation-expression:
         primary-expression "(" argument-list-opt ")"
 argument-list-opt:
@@ -208,7 +171,6 @@ argument-list:
         argument-list "," argument
 argument:
         expression
-        "ref" variable-reference
         "out" variable-reference
 variable-reference:
         expression
@@ -278,7 +240,6 @@ parameter-modifier-opt:
         parameter-modifier
         empty
 parameter-modifier:
-        "ref"
         "out"
 method-body:
         block
@@ -340,6 +301,8 @@ if-statement:
         "if" "(" boolean-expression ")" embedded-statement "else" embedded-statement
 boolean-expression:
         expression
+        "true"
+        "false"
 switch-statement:
         "switch" "(" expression ")" switch-block
 switch-block:
@@ -356,14 +319,17 @@ switch-labels:
         switch-label
         switch-labels switch-label
 switch-label:
-        "case" constant-expression ":"
+        "case" expression ":"
         "default" ":"
 iteration-statement:
         while-statement
         for-statement
         foreach-statement
+        do-statement
 while-statement:
         "while" "(" boolean-expression ")" embedded-statement
+do-statement:
+        "do" embedded-statement "while" "(" boolean-expression ")" ";"
 for-statement:
         "for" "(" for-initializer-opt ";" for-condition-opt ";" for-iterator-opt ")" embedded-statement
 for-initializer-opt:

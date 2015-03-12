@@ -10,19 +10,17 @@ from sys import argv
 # https://msdn.microsoft.com/en-us/library/x53a06bb.aspx
 # https://msdn.microsoft.com/en-us/library/aa664671(v=vs.71).aspx
 # Contextual keywords not included in this list as they are used to provide a specific meaning in the code, but are not a reserved word in C#.
+# sizeof, typeof, enum TBD
 reserved_keywords = [
-    'ABSTRACT', 'AS', 'BASE', 'BOOL', 'BREAK', 'BYTE', 
-    'CASE', 'CATCH', 'CHAR', 'CHECKED', 'CLASS', 'CONST', 'CONTINUE', 
-    'DECIMAL', 'DEFAULT', 'DELEGATE', 'DO', 'DOUBLE', 'ELSE', 'ENUM', 
-    'EVENT', 'EXPLICIT', 'EXTERN', 'FALSE', 'FINALLY', 'FIXED', 'FLOAT', 
+    'ABSTRACT', 'BASE', 'BOOL', 'BREAK',
+    'CASE', 'CHAR', 'CLASS', 'CONST', 'CONTINUE', 
+    'DEFAULT', 'DO', 'DOUBLE', 'ELSE', 
+    'FALSE', 'FIXED', 'FLOAT', 
     'FOR', 'FOREACH', 'GOTO', 'IF', 'IMPLICIT', 'IN', 'INT', 
-    'INTERFACE', 'INTERNAL', 'IS', 'LOCK', 'LONG', 'NAMESPACE', 
-    'NEW', 'NULL', 'OBJECT', 'OPERATOR', 'OUT', 'OVERRIDE', 
-    'PARAMS', 'PRIVATE', 'PROTECTED', 'PUBLIC', 'READONLY', 'REF', 
-    'RETURN', 'SBYTE', 'SEALED', 'SHORT', 'SIZEOF', 'STACKALLOC', 'STATIC', 
-    'STRING', 'STRUCT', 'SWITCH', 'THIS', 'THROW', 'TRUE', 'TRY', 'TYPEOF', 
-    'UINT', 'ULONG', 'UNCHECKED', 'UNSAFE', 'USHORT', 'USING', 'VIRTUAL', 
-    'VOID', 'VOLATILE', 'WHILE'
+    'LONG', 'NEW', 'OUT',
+    'PRIVATE', 'PUBLIC', 'RETURN',
+    'STRUCT', 'SWITCH', 'THIS', 'TRUE', 'TYPEOF', 
+    'UINT', 'ULONG', 'VOID', 'WHILE'
 ]
 
 # Operators and punctuators
@@ -32,8 +30,8 @@ operators_or_punctuators = [
     'PLUS', 'MINUS', 'TIMES', 'DIV', 'MOD',
     'BITAND', 'BITOR', 'BITXOR', 'BITNOT', 'BITCOMP',
 
-    # ?,??
-    'CONDOP','COALESCE',
+    # ?
+    'CONDOP',
 
     # &&,||,<<,>>
     # <, <=, >, >=, ==, !=
@@ -54,7 +52,7 @@ operators_or_punctuators = [
     'BLOCK_BEGIN', 'BLOCK_END',
     'OPEN_BRACKET', 'CLOSE_BRACKET',
     'OPEN_PAREN', 'CLOSE_PAREN',
-    'DOT', 'COMMA', 'COLON', 'DELIM','NS_QNTFR'
+    'DOT', 'COMMA', 'COLON', 'DELIM'
 ]
 
 # https://msdn.microsoft.com/en-us/library/aa664672(v=vs.71).aspx
@@ -123,7 +121,6 @@ t_BITNOT           = r'!'
 
 # ?
 t_CONDOP           = r'\?'
-t_COALESCE         = r'\?\?'
 t_LOGAND             = r'&&'
 t_LOGOR              = r'\|\|'
 t_LSHIFT           = r'<<'
@@ -165,7 +162,6 @@ t_OPEN_PAREN           = r'\('
 t_CLOSE_PAREN           = r'\)'
 t_DOT           = r'\.'
 t_COMMA            = r','
-t_NS_QNTFR         = r'::'
 t_COLON            = r':'
 t_DELIM             = r';'
 

@@ -1,13 +1,10 @@
-namespace Program
+class HelloWorld
 {
-    class HelloWorld
+    void Main()
     {
-        void Main()
-        {
-            /*my first program in C#*/
-            Console.WriteLine("Hello World");
-            Console.ReadKey();
-        }
-
+        /*my first program in C#*/
+        Console.WriteLine("Hello World");
+        Console.ReadKey();
     }
+
 }
