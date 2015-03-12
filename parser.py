@@ -3,9 +3,10 @@ import ply.lex as lex
 import ply.yacc as yacc
 import lexer
 from sys import argv
+import createdot
 
 variables = { }       # Dictionary of stored variables
-
+errors_list = []
 tokens = lexer.tokens
 
 lexer = lexer.lexer
@@ -785,28 +786,32 @@ def p_empty(p):
     'empty :'
     pass
 
-parser = yacc.yacc(debug=True)
+def p_error(p):
+    # global flag_for_error
+    # flag_for_error = 1
+    # if p is not None:
+    #     errors_list.append("Error %s"%(p.lineno))
+    #     yacc.errok()
+    # else:
+    #     print("Unexpected end of input")
+    if p:
+        print "Syntax error at line " + str(p.lineno) + ' : ' + str(p.value)
+    else:
+        print("Syntax error at EOI")
 
-# def input(text):
-#     result = parser.parse(text,lexer=lexer)
-#     return result
-
-# while True:
-#     try:
-#         s = raw_input("calc > ")
-#     except EOFError:
-#         break
-#     r = input(s)
-#     if r:
-#         print(r)
+parser = yacc.yacc()
 
 def runParser(inputFile):
     program = open(inputFile).read()
-    result = parser.parse(program,lexer=lexer, debug=True, tracking=True)
+    result = parser.parse(program,lexer=lexer, debug=False, tracking=True)
     return result
 
 if __name__ == "__main__":
     # lex.runmain(lexer)
     inputFile = argv[1]
-    print runParser(inputFile)
-
+    parse = runParser(inputFile)
+    filename = inputFile.split('.')[0] + '.dot'
+    png_filename = inputFile.split('.')[0] + '.png'
+    createdot.createFile(parse, filename)
+    # from subprocess import call
+    # call(["dot ", "-Tpng", filename, "-o", png_filename])
