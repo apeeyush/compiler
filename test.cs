@@ -2,9 +2,9 @@ class HelloWorld
 {
     void Main()
     {
-		int a
+		int a;
 		int b=5;
-		int d = 34
+		int d = 34;
 		int f = 12;
         // /*my first program in C#*/
         // Console.ReadKey();

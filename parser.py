@@ -11,6 +11,12 @@ tokens = lexer.tokens
 
 lexer = lexer.lexer
 
+precedence = (
+('left', 'CLOSE_PAREN'),
+('right', 'ELSE'),
+)
+
+
 def p_compilation_unit(p):
     ''' compilation-unit :         class-declarations-opt
              '''
@@ -587,10 +593,7 @@ def p_selection_statement(p):
              |         switch-statement
              '''
     p[0]=['selection_statement']+[p[i] for i in range(1,len(p))]
-precedence = (
-('left', 'CLOSE_PAREN'),
-('right', 'ELSE'),
-)
+
 def p_if_statement(p):
     ''' if-statement :         IF OPEN_PAREN boolean-expression CLOSE_PAREN embedded-statement
              |         IF OPEN_PAREN boolean-expression CLOSE_PAREN embedded-statement ELSE embedded-statement
@@ -784,6 +787,8 @@ def p_literal(p):
              |     TRUE
              |     FALSE             '''
     p[0]=['literal']+[p[i] for i in range(1,len(p))]
+
+
 
 
 def p_empty(p):
