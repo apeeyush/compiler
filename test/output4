@@ -1,0 +1,38 @@
+using System; 
+// USING IDENTIFIER DELIM 
+namespace Program 
+// NAMESPACE IDENTIFIER 
+{ 
+// BLOCK_BEGIN 
+	class Checkcomments 
+// CLASS IDENTIFIER 
+	{ 
+// BLOCK_BEGIN 
+		static void Main(string[] args) 
+// STATIC VOID IDENTIFIER OPEN_PAREN STRING OPEN_BRACKET CLOSE_BRACKET IDENTIFIER CLOSE_PAREN 
+		{ 
+// BLOCK_BEGIN 
+			/*my first program in C#*/ 
+// 
+			//This is the second comment 
+// 
+			int a = 10; 
+// INT IDENTIFIER ASSIGN ICONST DELIM 
+			Console.WriteLine("a: {0}", a); 
+// IDENTIFIER DOT IDENTIFIER OPEN_PAREN SCONST COMMA IDENTIFIER CLOSE_PAREN DELIM 
+			/*Third comment 
+// 
+			This goes multiline*/ 
+// 
+			int b = 30; 
+// INT IDENTIFIER ASSIGN ICONST DELIM 
+			//Last comment 
+// 
+    } 
+// BLOCK_END 
+ 
+// 
+	} 
+// BLOCK_END 
+} 
+// BLOCK_END 

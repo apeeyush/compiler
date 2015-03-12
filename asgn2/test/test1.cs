@@ -2,9 +2,11 @@ class HelloWorld
 {
 	void Main()
 	{
-		/*my first program in C#*/
-		Console.WriteLine("Hello World\n");
-		Console.ReadKey();
+		if(a)
+			if(b)
+			a=3;
+			else
+			a=4;
 	}
 
 }

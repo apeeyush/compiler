@@ -587,7 +587,10 @@ def p_selection_statement(p):
              |         switch-statement
              '''
     p[0]=['selection_statement']+[p[i] for i in range(1,len(p))]
-
+precedence = (
+('left', 'CLOSE_PAREN'),
+('right', 'ELSE'),
+)
 def p_if_statement(p):
     ''' if-statement :         IF OPEN_PAREN boolean-expression CLOSE_PAREN embedded-statement
              |         IF OPEN_PAREN boolean-expression CLOSE_PAREN embedded-statement ELSE embedded-statement

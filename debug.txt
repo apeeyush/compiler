@@ -1,0 +1,297 @@
+PLY: PARSE DEBUG START
+
+State  : 0
+Stack  : . LexToken(NAMESPACE,'namespace',1,0)
+Action : Shift and goto state 3
+
+State  : 3
+Stack  : NAMESPACE . LexToken(IDENTIFIER,'Program',1,10)
+Action : Shift and goto state 12
+
+State  : 12
+Stack  : NAMESPACE IDENTIFIER . LexToken(BLOCK_BEGIN,'{',2,18)
+Action : Shift and goto state 14
+
+State  : 14
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN . LexToken(CLASS,'class',3,24)
+Action : Shift and goto state 8
+
+State  : 8
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS . LexToken(IDENTIFIER,'HelloWorld',3,30)
+Action : Shift and goto state 13
+
+State  : 13
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER . LexToken(BLOCK_BEGIN,'{',4,45)
+Action : Reduce rule [empty -> <empty>] with [] and goto state 306
+Result : <NoneType @ 0x920190> (None)
+
+State  : 19
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER empty . LexToken(BLOCK_BEGIN,'{',4,45)
+Action : Reduce rule [class-base-opt -> empty] with [None] and goto state 15
+Result : <list @ 0x7fda29ca01b8> (['class_base_opt', None])
+
+State  : 16
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt . LexToken(BLOCK_BEGIN,'{',4,45)
+Action : Shift and goto state 25
+
+State  : 25
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN . LexToken(STATIC,'static',5,55)
+Action : Shift and goto state 49
+
+State  : 49
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN STATIC . LexToken(VOID,'void',5,62)
+Action : Reduce rule [modifier -> STATIC] with ['static'] and goto state 189
+Result : <list @ 0x7fda29ca0248> (['modifier', 'static'])
+
+State  : 50
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifier . LexToken(VOID,'void',5,62)
+Action : Reduce rule [modifiers -> modifier] with [<list @ 0x7fda29ca0248>] and goto state 183
+Result : <list @ 0x7fda29cba440> (['modifiers', ['modifier', 'static']])
+
+State  : 45
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers . LexToken(VOID,'void',5,62)
+Action : Reduce rule [modifiers-opt -> modifiers] with [<list @ 0x7fda29cba440>] and goto state 181
+Result : <list @ 0x7fda29cba710> (['modifiers_opt', ['modifiers', ['modifi ...)
+
+State  : 34
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt . LexToken(VOID,'void',5,62)
+Action : Shift and goto state 57
+
+State  : 57
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt VOID . LexToken(IDENTIFIER,'Main',5,67)
+Action : Reduce rule [return-type -> VOID] with ['void'] and goto state 199
+Result : <list @ 0x7fda29ca0200> (['return_type', 'void'])
+
+State  : 64
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt return-type . LexToken(IDENTIFIER,'Main',5,67)
+Action : Shift and goto state 186
+
+State  : 186
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt return-type IDENTIFIER . LexToken(OPEN_PAREN,'(',5,71)
+Action : Reduce rule [member-name -> IDENTIFIER] with ['Main'] and goto state 200
+Result : <list @ 0x7fda29ca0368> (['member_name', 'Main'])
+
+State  : 185
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt return-type member-name . LexToken(OPEN_PAREN,'(',5,71)
+Action : Shift and goto state 295
+
+State  : 295
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt return-type member-name OPEN_PAREN . LexToken(CLOSE_PAREN,')',5,72)
+Action : Reduce rule [empty -> <empty>] with [] and goto state 306
+Result : <NoneType @ 0x920190> (None)
+
+State  : 200
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt return-type member-name OPEN_PAREN empty . LexToken(CLOSE_PAREN,')',5,72)
+Action : Reduce rule [formal-parameter-list-opt -> empty] with [None] and goto state 197
+Result : <list @ 0x7fda29ca03b0> (['formal_parameter_list_opt', None])
+
+State  : 369
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt return-type member-name OPEN_PAREN formal-parameter-list-opt . LexToken(CLOSE_PAREN,')',5,72)
+Action : Shift and goto state 432
+
+State  : 432
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN modifiers-opt return-type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN . LexToken(BLOCK_BEGIN,'{',6,82)
+Action : Reduce rule [method-header -> modifiers-opt return-type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN] with [<list @ 0x7fda29cba710>,<list @ 0x7fda29ca0200>,<list @ 0x7fda29ca0368>,'(',<list @ 0x7fda29ca03b0>,')'] and goto state 195
+Result : <list @ 0x7fda29ca0320> (['method_header', ['modifiers_opt', ['mo ...)
+
+State  : 30
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header . LexToken(BLOCK_BEGIN,'{',6,82)
+Action : Shift and goto state 53
+
+State  : 53
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN . LexToken(INCRE,'++',7,93)
+Action : Shift and goto state 149
+
+State  : 149
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN INCRE . LexToken(PLUS,'+',7,95)
+Action : Shift and goto state 101
+
+State  : 101
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN INCRE PLUS . LexToken(IDENTIFIER,'a',7,96)
+Action : Shift and goto state 211
+
+State  : 211
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN INCRE PLUS IDENTIFIER . LexToken(DELIM,';',7,97)
+Action : Reduce rule [primary-no-array-creation-expression -> IDENTIFIER] with ['a'] and goto state 118
+Result : <list @ 0x7fda29cb09e0> (['primary_no_array_creation_expression', ...)
+
+State  : 96
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN INCRE PLUS primary-no-array-creation-expression . LexToken(DELIM,';',7,97)
+Action : Reduce rule [primary-expression -> primary-no-array-creation-expression] with [<list @ 0x7fda29cb09e0>] and goto state 102
+Result : <list @ 0x7fda29cb07e8> (['primary_expression', ['primary_no_arra ...)
+
+State  : 223
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN INCRE PLUS primary-expression . LexToken(DELIM,';',7,97)
+Action : Reduce rule [unary-expression -> primary-expression] with [<list @ 0x7fda29cb07e8>] and goto state 92
+Result : <list @ 0x7fda29ca07a0> (['unary_expression', ['primary_expressio ...)
+
+State  : 227
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN INCRE PLUS unary-expression . LexToken(DELIM,';',7,97)
+Action : Reduce rule [unary-expression -> PLUS unary-expression] with ['+',<list @ 0x7fda29ca07a0>] and goto state 93
+Result : <list @ 0x7fda29ca0758> (['unary_expression', '+', ['unary_expres ...)
+
+State  : 272
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN INCRE unary-expression . LexToken(DELIM,';',7,97)
+Action : Reduce rule [pre-increment-expression -> INCRE unary-expression] with ['++',<list @ 0x7fda29ca0758>] and goto state 165
+Result : <list @ 0x7fda29cbcea8> (['pre_increment_expression', '++', ['una ...)
+
+State  : 180
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN pre-increment-expression . LexToken(DELIM,';',7,97)
+Action : Reduce rule [statement-expression -> pre-increment-expression] with [<list @ 0x7fda29cbcea8>] and goto state 243
+Result : <list @ 0x7fda29cbe170> (['statement_expression', ['pre_increment ...)
+
+State  : 99
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN statement-expression . LexToken(DELIM,';',7,97)
+Action : Shift and goto state 226
+
+State  : 226
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN statement-expression DELIM . LexToken(BLOCK_END,'}',8,107)
+Action : Reduce rule [expression-statement -> statement-expression DELIM] with [<list @ 0x7fda29cbe170>,';'] and goto state 237
+Result : <list @ 0x7fda29ca3f38> (['expression_statement', ['statement_exp ...)
+
+State  : 95
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN expression-statement . LexToken(BLOCK_END,'}',8,107)
+Action : Reduce rule [embedded-statement -> expression-statement] with [<list @ 0x7fda29ca3f38>] and goto state 232
+Result : <list @ 0x7fda29ca3f80> (['embedded_statement', ['expression_stat ...)
+
+State  : 109
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN embedded-statement . LexToken(BLOCK_END,'}',8,107)
+Action : Reduce rule [statement -> embedded-statement] with [<list @ 0x7fda29ca3f80>] and goto state 218
+Result : <list @ 0x7fda29ca0488> (['statement', ['embedded_statement', ['e ...)
+
+State  : 155
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN statement . LexToken(BLOCK_END,'}',8,107)
+Action : Reduce rule [statement-list -> statement] with [<list @ 0x7fda29ca0488>] and goto state 214
+Result : <list @ 0x7fda29ca04d0> (['statement_list', ['statement', ['embed ...)
+
+State  : 167
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN statement-list . LexToken(BLOCK_END,'}',8,107)
+Action : Reduce rule [statement-list-opt -> statement-list] with [<list @ 0x7fda29ca04d0>] and goto state 212
+Result : <list @ 0x7fda29cc00e0> (['statement_list_opt', ['statement_list' ...)
+
+State  : 172
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN statement-list-opt . LexToken(BLOCK_END,'}',8,107)
+Action : Shift and goto state 285
+
+State  : 285
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header BLOCK_BEGIN statement-list-opt BLOCK_END . LexToken(BLOCK_END,'}',10,114)
+Action : Reduce rule [block -> BLOCK_BEGIN statement-list-opt BLOCK_END] with ['{',<list @ 0x7fda29cc00e0>,'}'] and goto state 211
+Result : <list @ 0x7fda29cc0368> (['block', '{', ['statement_list_opt', [' ...)
+
+State  : 55
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header block . LexToken(BLOCK_END,'}',10,114)
+Action : Reduce rule [method-body -> block] with [<list @ 0x7fda29cc0368>] and goto state 209
+Result : <list @ 0x7fda29cb0638> (['method_body', ['block', '{', ['stateme ...)
+
+State  : 54
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-header method-body . LexToken(BLOCK_END,'}',10,114)
+Action : Reduce rule [method-declaration -> method-header method-body] with [<list @ 0x7fda29ca0320>,<list @ 0x7fda29cb0638>] and goto state 194
+Result : <list @ 0x7fda29cb06c8> (['method_declaration', ['method_header', ...)
+
+State  : 37
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN method-declaration . LexToken(BLOCK_END,'}',10,114)
+Action : Reduce rule [class-member-declaration -> method-declaration] with [<list @ 0x7fda29cb06c8>] and goto state 25
+Result : <list @ 0x7fda29ca0560> (['class_member_declaration', ['method_de ...)
+
+State  : 32
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN class-member-declaration . LexToken(BLOCK_END,'}',10,114)
+Action : Reduce rule [class-member-declarations -> class-member-declaration] with [<list @ 0x7fda29ca0560>] and goto state 21
+Result : <list @ 0x7fda29ca0638> (['class_member_declarations', ['class_me ...)
+
+State  : 44
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN class-member-declarations . LexToken(BLOCK_END,'}',10,114)
+Action : Reduce rule [class-member-declarations-opt -> class-member-declarations] with [<list @ 0x7fda29ca0638>] and goto state 19
+Result : <list @ 0x7fda29cbe0e0> (['class_member_declarations_opt', ['clas ...)
+
+State  : 42
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN class-member-declarations-opt . LexToken(BLOCK_END,'}',10,114)
+Action : Shift and goto state 81
+
+State  : 81
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt BLOCK_BEGIN class-member-declarations-opt BLOCK_END . LexToken(BLOCK_END,'}',11,116)
+Action : Reduce rule [class-body -> BLOCK_BEGIN class-member-declarations-opt BLOCK_END] with ['{',<list @ 0x7fda29cbe0e0>,'}'] and goto state 18
+Result : <list @ 0x7fda29cbe368> (['class_body', '{', ['class_member_decla ...)
+
+State  : 24
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt class-body . LexToken(BLOCK_END,'}',11,116)
+Action : Reduce rule [empty -> <empty>] with [] and goto state 306
+Result : <NoneType @ 0x920190> (None)
+
+State  : 23
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt class-body empty . LexToken(BLOCK_END,'}',11,116)
+Action : Reduce rule [semi-opt -> empty] with [None] and goto state 10
+Result : <list @ 0x7fda29ca0a28> (['semi_opt', None])
+
+State  : 29
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN CLASS IDENTIFIER class-base-opt class-body semi-opt . LexToken(BLOCK_END,'}',11,116)
+Action : Reduce rule [class-declaration -> CLASS IDENTIFIER class-base-opt class-body semi-opt] with ['class','HelloWorld',<list @ 0x7fda29ca01b8>,<list @ 0x7fda29cbe368>,<list @ 0x7fda29ca0a28>] and goto state 13
+Result : <list @ 0x7fda29ca0b48> (['class_declaration', 'class', 'HelloWor ...)
+
+State  : 4
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN class-declaration . LexToken(BLOCK_END,'}',11,116)
+Action : Reduce rule [type-declaration -> class-declaration] with [<list @ 0x7fda29ca0b48>] and goto state 12
+Result : <list @ 0x7fda29cbe2d8> (['type_declaration', ['class_declaration ...)
+
+State  : 5
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN type-declaration . LexToken(BLOCK_END,'}',11,116)
+Action : Reduce rule [namespace-member-declaration -> type-declaration] with [<list @ 0x7fda29cbe2d8>] and goto state 7
+Result : <list @ 0x7fda29cbe560> (['namespace_member_declaration', ['type_ ...)
+
+State  : 2
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN namespace-member-declaration . LexToken(BLOCK_END,'}',11,116)
+Action : Reduce rule [namespace-member-declarations -> namespace-member-declaration] with [<list @ 0x7fda29cbe560>] and goto state 4
+Result : <list @ 0x7fda29ca0c20> (['namespace_member_declarations', ['name ...)
+
+State  : 1
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN namespace-member-declarations . LexToken(BLOCK_END,'}',11,116)
+Action : Reduce rule [namespace-member-declarations-opt -> namespace-member-declarations] with [<list @ 0x7fda29ca0c20>] and goto state 2
+Result : <list @ 0x7fda29ca0bd8> (['namespace_member_declarations_opt', [' ...)
+
+State  : 20
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN namespace-member-declarations-opt . LexToken(BLOCK_END,'}',11,116)
+Action : Shift and goto state 28
+
+State  : 28
+Stack  : NAMESPACE IDENTIFIER BLOCK_BEGIN namespace-member-declarations-opt BLOCK_END . $end
+Action : Reduce rule [namespace-body -> BLOCK_BEGIN namespace-member-declarations-opt BLOCK_END] with ['{',<list @ 0x7fda29ca0bd8>,'}'] and goto state 11
+Result : <list @ 0x7fda29ca3cf8> (['namespace_body', '{', ['namespace_memb ...)
+
+State  : 15
+Stack  : NAMESPACE IDENTIFIER namespace-body . $end
+Action : Reduce rule [empty -> <empty>] with [] and goto state 306
+Result : <NoneType @ 0x920190> (None)
+
+State  : 23
+Stack  : NAMESPACE IDENTIFIER namespace-body empty . $end
+Action : Reduce rule [semi-opt -> empty] with [None] and goto state 10
+Result : <list @ 0x7fda29ca3c20> (['semi_opt', None])
+
+State  : 22
+Stack  : NAMESPACE IDENTIFIER namespace-body semi-opt . $end
+Action : Reduce rule [namespace-declaration -> NAMESPACE IDENTIFIER namespace-body semi-opt] with ['namespace','Program',<list @ 0x7fda29ca3cf8>,<list @ 0x7fda29ca3c20>] and goto state 8
+Result : <list @ 0x7fda29ca5200> (['namespace_declaration', 'namespace', ' ...)
+
+State  : 10
+Stack  : namespace-declaration . $end
+Action : Reduce rule [namespace-member-declaration -> namespace-declaration] with [<list @ 0x7fda29ca5200>] and goto state 6
+Result : <list @ 0x7fda29ca5248> (['namespace_member_declaration', ['names ...)
+
+State  : 2
+Stack  : namespace-member-declaration . $end
+Action : Reduce rule [namespace-member-declarations -> namespace-member-declaration] with [<list @ 0x7fda29ca5248>] and goto state 4
+Result : <list @ 0x7fda29ca0878> (['namespace_member_declarations', ['name ...)
+
+State  : 1
+Stack  : namespace-member-declarations . $end
+Action : Reduce rule [namespace-member-declarations-opt -> namespace-member-declarations] with [<list @ 0x7fda29ca0878>] and goto state 2
+Result : <list @ 0x7fda29ca08c0> (['namespace_member_declarations_opt', [' ...)
+
+State  : 7
+Stack  : namespace-member-declarations-opt . $end
+Action : Reduce rule [compilation-unit -> namespace-member-declarations-opt] with [<list @ 0x7fda29ca08c0>] and goto state 1
+Result : <list @ 0x7fda29cbe6c8> (['compilation_unit', ['namespace_member_ ...)
+
+State  : 6
+Stack  : compilation-unit . $end
+Done   : Returning <list @ 0x7fda29cbe6c8> (['compilation_unit', ['namespace_member_ ...)
+PLY: PARSE DEBUG END
