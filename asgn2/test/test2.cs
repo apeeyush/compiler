@@ -2,7 +2,7 @@ class Program
 {
     void Main()
     {
-        int a ;
+        int a,b ;
         int b ;
         double c;
 

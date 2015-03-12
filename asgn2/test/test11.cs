@@ -10,7 +10,7 @@ class NumberManipulator
       else if(num1 < 2)
          result = num2;
       else
-         result=nim1
+         result=nim1;
 
       return result;
    }

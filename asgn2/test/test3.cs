@@ -1,6 +1,6 @@
 class Program
 {
-    void Main()
+    public void Main()
     {
 
         int a = 100;

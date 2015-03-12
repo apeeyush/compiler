@@ -1,26 +1,23 @@
-class Rectangle
+class MyArray
 {
-   private int length;
-   private int width;
-   public Rectangle( int a=0, int b=0)
+   void Main()
    {
-      length = a;
-      width = b;
-   }
-   public int area ()
-   { 
-      Console.WriteLine("Rectangle class area :");
-      return (width * length); 
-   }
-}
+      int []  n = new int[10]; /* n is an array of 10 integers */
+      int i,j;
 
-class RectangleTester
-{
-   static void Main()
-   {
-      Rectangle r = new Rectangle(10, 7);
-      double a = r.area();
-      Console.WriteLine("Area: {0}",a);
+
+      /* initialize elements of array n */         
+      for ( i = 0; i < 10; i++ )
+      {
+         n[ i ] = i + 100;
+      }
+
+      /* output each array element's value */
+      for (j = 0; j < 10; j++ )
+      {
+         Console.WriteLine("Element[{0}] = {1}", j, n[j]);
+      }
       Console.ReadKey();
    }
 }
+

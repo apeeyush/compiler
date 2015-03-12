@@ -1,6 +1,6 @@
 class Checkcomments
 {
-	static void Main()
+	public void Main()
 	{
 		/*my first program in C#*/
 		//This is the second comment

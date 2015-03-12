@@ -22,7 +22,7 @@ class Rectangle
 
 class ExecuteRectangle
 {
-    static void Main()
+    public void Main()
     {
         Rectangle r = new Rectangle();
         r.Acceptdetails();
