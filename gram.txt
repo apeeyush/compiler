@@ -243,6 +243,16 @@ statement:
         selection-statement
         iteration-statement
         jump-statement
+        write-statement
+        read-statement
+write-statement:
+        CONSOLE "." WRITELINE "(" print-list ")"
+print-list:
+        expression
+        expression "," print-list
+        empty
+read-statement:
+        CONSOLE "." READLINE "(" identifier ")"
 labeled-statement:
         identifier ":" statement
 declaration-statement:

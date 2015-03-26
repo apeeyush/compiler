@@ -481,8 +481,27 @@ def p_statement(p):
              |         selection-statement
              |         iteration-statement
              |         jump-statement
+             |         write-statement
+             |         read-statement
              '''
     p[0]=['statement']+[p[i] for i in range(1,len(p))]
+
+def p_write_statement(p):
+    ''' write-statement :         CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
+             '''
+    p[0]=['write_statement']+[p[i] for i in range(1,len(p))]
+
+def p_print_list(p):
+    ''' print-list :         expression
+             |         expression COMMA print-list
+             |         empty
+             '''
+    p[0]=['print_list']+[p[i] for i in range(1,len(p))]
+
+def p_read_statement(p):
+    ''' read-statement :         CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+             '''
+    p[0]=['read_statement']+[p[i] for i in range(1,len(p))]
 
 def p_labeled_statement(p):
     ''' labeled-statement :         IDENTIFIER COLON statement
@@ -721,6 +740,7 @@ def p_literal(p):
              |     FALSE
              '''
     p[0]=['literal']+[p[i] for i in range(1,len(p))]
+
 
 
 

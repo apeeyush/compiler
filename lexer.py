@@ -20,7 +20,7 @@ reserved_keywords = [
     'LONG', 'NEW', 'OUT',
     'PRIVATE', 'PUBLIC', 'RETURN',
     'SWITCH', 'THIS', 'TRUE', 
-    'UINT', 'ULONG', 'VOID', 'WHILE'
+    'UINT', 'ULONG', 'VOID', 'WHILE', 'CONSOLE', 'READLINE', 'WRITELINE'
 ]
 
 # Operators and punctuators

@@ -2,6 +2,7 @@ int a;
 int b=5;
 int d = 34;
 int f = 12;
+console.writeline(b);
 //a.b(4);
 // class HelloWorld
 // {
