@@ -155,7 +155,6 @@ def p_conditional_expression(p):
         p[0] = p[1]
     elif len(p) == 6:
         pass            # TODO
-    # p[0]=['conditional_expression']+[p[i] for i in range(1,len(p))]
 
 def p_conditional_or_expression(p):
     ''' conditional-or-expression :         conditional-and-expression
@@ -163,10 +162,15 @@ def p_conditional_or_expression(p):
              '''
     if len(p) == 2:
         p[0] = p[1]
-    elif len(p) == 4:
-        pass            # TODO
-
-    # p[0]=['conditional_or_expression']+[p[i] for i in range(1,len(p))]
+    elif len(p) == 4:   # TODO : Implement backpatching
+        p[0] = {}
+        if p[1]['type'] == p[4]['type'] == 'bool':
+            p[0]['type'] = 'bool'
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Error")
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_conditional_and_expression(p):
     ''' conditional-and-expression :         inclusive-or-expression
@@ -174,10 +178,15 @@ def p_conditional_and_expression(p):
              '''
     if len(p) == 2:
         p[0] = p[1]
-    elif len(p) == 4:
-        pass            # TODO
-
-    # p[0]=['conditional_and_expression']+[p[i] for i in range(1,len(p))]
+    elif len(p) == 4:   # TODO : Implement backpatching
+        p[0] = {}
+        if p[1]['type'] == p[4]['type'] == 'bool':
+            p[0]['type'] = 'bool'
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Error")
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_inclusive_or_expression(p):
     ''' inclusive-or-expression :         exclusive-or-expression
@@ -186,9 +195,14 @@ def p_inclusive_or_expression(p):
     if len(p) == 2:
         p[0] = p[1]
     elif len(p) == 4:
-        pass            # TODO
-
-    # p[0]=['inclusive_or_expression']+[p[i] for i in range(1,len(p))]
+        p[0] = {}
+        if p[1]['type'] == p[4]['type'] == 'int':
+            p[0]['type'] = 'int'
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Error")
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_exclusive_or_expression(p):
     ''' exclusive-or-expression :         and-expression
@@ -197,9 +211,14 @@ def p_exclusive_or_expression(p):
     if len(p) == 2:
         p[0] = p[1]
     elif len(p) == 4:
-        pass            # TODO
-
-    # p[0]=['exclusive_or_expression']+[p[i] for i in range(1,len(p))]
+        p[0] = {}
+        if p[1]['type'] == p[4]['type'] == 'int':
+            p[0]['type'] = 'int'
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Error")
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_and_expression(p):
     ''' and-expression :         equality-expression
@@ -208,9 +227,14 @@ def p_and_expression(p):
     if len(p) == 2:
         p[0] = p[1]
     elif len(p) == 4:
-        pass            # TODO
-
-    # p[0]=['and_expression']+[p[i] for i in range(1,len(p))]
+        p[0] = {}
+        if p[1]['type'] == p[4]['type'] == 'int':
+            p[0]['type'] = 'int'
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Error")
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_equality_expression(p):
     ''' equality-expression :         relational-expression
@@ -221,16 +245,14 @@ def p_equality_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[3]['type']:
-            p[0]['type'] = 'bool'
+        if p[1]['type'] == p[3]['type'] and p[1]['type'] in ['int', 'float', 'bool']:
+            p[0]['type'] = p[1]['type']
         else:
             p[0]['type'] = 'typeError'
             raise Exception("Type Mismatch")
 
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
-
-    # p[0]=['equality_expression']+[p[i] for i in range(1,len(p))]
 
 def p_relational_expression(p):
     ''' relational-expression :         shift-expression
@@ -523,9 +545,12 @@ def p_variable_declarator(p):
     ''' variable-declarator :         IDENTIFIER
              |         IDENTIFIER ASSIGN variable-initializer
              '''
+    print 'haha'
     if len(p) == 2:
+        print 'I am there'
         p[0] = p[1]
     elif len(p) == 4:
+        print 'I am here'
         p[0] = p[1]
     # p[0]=['variable_declarator']+[p[i] for i in range(1,len(p))]
 
