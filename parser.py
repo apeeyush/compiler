@@ -4,6 +4,9 @@ import ply.yacc as yacc
 import lexer
 from sys import argv
 import createdot
+from symbol_table import *
+
+ST = SymbolTable()
 
 variables = { }       # Dictionary of stored variables
 errors_list = []
@@ -60,7 +63,8 @@ def p_class_base(p):
 def p_class_type(p):
     ''' class-type :         IDENTIFIER
              '''
-    p[0]=['class_type']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    # p[0]=['class_type']+[p[i] for i in range(1,len(p))]
 
 def p_class_body(p):
     ''' class-body :         BLOCK_BEGIN class-member-declarations-opt BLOCK_END
@@ -99,7 +103,8 @@ def p_type(p):
              |         class-type
              |         array-type
              '''
-    p[0]=['type']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    # p[0]=['type']+[p[i] for i in range(1,len(p))]
 
 def p_simple_type(p):
     ''' simple-type :         BOOL
@@ -108,29 +113,40 @@ def p_simple_type(p):
              |         CHAR
              |         DOUBLE
              '''
-    p[0]=['simple_type']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    # p[0]=['simple_type']+[p[i] for i in range(1,len(p))]
 
 def p_array_type(p):
     ''' array-type :         simple-type OPEN_BRACKET CLOSE_BRACKET
              '''
-    p[0]=['array_type']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1] + "_array"
+    # p[0]=['array_type']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declarators(p):
     ''' constant-declarators :         constant-declarator
              |         constant-declarators COMMA constant-declarator
              '''
-    p[0]=['constant_declarators']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = [p[1]]
+    elif len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    # p[0]=['constant_declarators']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declarator(p):
     ''' constant-declarator :         IDENTIFIER ASSIGN expression
              '''
-    p[0]=['constant_declarator']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    # p[0]=['constant_declarator']+[p[i] for i in range(1,len(p))]
 
 def p_expression(p):
     ''' expression :         conditional-expression
              |         assignment
              '''
-    p[0]=['expression']+[p[i] for i in range(1,len(p))]
+    p[0] = {}
+    p[0]['label'] = "label"
+    p[0]['type'] = "type"
+
+    # p[0]=['expression']+[p[i] for i in range(1,len(p))]
 
 def p_conditional_expression(p):
     ''' conditional-expression :         conditional-or-expression
@@ -372,7 +388,8 @@ def p_assignment_operator(p):
              |         LSHIFTEQUAL
              |         RSHIFTEQUAL
              '''
-    p[0]=['assignment_operator']+[p[i] for i in range(1,len(p))]
+    p[0]=p[1]
+    # p[0]=['assignment_operator']+[p[i] for i in range(1,len(p))]
 
 def p_field_declaration(p):
     ''' field-declaration :         modifier type variable-declarators DELIM
@@ -390,13 +407,21 @@ def p_variable_declarators(p):
     ''' variable-declarators :         variable-declarator
              |         variable-declarators COMMA variable-declarator
              '''
-    p[0]=['variable_declarators']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = [p[1]]
+    elif len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    # p[0]=['variable_declarators']+[p[i] for i in range(1,len(p))]
 
 def p_variable_declarator(p):
     ''' variable-declarator :         IDENTIFIER
              |         IDENTIFIER ASSIGN variable-initializer
              '''
-    p[0]=['variable_declarator']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = p[1]
+    # p[0]=['variable_declarator']+[p[i] for i in range(1,len(p))]
 
 def p_method_declaration(p):
     ''' method-declaration :         method-header method-body
@@ -484,7 +509,8 @@ def p_statement(p):
              |         write-statement
              |         read-statement
              '''
-    p[0]=['statement']+[p[i] for i in range(1,len(p))]
+    print p[0]
+    # p[0]=['statement']+[p[i] for i in range(1,len(p))]
 
 def p_write_statement(p):
     ''' write-statement :         CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
@@ -494,9 +520,13 @@ def p_write_statement(p):
 def p_print_list(p):
     ''' print-list :         expression
              |         expression COMMA print-list
-             |         empty
              '''
-    p[0]=['print_list']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = [ { 'place': p[1]['place'], 'type' : p[1]['type'] } ]
+    elif len(p) == 4:
+        p[0] = [ { 'place': p[1]['place'], 'type' : p[1]['type'] } ] + p[3]
+
+    # p[0]=['print_list']+[p[i] for i in range(1,len(p))]
 
 def p_read_statement(p):
     ''' read-statement :         CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
@@ -512,17 +542,25 @@ def p_declaration_statement(p):
     ''' declaration-statement :         local-variable-declaration DELIM
              |         local-constant-declaration DELIM
              '''
-    p[0]=['declaration_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    # p[0]=['declaration_statement']+[p[i] for i in range(1,len(p))]
 
 def p_local_variable_declaration(p):
     ''' local-variable-declaration :         type variable-declarators
              '''
-    p[0]=['local_variable_declaration']+[p[i] for i in range(1,len(p))]
+    for identifier_name in p[2]:
+        if not ST.lookupvar(identifier_name):
+            ST.addvar(identifier_name, p[1])
+    # p[0]=['local_variable_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_local_constant_declaration(p):
     ''' local-constant-declaration :         CONST type constant-declarators
              '''
-    p[0]=['local_constant_declaration']+[p[i] for i in range(1,len(p))]
+    for identifier_name in p[3]:
+        if not ST.lookupvar(identifier_name):
+            pass
+            ST.addvar(identifier_name, p[2])
+    # p[0]=['local_constant_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_empty_statement(p):
     ''' empty-statement :         DELIM
@@ -796,5 +834,6 @@ if __name__ == "__main__":
     filename = inputFile.split('.')[0] + '.dot'
     png_filename = inputFile.split('.')[0] + '.png'
     createdot.createFile(parse, filename)
+    ST.printTable()
     # from subprocess import call
     # call(["dot ", "-Tpng", filename, "-o", png_filename])
