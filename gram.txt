@@ -1,5 +1,6 @@
 compilation-unit:
         class-declarations-opt
+        statement-list
 semi-opt:
         ";"
         empty
@@ -32,7 +33,6 @@ class-member-declaration:
         method-declaration
         constructor-declaration
         destructor-declaration
-        class-declaration
 constant-declaration:
         modifier "const" simple-type constant-declarators ";"
         "const" simple-type constant-declarators ";"
@@ -41,30 +41,13 @@ type:
         class-type
         array-type
 simple-type:
-        numeric-type
         "bool"
-numeric-type:
-        integral-type
-        floating-point-type
-integral-type:
         "int"
         "uint"
-        "long"
-        "ulong"
         "char"
-floating-point-type:
-        "float"
         "double"
 array-type:
-        simple-type rank-specifier
-rank-specifier:
-        "[" dim-separators-opt "]"
-dim-separators-opt:
-        dim-separators
-        empty
-dim-separators:
-        ","
-        dim-separators ","
+        simple-type "[" "]"
 constant-declarators:
         constant-declarator
         constant-declarators "," constant-declarator
@@ -140,8 +123,8 @@ variable-initializer-list-opt:
         variable-initializer-list
         empty
 variable-initializer-list:
-        variable-initializer
-        variable-initializer-list "," variable-initializer
+        expression
+        variable-initializer-list "," expression
 variable-initializer:
         expression
         array-initializer
@@ -152,17 +135,16 @@ primary-no-array-creation-expression:
         member-access
         invocation-expression
         element-access
-        this-access
-        base-access
         post-increment-expression
         post-decrement-expression
         object-creation-expression
 parenthesized-expression:
         "(" expression ")"
 member-access:
-        primary-expression "." identifier
+        prim-expression "." identifier
 invocation-expression:
-        primary-expression "(" argument-list-opt ")"
+        identifier "(" argument-list-opt ")"
+        member-access "(" argument-list-opt ")"
 argument-list-opt:
         argument-list
         empty
@@ -175,24 +157,24 @@ argument:
 variable-reference:
         expression
 element-access:
-        primary-no-array-creation-expression "[" expression-list "]"
-this-access:
-        "this"
-base-access:
-        "base" "." identifier
-        "base" "[" expression-list "]"
+        identifier "[" expression-list "]"
+        member-access "[" expression-list "]"
+prim-expression:
+        identifier
+        member-access
+        element-access
 post-increment-expression:
-        primary-expression "++"
+        prim-expression "++"
 post-decrement-expression:
-        primary-expression "--"
+        prim-expression "--"
 object-creation-expression:
         "new" type "(" argument-list-opt ")"
 pre-increment-expression:
-        "++" unary-expression
+        "++" prim-expression
 pre-decrement-expression:
-        "--" unary-expression
+        "--" prim-expression
 assignment:
-        primary-expression assignment-operator expression
+        prim-expression assignment-operator expression
 assignment-operator:
         "="
         "+="
@@ -255,32 +237,21 @@ statement-list:
 statement:
         labeled-statement
         declaration-statement
-        embedded-statement
-labeled-statement:
-        identifier ":" statement
-declaration-statement:
-        local-variable-declaration ";"
-        local-constant-declaration ";"
-local-variable-declaration:
-        type local-variable-declarators
-local-variable-declarators:
-        local-variable-declarator
-        local-variable-declarators "," local-variable-declarator
-local-variable-declarator:
-        identifier
-        identifier "=" local-variable-initializer
-local-variable-initializer:
-        expression
-        array-initializer
-local-constant-declaration:
-        "const" type constant-declarators
-embedded-statement:
         block
         empty-statement
         expression-statement
         selection-statement
         iteration-statement
         jump-statement
+labeled-statement:
+        identifier ":" statement
+declaration-statement:
+        local-variable-declaration ";"
+        local-constant-declaration ";"
+local-variable-declaration:
+        type variable-declarators
+local-constant-declaration:
+        "const" type constant-declarators
 empty-statement:
         ";"
 expression-statement:
@@ -297,10 +268,8 @@ selection-statement:
         if-statement
         switch-statement
 if-statement:
-        "if" "(" boolean-expression ")" embedded-statement
-        "if" "(" boolean-expression ")" embedded-statement "else" embedded-statement
-boolean-expression:
-        expression
+        "if" "(" expression ")" block
+        "if" "(" expression ")" block "else" block
 switch-statement:
         "switch" "(" expression ")" switch-block
 switch-block:
@@ -325,11 +294,11 @@ iteration-statement:
         foreach-statement
         do-statement
 while-statement:
-        "while" "(" boolean-expression ")" embedded-statement
+        "while" "(" expression ")" block
 do-statement:
-        "do" embedded-statement "while" "(" boolean-expression ")" ";"
+        "do" block "while" "(" expression ")" ";"
 for-statement:
-        "for" "(" for-initializer-opt ";" for-condition-opt ";" for-iterator-opt ")" embedded-statement
+        "for" "(" for-initializer-opt ";" for-condition-opt ";" for-iterator-opt ")" block
 for-initializer-opt:
         for-initializer
         empty
@@ -340,7 +309,7 @@ for-condition-opt:
         for-condition
         empty
 for-condition:
-        boolean-expression
+        expression
 for-iterator-opt:
         for-iterator
         empty
@@ -350,7 +319,7 @@ statement-expression-list:
         statement-expression
         statement-expression-list "," statement-expression
 foreach-statement:
-        "foreach" "(" type identifier "in" expression ")" embedded-statement
+        "foreach" "(" type identifier "in" expression ")" block
 jump-statement:
         break-statement
         continue-statement

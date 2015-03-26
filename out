@@ -1,5 +1,6 @@
 def p_compilation_unit(p):
 	''' compilation-unit :         class-declarations-opt
+			 |         statement-list
 			 '''
 	p[0]=['compilation_unit']+[p[i] for i in range(1,len(p))]
 
@@ -65,7 +66,6 @@ def p_class_member_declaration(p):
 			 |         method-declaration
 			 |         constructor-declaration
 			 |         destructor-declaration
-			 |         class-declaration
 			 '''
 	p[0]=['class_member_declaration']+[p[i] for i in range(1,len(p))]
 
@@ -83,53 +83,18 @@ def p_type(p):
 	p[0]=['type']+[p[i] for i in range(1,len(p))]
 
 def p_simple_type(p):
-	''' simple-type :         numeric-type
-			 |         BOOL
+	''' simple-type :         BOOL
+			 |         INT
+			 |         UINT
+			 |         CHAR
+			 |         DOUBLE
 			 '''
 	p[0]=['simple_type']+[p[i] for i in range(1,len(p))]
 
-def p_numeric_type(p):
-	''' numeric-type :         integral-type
-			 |         floating-point-type
-			 '''
-	p[0]=['numeric_type']+[p[i] for i in range(1,len(p))]
-
-def p_integral_type(p):
-	''' integral-type :         INT
-			 |         UINT
-			 |         LONG
-			 |         ULONG
-			 |         CHAR
-			 '''
-	p[0]=['integral_type']+[p[i] for i in range(1,len(p))]
-
-def p_floating_point_type(p):
-	''' floating-point-type :         FLOAT
-			 |         DOUBLE
-			 '''
-	p[0]=['floating_point_type']+[p[i] for i in range(1,len(p))]
-
 def p_array_type(p):
-	''' array-type :         simple-type rank-specifier
+	''' array-type :         simple-type OPEN_BRACKET CLOSE_BRACKET
 			 '''
 	p[0]=['array_type']+[p[i] for i in range(1,len(p))]
-
-def p_rank_specifier(p):
-	''' rank-specifier :         OPEN_BRACKET dim-separators-opt CLOSE_BRACKET
-			 '''
-	p[0]=['rank_specifier']+[p[i] for i in range(1,len(p))]
-
-def p_dim_separators_opt(p):
-	''' dim-separators-opt :         dim-separators
-			 |         empty
-			 '''
-	p[0]=['dim_separators_opt']+[p[i] for i in range(1,len(p))]
-
-def p_dim_separators(p):
-	''' dim-separators :         COMMA
-			 |         dim-separators COMMA
-			 '''
-	p[0]=['dim_separators']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declarators(p):
 	''' constant-declarators :         constant-declarator
@@ -269,8 +234,8 @@ def p_variable_initializer_list_opt(p):
 	p[0]=['variable_initializer_list_opt']+[p[i] for i in range(1,len(p))]
 
 def p_variable_initializer_list(p):
-	''' variable-initializer-list :         variable-initializer
-			 |         variable-initializer-list COMMA variable-initializer
+	''' variable-initializer-list :         expression
+			 |         variable-initializer-list COMMA expression
 			 '''
 	p[0]=['variable_initializer_list']+[p[i] for i in range(1,len(p))]
 
@@ -287,8 +252,6 @@ def p_primary_no_array_creation_expression(p):
 			 |         member-access
 			 |         invocation-expression
 			 |         element-access
-			 |         this-access
-			 |         base-access
 			 |         post-increment-expression
 			 |         post-decrement-expression
 			 |         object-creation-expression
@@ -301,12 +264,13 @@ def p_parenthesized_expression(p):
 	p[0]=['parenthesized_expression']+[p[i] for i in range(1,len(p))]
 
 def p_member_access(p):
-	''' member-access :         primary-expression DOT IDENTIFIER
+	''' member-access :         prim-expression DOT IDENTIFIER
 			 '''
 	p[0]=['member_access']+[p[i] for i in range(1,len(p))]
 
 def p_invocation_expression(p):
-	''' invocation-expression :         primary-expression OPEN_PAREN argument-list-opt CLOSE_PAREN
+	''' invocation-expression :         IDENTIFIER OPEN_PAREN argument-list-opt CLOSE_PAREN
+			 |         member-access OPEN_PAREN argument-list-opt CLOSE_PAREN
 			 '''
 	p[0]=['invocation_expression']+[p[i] for i in range(1,len(p))]
 
@@ -334,28 +298,25 @@ def p_variable_reference(p):
 	p[0]=['variable_reference']+[p[i] for i in range(1,len(p))]
 
 def p_element_access(p):
-	''' element-access :         primary-no-array-creation-expression OPEN_BRACKET expression-list CLOSE_BRACKET
+	''' element-access :         IDENTIFIER OPEN_BRACKET expression-list CLOSE_BRACKET
+			 |         member-access OPEN_BRACKET expression-list CLOSE_BRACKET
 			 '''
 	p[0]=['element_access']+[p[i] for i in range(1,len(p))]
 
-def p_this_access(p):
-	''' this-access :         THIS
+def p_prim_expression(p):
+	''' prim-expression :         IDENTIFIER
+			 |         member-access
+			 |         element-access
 			 '''
-	p[0]=['this_access']+[p[i] for i in range(1,len(p))]
-
-def p_base_access(p):
-	''' base-access :         BASE DOT IDENTIFIER
-			 |         BASE OPEN_BRACKET expression-list CLOSE_BRACKET
-			 '''
-	p[0]=['base_access']+[p[i] for i in range(1,len(p))]
+	p[0]=['prim_expression']+[p[i] for i in range(1,len(p))]
 
 def p_post_increment_expression(p):
-	''' post-increment-expression :         primary-expression INCRE
+	''' post-increment-expression :         prim-expression INCRE
 			 '''
 	p[0]=['post_increment_expression']+[p[i] for i in range(1,len(p))]
 
 def p_post_decrement_expression(p):
-	''' post-decrement-expression :         primary-expression DECRE
+	''' post-decrement-expression :         prim-expression DECRE
 			 '''
 	p[0]=['post_decrement_expression']+[p[i] for i in range(1,len(p))]
 
@@ -365,17 +326,17 @@ def p_object_creation_expression(p):
 	p[0]=['object_creation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_pre_increment_expression(p):
-	''' pre-increment-expression :         INCRE unary-expression
+	''' pre-increment-expression :         INCRE prim-expression
 			 '''
 	p[0]=['pre_increment_expression']+[p[i] for i in range(1,len(p))]
 
 def p_pre_decrement_expression(p):
-	''' pre-decrement-expression :         DECRE unary-expression
+	''' pre-decrement-expression :         DECRE prim-expression
 			 '''
 	p[0]=['pre_decrement_expression']+[p[i] for i in range(1,len(p))]
 
 def p_assignment(p):
-	''' assignment :         primary-expression assignment-operator expression
+	''' assignment :         prim-expression assignment-operator expression
 			 '''
 	p[0]=['assignment']+[p[i] for i in range(1,len(p))]
 
@@ -495,7 +456,12 @@ def p_statement_list(p):
 def p_statement(p):
 	''' statement :         labeled-statement
 			 |         declaration-statement
-			 |         embedded-statement
+			 |         block
+			 |         empty-statement
+			 |         expression-statement
+			 |         selection-statement
+			 |         iteration-statement
+			 |         jump-statement
 			 '''
 	p[0]=['statement']+[p[i] for i in range(1,len(p))]
 
@@ -511,42 +477,14 @@ def p_declaration_statement(p):
 	p[0]=['declaration_statement']+[p[i] for i in range(1,len(p))]
 
 def p_local_variable_declaration(p):
-	''' local-variable-declaration :         type local-variable-declarators
+	''' local-variable-declaration :         type variable-declarators
 			 '''
 	p[0]=['local_variable_declaration']+[p[i] for i in range(1,len(p))]
-
-def p_local_variable_declarators(p):
-	''' local-variable-declarators :         local-variable-declarator
-			 |         local-variable-declarators COMMA local-variable-declarator
-			 '''
-	p[0]=['local_variable_declarators']+[p[i] for i in range(1,len(p))]
-
-def p_local_variable_declarator(p):
-	''' local-variable-declarator :         IDENTIFIER
-			 |         IDENTIFIER ASSIGN local-variable-initializer
-			 '''
-	p[0]=['local_variable_declarator']+[p[i] for i in range(1,len(p))]
-
-def p_local_variable_initializer(p):
-	''' local-variable-initializer :         expression
-			 |         array-initializer
-			 '''
-	p[0]=['local_variable_initializer']+[p[i] for i in range(1,len(p))]
 
 def p_local_constant_declaration(p):
 	''' local-constant-declaration :         CONST type constant-declarators
 			 '''
 	p[0]=['local_constant_declaration']+[p[i] for i in range(1,len(p))]
-
-def p_embedded_statement(p):
-	''' embedded-statement :         block
-			 |         empty-statement
-			 |         expression-statement
-			 |         selection-statement
-			 |         iteration-statement
-			 |         jump-statement
-			 '''
-	p[0]=['embedded_statement']+[p[i] for i in range(1,len(p))]
 
 def p_empty_statement(p):
 	''' empty-statement :         DELIM
@@ -576,15 +514,10 @@ def p_selection_statement(p):
 	p[0]=['selection_statement']+[p[i] for i in range(1,len(p))]
 
 def p_if_statement(p):
-	''' if-statement :         IF OPEN_PAREN boolean-expression CLOSE_PAREN embedded-statement
-			 |         IF OPEN_PAREN boolean-expression CLOSE_PAREN embedded-statement ELSE embedded-statement
+	''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN block
+			 |         IF OPEN_PAREN expression CLOSE_PAREN block ELSE block
 			 '''
 	p[0]=['if_statement']+[p[i] for i in range(1,len(p))]
-
-def p_boolean_expression(p):
-	''' boolean-expression :         expression
-			 '''
-	p[0]=['boolean_expression']+[p[i] for i in range(1,len(p))]
 
 def p_switch_statement(p):
 	''' switch-statement :         SWITCH OPEN_PAREN expression CLOSE_PAREN switch-block
@@ -634,17 +567,17 @@ def p_iteration_statement(p):
 	p[0]=['iteration_statement']+[p[i] for i in range(1,len(p))]
 
 def p_while_statement(p):
-	''' while-statement :         WHILE OPEN_PAREN boolean-expression CLOSE_PAREN embedded-statement
+	''' while-statement :         WHILE OPEN_PAREN expression CLOSE_PAREN block
 			 '''
 	p[0]=['while_statement']+[p[i] for i in range(1,len(p))]
 
 def p_do_statement(p):
-	''' do-statement :         DO embedded-statement WHILE OPEN_PAREN boolean-expression CLOSE_PAREN DELIM
+	''' do-statement :         DO block WHILE OPEN_PAREN expression CLOSE_PAREN DELIM
 			 '''
 	p[0]=['do_statement']+[p[i] for i in range(1,len(p))]
 
 def p_for_statement(p):
-	''' for-statement :         FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt CLOSE_PAREN embedded-statement
+	''' for-statement :         FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt CLOSE_PAREN block
 			 '''
 	p[0]=['for_statement']+[p[i] for i in range(1,len(p))]
 
@@ -667,7 +600,7 @@ def p_for_condition_opt(p):
 	p[0]=['for_condition_opt']+[p[i] for i in range(1,len(p))]
 
 def p_for_condition(p):
-	''' for-condition :         boolean-expression
+	''' for-condition :         expression
 			 '''
 	p[0]=['for_condition']+[p[i] for i in range(1,len(p))]
 
@@ -689,7 +622,7 @@ def p_statement_expression_list(p):
 	p[0]=['statement_expression_list']+[p[i] for i in range(1,len(p))]
 
 def p_foreach_statement(p):
-	''' foreach-statement :         FOREACH OPEN_PAREN type IDENTIFIER IN expression CLOSE_PAREN embedded-statement
+	''' foreach-statement :         FOREACH OPEN_PAREN type IDENTIFIER IN expression CLOSE_PAREN block
 			 '''
 	p[0]=['foreach_statement']+[p[i] for i in range(1,len(p))]
 
@@ -766,7 +699,8 @@ def p_literal(p):
 			 |     SCONST
 			 |     VSCONST
 			 |     TRUE
-			 |     FALSE			 '''
+			 |     FALSE
+			 '''
 	p[0]=['literal']+[p[i] for i in range(1,len(p))]
 
 
