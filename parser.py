@@ -401,7 +401,7 @@ def p_primary_no_array_creation_expression_literal(p):
     p[0]['place'] = ST.gentmp()
     TAC.emit(p[0]['place'], p[1]['value'], '', '=dec')
 
-def p_primary_no_array_creation_expression(p):
+def p_primary_no_array_creation_expression_identifier(p):
     ''' primary-no-array-creation-expression :         IDENTIFIER
              '''
     p[0] = {}
