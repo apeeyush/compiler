@@ -120,11 +120,8 @@ expression-list:
 array-initializer:
         "{" variable-initializer-list-opt "}"
 variable-initializer-list-opt:
-        variable-initializer-list
+        expression-list
         empty
-variable-initializer-list:
-        expression
-        variable-initializer-list "," expression
 variable-initializer:
         expression
         array-initializer

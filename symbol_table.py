@@ -12,11 +12,11 @@ class SymbolTable():
 		self.offstack=[0]
 		self.idnum=-1
 
-	def genlabel(self):
+	def gentmp(self):
 		self.idnum+=1;
 		return "t"+str(self.idnum)
 
-	def addvar(self,varname,vartype,varwidth=-1):
+	def addvar(self,varname='',vartype='',varwidth=-1):
 		#Set variable width on type
 		if varwidth==-1:
 			if vartype=="int":
@@ -33,7 +33,7 @@ class SymbolTable():
 		symboltable=self.tablestack[0]
 		offset=self.offstack[0]
 		#assuming variable being added doesn't exist
-		symboltable["_data_"+varname]={"type":vartype,"address":offset,"width":varwidth,"label":self.genlabel()}
+		symboltable["_data_"+varname]={"type":vartype,"address":offset,"width":varwidth,"label":self.gentmp()}
 		self.offstack[0]+=varwidth
 
 	def lookupvar(self,name):

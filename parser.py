@@ -5,8 +5,10 @@ import lexer
 from sys import argv
 import createdot
 from symbol_table import *
+from threeAddressCode import *
 
 ST = SymbolTable()
+TAC = ThreeAddressCode()
 
 variables = { }       # Dictionary of stored variables
 errors_list = []
@@ -142,54 +144,93 @@ def p_expression(p):
     ''' expression :         conditional-expression
              |         assignment
              '''
-    p[0] = {}
-    p[0]['label'] = "label"
-    p[0]['type'] = "type"
-
+    p[0] = p[1]
     # p[0]=['expression']+[p[i] for i in range(1,len(p))]
 
 def p_conditional_expression(p):
     ''' conditional-expression :         conditional-or-expression
              |         conditional-or-expression CONDOP expression COLON expression
              '''
-    p[0]=['conditional_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 6:
+        pass            # TODO
+    # p[0]=['conditional_expression']+[p[i] for i in range(1,len(p))]
 
 def p_conditional_or_expression(p):
     ''' conditional-or-expression :         conditional-and-expression
              |         conditional-or-expression LOGOR conditional-and-expression
              '''
-    p[0]=['conditional_or_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        pass            # TODO
+
+    # p[0]=['conditional_or_expression']+[p[i] for i in range(1,len(p))]
 
 def p_conditional_and_expression(p):
     ''' conditional-and-expression :         inclusive-or-expression
              |         conditional-and-expression LOGAND inclusive-or-expression
              '''
-    p[0]=['conditional_and_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        pass            # TODO
+
+    # p[0]=['conditional_and_expression']+[p[i] for i in range(1,len(p))]
 
 def p_inclusive_or_expression(p):
     ''' inclusive-or-expression :         exclusive-or-expression
              |         inclusive-or-expression BITOR exclusive-or-expression
              '''
-    p[0]=['inclusive_or_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        pass            # TODO
+
+    # p[0]=['inclusive_or_expression']+[p[i] for i in range(1,len(p))]
 
 def p_exclusive_or_expression(p):
     ''' exclusive-or-expression :         and-expression
              |         exclusive-or-expression BITXOR and-expression
              '''
-    p[0]=['exclusive_or_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        pass            # TODO
+
+    # p[0]=['exclusive_or_expression']+[p[i] for i in range(1,len(p))]
 
 def p_and_expression(p):
     ''' and-expression :         equality-expression
              |         and-expression BITAND equality-expression
              '''
-    p[0]=['and_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        pass            # TODO
+
+    # p[0]=['and_expression']+[p[i] for i in range(1,len(p))]
 
 def p_equality_expression(p):
     ''' equality-expression :         relational-expression
              |         equality-expression EQ relational-expression
              |         equality-expression NE relational-expression
              '''
-    p[0]=['equality_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = {}
+        if p[1]['type'] == p[3]['type']:
+            p[0]['type'] = 'bool'
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Mismatch")
+
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
+
+    # p[0]=['equality_expression']+[p[i] for i in range(1,len(p))]
 
 def p_relational_expression(p):
     ''' relational-expression :         shift-expression
@@ -198,21 +239,51 @@ def p_relational_expression(p):
              |         relational-expression LE shift-expression
              |         relational-expression GE shift-expression
              '''
-    p[0]=['relational_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = {}
+        if p[1]['type'] == p[3]['type']:
+            p[0]['type'] = 'bool'
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Mismatch")
+
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
+
+    # p[0]=['relational_expression']+[p[i] for i in range(1,len(p))]
 
 def p_shift_expression(p):
     ''' shift-expression :         additive-expression
              |         shift-expression LSHIFT additive-expression
              |         shift-expression RSHIFT additive-expression
              '''
-    p[0]=['shift_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        pass            # TODO
+
+    # p[0]=['shift_expression']+[p[i] for i in range(1,len(p))]
 
 def p_additive_expression(p):
     ''' additive-expression :         multiplicative-expression
              |         additive-expression PLUS multiplicative-expression
              |         additive-expression MINUS multiplicative-expression
              '''
-    p[0]=['additive_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = {}
+        if p[1]['type'] == p[3]['type']:
+            p[0]['type'] = p[1]['type']
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Mismatch")
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
+
+    # p[0]=['additive_expression']+[p[i] for i in range(1,len(p))]
 
 def p_multiplicative_expression(p):
     ''' multiplicative-expression :         unary-expression
@@ -220,7 +291,19 @@ def p_multiplicative_expression(p):
              |         multiplicative-expression DIV unary-expression
              |         multiplicative-expression MOD unary-expression
              '''
-    p[0]=['multiplicative_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = {}
+        if p[1]['type'] == p[3]['type']:
+            p[0]['type'] = p[1]['type']
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Mismatch")
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
+
+    # p[0]=['multiplicative_expression']+[p[i] for i in range(1,len(p))]
 
 def p_unary_expression(p):
     ''' unary-expression :         primary-expression
@@ -232,58 +315,79 @@ def p_unary_expression(p):
              |         pre-increment-expression
              |         pre-decrement-expression
              '''
-    p[0]=['unary_expression']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif len(p) == 3:
+        pass        # TODO
+
+    # p[0]=['unary_expression']+[p[i] for i in range(1,len(p))]
 
 def p_primary_expression(p):
     ''' primary-expression :         array-creation-expression
              |         primary-no-array-creation-expression
              '''
-    p[0]=['primary_expression']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    # p[0]=['primary_expression']+[p[i] for i in range(1,len(p))]
 
 def p_array_creation_expression(p):
     ''' array-creation-expression :         NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
              '''
-    p[0]=['array_creation_expression']+[p[i] for i in range(1,len(p))]
+    # TODO
+    # p[0]=['array_creation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_array_initializer_opt(p):
     ''' array-initializer-opt :         array-initializer
              |         empty
              '''
-    p[0]=['array_initializer_opt']+[p[i] for i in range(1,len(p))]
+    # TODO
+    # p[0]=['array_initializer_opt']+[p[i] for i in range(1,len(p))]
 
 def p_expression_list(p):
     ''' expression-list :         expression
              |         expression-list COMMA expression
              '''
-    p[0]=['expression_list']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = [p[1]]
+    elif len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    # p[0]=['expression_list']+[p[i] for i in range(1,len(p))]
 
 def p_array_initializer(p):
     ''' array-initializer :         BLOCK_BEGIN variable-initializer-list-opt BLOCK_END
              '''
-    p[0]=['array_initializer']+[p[i] for i in range(1,len(p))]
+    # TODO
+    # p[0]=['array_initializer']+[p[i] for i in range(1,len(p))]
 
 def p_variable_initializer_list_opt(p):
-    ''' variable-initializer-list-opt :         variable-initializer-list
+    ''' variable-initializer-list-opt :         expression-list
              |         empty
              '''
-    p[0]=['variable_initializer_list_opt']+[p[i] for i in range(1,len(p))]
-
-def p_variable_initializer_list(p):
-    ''' variable-initializer-list :         expression
-             |         variable-initializer-list COMMA expression
-             '''
-    p[0]=['variable_initializer_list']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    # p[0]=['variable_initializer_list_opt']+[p[i] for i in range(1,len(p))]
 
 def p_variable_initializer(p):
     ''' variable-initializer :         expression
              |         array-initializer
              '''
-    p[0]=['variable_initializer']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    # p[0]=['variable_initializer']+[p[i] for i in range(1,len(p))]
+
+def p_primary_no_array_creation_expression_literal(p):
+    ''' primary-no-array-creation-expression :         literal
+             '''
+    p[0] = { 'type': p[1]['type']}
+    p[0]['place'] = ST.gentmp()
+    TAC.emit(p[0]['place'], p[1]['value'], '', '=dec')
 
 def p_primary_no_array_creation_expression(p):
-    ''' primary-no-array-creation-expression :         literal
-             |         IDENTIFIER
-             |         parenthesized-expression
+    ''' primary-no-array-creation-expression :         IDENTIFIER
+             '''
+    p[0] = {}
+    # TODO
+    # p[0]=['primary_no_array_creation_expression']+[p[i] for i in range(1,len(p))]
+
+def p_primary_no_array_creation_expression(p):
+    ''' primary-no-array-creation-expression :         parenthesized-expression
              |         member-access
              |         invocation-expression
              |         element-access
@@ -291,7 +395,9 @@ def p_primary_no_array_creation_expression(p):
              |         post-decrement-expression
              |         object-creation-expression
              '''
-    p[0]=['primary_no_array_creation_expression']+[p[i] for i in range(1,len(p))]
+    p[0] = {}
+    # TODO
+    # p[0]=['primary_no_array_creation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_parenthesized_expression(p):
     ''' parenthesized-expression :         OPEN_PAREN expression CLOSE_PAREN
@@ -763,25 +869,28 @@ def p_destructor_body(p):
              '''
     p[0]=['destructor_body']+[p[i] for i in range(1,len(p))]
 
-def p_literal(p):
+def p_literal_int(p):
     ''' literal :     ICONST
-             |     UICONST
-             |     LICONST
-             |     ULICONST
-             |     FCONST
-             |     DCONST
-             |     MCONST
-             |     CCONST
-             |     SCONST
-             |     VSCONST
-             |     TRUE
+             '''
+    p[0] = {}
+    p[0]['type'] = 'int'
+    p[0]['value'] = int(p[1])
+
+def p_literal_double(p):
+    ''' literal :     DCONST
+             '''
+    p[0] = {}
+    p[0]['type'] = 'double'
+    p[0]['value'] = float(p[1])
+
+def p_literal_bool(p):
+    ''' literal :    TRUE
              |     FALSE
              '''
-    p[0]=['literal']+[p[i] for i in range(1,len(p))]
-
-
-
-
+    p[0] = {}
+    p[0]['type'] = 'float'
+    p[0]['value'] = p[1]
+    # p[0]=['literal']+[p[i] for i in range(1,len(p))]
 
 
 def p_empty(p):
@@ -835,5 +944,6 @@ if __name__ == "__main__":
     png_filename = inputFile.split('.')[0] + '.png'
     createdot.createFile(parse, filename)
     ST.printTable()
+    TAC.printCode()
     # from subprocess import call
     # call(["dot ", "-Tpng", filename, "-o", png_filename])

@@ -1,2 +1,2 @@
 int a;
-const int b = 6;
+a = 6+7*5;
