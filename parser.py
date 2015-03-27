@@ -318,27 +318,37 @@ def p_multiplicative_expression(p):
         if p[1]['type'] == p[3]['type'] == 'int':
             p[0]['type'] = p[1]['type']
         elif p[1]['type'] == p[3]['type'] == 'double' and p[2] in ['*','/']:
-            pass
+            p[0]['type'] = p[1]['type']
         else:
             p[0]['type'] = 'typeError'
             raise Exception("Type Mismatch")
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
-def p_unary_expression(p):
+def p_unary_expression_prim(p):
     ''' unary-expression :         primary-expression
-             |         PLUS unary-expression
+             '''
+    p[0] = p[1]
+
+def p_unary_expression_op():
+    ''' unary-expression :         PLUS unary-expression
              |         MINUS unary-expression
              |         BITNOT unary-expression
              |         BITCOMP unary-expression
              |         TIMES unary-expression
-             |         pre-increment-expression
-             |         pre-decrement-expression
              '''
-    if len(p) == 2:
-        p[0] = p[1]
-    elif len(p) == 3:
-        pass        # TODO
+    if p[2]['type'] in ['int', 'double'] and p[1] in ['~', '-', '+']:
+        pass
+    elif p[2]['type'] in ['bool'] and p[1] in ['!']
+        pass
+    else:
+        print 'lol : Unary expression Type Mismatch'
+
+def p_unary_expression_inc():
+    ''' unary-expression :         pre-increment-expression
+             |          pre-decrement-expression
+             '''
+    # TODO
 
 def p_primary_expression(p):
     ''' primary-expression :         array-creation-expression
@@ -356,7 +366,6 @@ def p_array_initializer_opt(p):
              |         empty
              '''
     # TODO
-    # p[0]=['array_initializer_opt']+[p[i] for i in range(1,len(p))]
 
 def p_expression_list(p):
     ''' expression-list :         expression
@@ -366,27 +375,23 @@ def p_expression_list(p):
         p[0] = [p[1]]
     elif len(p) == 4:
         p[0] = p[1] + [p[3]]
-    # p[0]=['expression_list']+[p[i] for i in range(1,len(p))]
 
 def p_array_initializer(p):
     ''' array-initializer :         BLOCK_BEGIN variable-initializer-list-opt BLOCK_END
              '''
     # TODO
-    # p[0]=['array_initializer']+[p[i] for i in range(1,len(p))]
 
 def p_variable_initializer_list_opt(p):
     ''' variable-initializer-list-opt :         expression-list
              |         empty
              '''
     p[0] = p[1]
-    # p[0]=['variable_initializer_list_opt']+[p[i] for i in range(1,len(p))]
 
 def p_variable_initializer(p):
     ''' variable-initializer :         expression
              |         array-initializer
              '''
     p[0] = p[1]
-    # p[0]=['variable_initializer']+[p[i] for i in range(1,len(p))]
 
 def p_primary_no_array_creation_expression_literal(p):
     ''' primary-no-array-creation-expression :         literal
@@ -403,7 +408,6 @@ def p_primary_no_array_creation_expression_identifier(p):
         print 'lol : Used before initialization'
     else:
         p[0] = var
-    # TODO
 
 def p_primary_no_array_creation_expression(p):
     ''' primary-no-array-creation-expression :         parenthesized-expression
@@ -416,7 +420,6 @@ def p_primary_no_array_creation_expression(p):
              '''
     p[0] = {}
     # TODO
-    # p[0]=['primary_no_array_creation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_parenthesized_expression(p):
     ''' parenthesized-expression :         OPEN_PAREN expression CLOSE_PAREN
