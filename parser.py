@@ -241,8 +241,8 @@ def p_equality_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[3]['type'] and p[1]['type'] in ['int', 'double', 'bool']:
-            p[0]['type'] = p[1]['type']
+        if p[1]['type'] == p[3]['type'] and p[1]['type'] in ['int', 'double']:
+            p[0]['type'] = 'bool'
         else:
             p[0]['type'] = 'typeError'
             raise Exception("Type Mismatch")
@@ -330,7 +330,7 @@ def p_unary_expression_prim(p):
              '''
     p[0] = p[1]
 
-def p_unary_expression_op():
+def p_unary_expression_op(p):
     ''' unary-expression :         PLUS unary-expression
              |         MINUS unary-expression
              |         BITNOT unary-expression
@@ -339,12 +339,12 @@ def p_unary_expression_op():
              '''
     if p[2]['type'] in ['int', 'double'] and p[1] in ['~', '-', '+']:
         pass
-    elif p[2]['type'] in ['bool'] and p[1] in ['!']
+    elif p[2]['type'] in ['bool'] and p[1] in ['!']:
         pass
     else:
         print 'lol : Unary expression Type Mismatch'
 
-def p_unary_expression_inc():
+def p_unary_expression_inc(p):
     ''' unary-expression :         pre-increment-expression
              |          pre-decrement-expression
              '''
@@ -471,7 +471,7 @@ def p_prim_expression(p):
              |         member-access
              |         element-access
              '''
-    p[0]=['prim_expression']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_post_increment_expression(p):
     ''' post-increment-expression :         prim-expression INCRE
@@ -501,7 +501,11 @@ def p_pre_decrement_expression(p):
 def p_assignment(p):
     ''' assignment :         prim-expression assignment-operator expression
              '''
-    p[0]=['assignment']+[p[i] for i in range(1,len(p))]
+    var = ST.lookupvar(p[1])
+    if var:
+        TAC.emit(var['place'], p[3]['place'], '', p[2])
+    else:
+        print 'lol : Variable not declared'
 
 def p_assignment_operator(p):
     ''' assignment-operator :         ASSIGN
@@ -608,7 +612,7 @@ def p_method_body(p):
 def p_block(p):
     ''' block :         BLOCK_BEGIN statement-list-opt BLOCK_END
              '''
-    p[0]=['block']+[p[i] for i in range(1,len(p))]
+
 
 def p_statement_list_opt(p):
     ''' statement-list-opt :         statement-list
@@ -718,10 +722,43 @@ def p_selection_statement(p):
     p[0]=['selection_statement']+[p[i] for i in range(1,len(p))]
 
 def p_if_statement(p):
-    ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN block
-             |         IF OPEN_PAREN expression CLOSE_PAREN block ELSE block
+    ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN M_if block
              '''
-    p[0]=['if_statement']+[p[i] for i in range(1,len(p))]
+    if p[3]['type']=="bool":
+        pass
+    else:
+        print 'lol : If else expression not bool'
+    p[0]={'nextList':p[5]['falseList']}
+    # TODO continue and break        
+
+def p_if_else_statement(p):
+    ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else block
+             '''
+    if p[3]['type']=="bool":
+        pass
+    else:
+        print 'lol : If else expression not bool'
+    TAC.backPatch(p[5]['falseList'],p[8]['start'])
+    p[0]={'nextList':p[8]['nextList']}
+    # TODO continue and break        
+
+def p_M_if(p):
+    ''' M_if : empty
+             '''
+    p[0] = {'falseList' : [TAC.getNextQuad()]}
+    TAC.emit(p[-2]['place'],'',-1,'cond_goto')
+
+def p_M_else(p):
+    ''' M_else : empty
+             '''
+    p[0] = {'nextList' : [TAC.getNextQuad()]}
+    TAC.emit('','',-1,'goto')
+    p[0]['start']=TAC.getNextQuad()
+
+def p_M_quad(p):
+    ''' M_quad : empty
+             '''
+    p[0] = TAC.getNextQuad()
 
 def p_switch_statement(p):
     ''' switch-statement :         SWITCH OPEN_PAREN expression CLOSE_PAREN switch-block
@@ -771,9 +808,21 @@ def p_iteration_statement(p):
     p[0]=['iteration_statement']+[p[i] for i in range(1,len(p))]
 
 def p_while_statement(p):
-    ''' while-statement :         WHILE OPEN_PAREN expression CLOSE_PAREN block
+    ''' while-statement :         WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block
              '''
-    p[0]=['while_statement']+[p[i] for i in range(1,len(p))]
+    if p[4]['type'] == 'bool':
+        pass
+    else:
+        print 'lol : While expression not bool'
+    p[0] = {}
+    p[0]['nextList'] = p[6]['falseList']
+    TAC.emit('','',p[2],'goto')
+
+def p_M_while(p):
+    ''' M_while : empty
+             '''
+    p[0] = {'falseList' : [TAC.getNextQuad()]}
+    TAC.emit(p[-2]['place'],'',-1,'cond_goto')
 
 def p_do_statement(p):
     ''' do-statement :         DO block WHILE OPEN_PAREN expression CLOSE_PAREN DELIM
