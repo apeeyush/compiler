@@ -1,6 +1,12 @@
 const int a=6;
-while(a>5){
-	a=2==3?1:4;
+int b = 3;
+if (a==4)
+{
+	b *= a+= 3;
+}
+else
+{
+	b=4;
 }
 // int a, d=6;
 // if (d==10){

@@ -275,7 +275,7 @@ def p_relational_expression(p):
     elif len(p) == 4:
         p[0] = {}
         if p[1]['type'] == p[3]['type'] and p[1]['type'] in ['int', 'double']:
-            p[0]['type'] = p[1]['type']
+            p[0]['type'] = 'bool'
         else:
             p[0]['type'] = 'typeError'
             raise Exception("Type Mismatch")
@@ -350,10 +350,11 @@ def p_unary_expression_op(p):
              |         BITCOMP unary-expression
              |         TIMES unary-expression
              '''
+    #Modify(make the unary operation TACs more specific)
     if p[2]['type'] in ['int', 'double'] and p[1] in ['~', '-', '+']:
-        pass
+        TAC.emit('',p[0]['place'],p[2]['place'],p[1])
     elif p[2]['type'] in ['bool'] and p[1] in ['!']:
-        pass
+        TAC.emit('',p[0]['place'],p[2]['place'],p[1])
     else:
         print 'lol : Unary expression Type Mismatch'
 
@@ -514,9 +515,16 @@ def p_pre_decrement_expression(p):
 def p_assignment(p):
     ''' assignment :         prim-expression assignment-operator expression
              '''
+    #Duno(may need to check for returning var[place])
+    p[0]={}
     var = ST.lookupvar(p[1])
     if var:
-        TAC.emit(var['place'], p[3]['place'], '', p[2])
+        if var['type']!=p[3]['type']:
+        	print 'lol : Type mismatch in assignment'
+        else:
+        	TAC.emit(var['place'], p[3]['place'], '', p[2])
+        	p[0]['place']=var['place']
+        	p[0]['type']=var['type']
     else:
         print 'lol : Variable not declared'
 
