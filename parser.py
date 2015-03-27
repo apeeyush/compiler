@@ -116,13 +116,11 @@ def p_simple_type(p):
              |         DOUBLE
              '''
     p[0] = p[1]
-    # p[0]=['simple_type']+[p[i] for i in range(1,len(p))]
 
 def p_array_type(p):
     ''' array-type :         simple-type OPEN_BRACKET CLOSE_BRACKET
              '''
     p[0] = p[1] + "_array"
-    # p[0]=['array_type']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declarators(p):
     ''' constant-declarators :         constant-declarator
@@ -132,13 +130,11 @@ def p_constant_declarators(p):
         p[0] = [p[1]]
     elif len(p) == 4:
         p[0] = p[1] + [p[3]]
-    # p[0]=['constant_declarators']+[p[i] for i in range(1,len(p))]
 
 def p_constant_declarator(p):
     ''' constant-declarator :         IDENTIFIER ASSIGN expression
              '''
-    p[0] = p[1]
-    # p[0]=['constant_declarator']+[p[i] for i in range(1,len(p))]
+    p[0] = { 'identifier_name' : p[1], 'initLabel' : p[3]['place']}
 
 def p_expression(p):
     ''' expression :         conditional-expression
@@ -359,7 +355,8 @@ def p_array_initializer_opt(p):
     ''' array-initializer-opt :         array-initializer
              |         empty
              '''
-    p[0] = p[1]
+    # TODO
+    # p[0]=['array_initializer_opt']+[p[i] for i in range(1,len(p))]
 
 def p_expression_list(p):
     ''' expression-list :         expression
@@ -369,6 +366,7 @@ def p_expression_list(p):
         p[0] = [p[1]]
     elif len(p) == 4:
         p[0] = p[1] + [p[3]]
+    # p[0]=['expression_list']+[p[i] for i in range(1,len(p))]
 
 def p_array_initializer(p):
     ''' array-initializer :         BLOCK_BEGIN variable-initializer-list-opt BLOCK_END
@@ -400,9 +398,12 @@ def p_primary_no_array_creation_expression_literal(p):
 def p_primary_no_array_creation_expression_identifier(p):
     ''' primary-no-array-creation-expression :         IDENTIFIER
              '''
-    p[0] = {}
+    var = ST.lookupvar(p[1])
+    if not var:
+        print 'lol : Used before initialization'
+    else:
+        p[0] = var
     # TODO
-    # p[0]=['primary_no_array_creation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_primary_no_array_creation_expression(p):
     ''' primary-no-array-creation-expression :         parenthesized-expression
@@ -513,7 +514,6 @@ def p_assignment_operator(p):
              |         RSHIFTEQUAL
              '''
     p[0]=p[1]
-    # p[0]=['assignment_operator']+[p[i] for i in range(1,len(p))]
 
 def p_field_declaration(p):
     ''' field-declaration :         modifier type variable-declarators DELIM
@@ -525,7 +525,7 @@ def p_modifier(p):
     ''' modifier :         PUBLIC
              |         PRIVATE
              '''
-    p[0]=['modifier']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_variable_declarators(p):
     ''' variable-declarators :         variable-declarator
@@ -535,20 +535,15 @@ def p_variable_declarators(p):
         p[0] = [p[1]]
     elif len(p) == 4:
         p[0] = p[1] + [p[3]]
-    # p[0]=['variable_declarators']+[p[i] for i in range(1,len(p))]
 
 def p_variable_declarator(p):
     ''' variable-declarator :         IDENTIFIER
              |         IDENTIFIER ASSIGN variable-initializer
              '''
-    print 'haha'
     if len(p) == 2:
-        print 'I am there'
-        p[0] = p[1]
-    elif len(p) == 4:
-        print 'I am here'
-        p[0] = p[1]
-    # p[0]=['variable_declarator']+[p[i] for i in range(1,len(p))]
+        p[0] = {'identifier_name' : p[1]}
+    elif len(p) == 4:   # Handle initialization
+        p[0] = { 'identifier_name' : p[1], 'initLabel' : p[3]['place']}
 
 def p_method_declaration(p):
     ''' method-declaration :         method-header method-body
@@ -636,8 +631,7 @@ def p_statement(p):
              |         write-statement
              |         read-statement
              '''
-    print p[0]
-    # p[0]=['statement']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_write_statement(p):
     ''' write-statement :         CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
@@ -675,19 +669,23 @@ def p_declaration_statement(p):
 def p_local_variable_declaration(p):
     ''' local-variable-declaration :         type variable-declarators
              '''
-    for identifier_name in p[2]:
-        if not ST.lookupvar(identifier_name):
-            ST.addvar(identifier_name, p[1])
-    # p[0]=['local_variable_declaration']+[p[i] for i in range(1,len(p))]
+    for identifier in p[2]:
+        if ST.lookupvar(identifier['identifier_name']):
+            print 'lol : Variable already declared'
+        else:
+            newVar = ST.addvar(identifier['identifier_name'], p[1])
+            if identifier.get('initLabel'):
+                TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
 
 def p_local_constant_declaration(p):
     ''' local-constant-declaration :         CONST type constant-declarators
              '''
-    for identifier_name in p[3]:
-        if not ST.lookupvar(identifier_name):
-            pass
-            ST.addvar(identifier_name, p[2])
-    # p[0]=['local_constant_declaration']+[p[i] for i in range(1,len(p))]
+    for identifier in p[3]:
+        if ST.lookupvar(identifier['identifier_name']):
+            print 'lol : Constant already declared'
+        else:
+            newVar = ST.addvar(identifier['identifier_name'], p[2])
+            TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
 
 def p_empty_statement(p):
     ''' empty-statement :         DELIM

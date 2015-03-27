@@ -33,8 +33,9 @@ class SymbolTable():
 		symboltable=self.tablestack[0]
 		offset=self.offstack[0]
 		#assuming variable being added doesn't exist
-		symboltable["_data_"+varname]={"type":vartype,"address":offset,"width":varwidth,"label":self.gentmp()}
+		symboltable["_data_"+varname]={"type":vartype,"address":offset,"width":varwidth,"place":self.gentmp()}
 		self.offstack[0]+=varwidth
+		return symboltable["_data_"+varname]
 
 	def lookupvar(self,name):
 		symboltable=self.tablestack[0]

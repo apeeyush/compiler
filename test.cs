@@ -1,2 +1,2 @@
-int a=9.0/2.0;
-int b=a;
+const int c = 10;
+int d=6, e=c;
