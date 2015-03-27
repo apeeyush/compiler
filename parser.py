@@ -245,7 +245,7 @@ def p_equality_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[3]['type'] and p[1]['type'] in ['int', 'float', 'bool']:
+        if p[1]['type'] == p[3]['type'] and p[1]['type'] in ['int', 'double', 'bool']:
             p[0]['type'] = p[1]['type']
         else:
             p[0]['type'] = 'typeError'
@@ -265,16 +265,14 @@ def p_relational_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[3]['type']:
-            p[0]['type'] = 'bool'
+        if p[1]['type'] == p[3]['type'] and p[1]['type'] in ['int', 'double']:
+            p[0]['type'] = p[1]['type']
         else:
             p[0]['type'] = 'typeError'
             raise Exception("Type Mismatch")
 
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
-
-    # p[0]=['relational_expression']+[p[i] for i in range(1,len(p))]
 
 def p_shift_expression(p):
     ''' shift-expression :         additive-expression
@@ -284,9 +282,15 @@ def p_shift_expression(p):
     if len(p) == 2:
         p[0] = p[1]
     elif len(p) == 4:
-        pass            # TODO
+        p[0] = {}
+        if p[1]['type'] == p[3]['type'] == 'int':
+            p[0]['type'] = 'int'
+        else:
+            p[0]['type'] = 'typeError'
+            raise Exception("Type Mismatch")
 
-    # p[0]=['shift_expression']+[p[i] for i in range(1,len(p))]
+        p[0]['place'] = ST.gentmp()
+        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_additive_expression(p):
     ''' additive-expression :         multiplicative-expression
@@ -297,15 +301,13 @@ def p_additive_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[3]['type']:
+        if p[1]['type'] == p[3]['type'] and p[1]['type'] in ['int', 'double']:
             p[0]['type'] = p[1]['type']
         else:
             p[0]['type'] = 'typeError'
             raise Exception("Type Mismatch")
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
-
-    # p[0]=['additive_expression']+[p[i] for i in range(1,len(p))]
 
 def p_multiplicative_expression(p):
     ''' multiplicative-expression :         unary-expression
@@ -317,15 +319,15 @@ def p_multiplicative_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[3]['type']:
+        if p[1]['type'] == p[3]['type'] == 'int':
             p[0]['type'] = p[1]['type']
+        elif p[1]['type'] == p[3]['type'] == 'double' and p[2] in ['*','/']:
+            pass
         else:
             p[0]['type'] = 'typeError'
             raise Exception("Type Mismatch")
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
-
-    # p[0]=['multiplicative_expression']+[p[i] for i in range(1,len(p))]
 
 def p_unary_expression(p):
     ''' unary-expression :         primary-expression
@@ -342,27 +344,22 @@ def p_unary_expression(p):
     elif len(p) == 3:
         pass        # TODO
 
-    # p[0]=['unary_expression']+[p[i] for i in range(1,len(p))]
-
 def p_primary_expression(p):
     ''' primary-expression :         array-creation-expression
              |         primary-no-array-creation-expression
              '''
     p[0] = p[1]
-    # p[0]=['primary_expression']+[p[i] for i in range(1,len(p))]
 
 def p_array_creation_expression(p):
     ''' array-creation-expression :         NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
              '''
     # TODO
-    # p[0]=['array_creation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_array_initializer_opt(p):
     ''' array-initializer-opt :         array-initializer
              |         empty
              '''
-    # TODO
-    # p[0]=['array_initializer_opt']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_expression_list(p):
     ''' expression-list :         expression
@@ -372,7 +369,6 @@ def p_expression_list(p):
         p[0] = [p[1]]
     elif len(p) == 4:
         p[0] = p[1] + [p[3]]
-    # p[0]=['expression_list']+[p[i] for i in range(1,len(p))]
 
 def p_array_initializer(p):
     ''' array-initializer :         BLOCK_BEGIN variable-initializer-list-opt BLOCK_END
@@ -913,9 +909,8 @@ def p_literal_bool(p):
              |     FALSE
              '''
     p[0] = {}
-    p[0]['type'] = 'float'
+    p[0]['type'] = 'bool'
     p[0]['value'] = p[1]
-    # p[0]=['literal']+[p[i] for i in range(1,len(p))]
 
 
 def p_empty(p):
