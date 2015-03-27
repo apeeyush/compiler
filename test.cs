@@ -1,7 +1,6 @@
-int a=6;
-while(a){
-	a=a-1;
-	int b=6;
+const int a=6;
+while(a>5){
+	a=2==3?1:4;
 }
 // int a, d=6;
 // if (d==10){

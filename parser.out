@@ -190,10 +190,10 @@ Rule 168   statement -> iteration-statement
 Rule 169   statement -> jump-statement
 Rule 170   statement -> write-statement
 Rule 171   statement -> read-statement
-Rule 172   write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
+Rule 172   write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
 Rule 173   print-list -> expression
 Rule 174   print-list -> expression COMMA print-list
-Rule 175   read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+Rule 175   read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
 Rule 176   labeled-statement -> IDENTIFIER COLON statement
 Rule 177   declaration-statement -> local-variable-declaration DELIM
 Rule 178   declaration-statement -> local-constant-declaration DELIM
@@ -301,7 +301,7 @@ CONTINUE             : 234
 DCONST               : 247
 DECRE                : 116 119
 DEFAULT              : 207
-DELIM                : 3 24 25 132 133 156 177 178 181 182 214 215 215 233 234 235 236 242 245
+DELIM                : 3 24 25 132 133 156 172 175 177 178 181 182 214 215 215 233 234 235 236 242 245
 DIV                  : 68
 DIVEQUAL             : 125
 DO                   : 214
@@ -530,8 +530,8 @@ state 0
     (230) jump-statement -> . continue-statement
     (231) jump-statement -> . goto-statement
     (232) jump-statement -> . return-statement
-    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
     (179) local-variable-declaration -> . type variable-declarators
     (180) local-constant-declaration -> . CONST type constant-declarators
     (183) statement-expression -> . invocation-expression
@@ -1816,8 +1816,8 @@ state 52
     (230) jump-statement -> . continue-statement
     (231) jump-statement -> . goto-statement
     (232) jump-statement -> . return-statement
-    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
     (179) local-variable-declaration -> . type variable-declarators
     (180) local-constant-declaration -> . CONST type constant-declarators
     (183) statement-expression -> . invocation-expression
@@ -2039,8 +2039,8 @@ state 57
     (230) jump-statement -> . continue-statement
     (231) jump-statement -> . goto-statement
     (232) jump-statement -> . return-statement
-    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
     (179) local-variable-declaration -> . type variable-declarators
     (180) local-constant-declaration -> . CONST type constant-declarators
     (183) statement-expression -> . invocation-expression
@@ -2230,8 +2230,8 @@ state 60
 
 state 61
 
-    (172) write-statement -> CONSOLE . DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> CONSOLE . DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> CONSOLE . DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> CONSOLE . DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
 
     DOT             shift and go to state 160
 
@@ -4825,8 +4825,8 @@ state 132
     (230) jump-statement -> . continue-statement
     (231) jump-statement -> . goto-statement
     (232) jump-statement -> . return-statement
-    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
     (179) local-variable-declaration -> . type variable-declarators
     (180) local-constant-declaration -> . CONST type constant-declarators
     (183) statement-expression -> . invocation-expression
@@ -5091,8 +5091,8 @@ state 142
     (230) jump-statement -> . continue-statement
     (231) jump-statement -> . goto-statement
     (232) jump-statement -> . return-statement
-    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
     (179) local-variable-declaration -> . type variable-declarators
     (180) local-constant-declaration -> . CONST type constant-declarators
     (183) statement-expression -> . invocation-expression
@@ -5634,8 +5634,8 @@ state 159
 
 state 160
 
-    (172) write-statement -> CONSOLE DOT . WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> CONSOLE DOT . READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> CONSOLE DOT . WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> CONSOLE DOT . READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
 
     WRITELINE       shift and go to state 230
     READLINE        shift and go to state 231
@@ -8561,11 +8561,21 @@ state 223
 
     (157) block -> BLOCK_BEGIN statement-list-opt BLOCK_END .
 
+    CONST           reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    BITCOMP         reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    PUBLIC          reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    PRIVATE         reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    VOID            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     IDENTIFIER      reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    BOOL            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    INT             reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    UINT            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    CHAR            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    DOUBLE          reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
+    BLOCK_END       reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     BLOCK_BEGIN     reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     DELIM           reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     CONSOLE         reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    CONST           reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     IF              reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     SWITCH          reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     WHILE           reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
@@ -8579,20 +8589,10 @@ state 223
     NEW             reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     INCRE           reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     DECRE           reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    BOOL            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    INT             reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    UINT            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    CHAR            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    DOUBLE          reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    BLOCK_END       reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     ELSE            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     $end            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     CASE            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
     DEFAULT         reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    BITCOMP         reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    PUBLIC          reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    PRIVATE         reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
-    VOID            reduce using rule 157 (block -> BLOCK_BEGIN statement-list-opt BLOCK_END .)
 
 
 state 224
@@ -8688,14 +8688,14 @@ state 229
 
 state 230
 
-    (172) write-statement -> CONSOLE DOT WRITELINE . OPEN_PAREN print-list CLOSE_PAREN
+    (172) write-statement -> CONSOLE DOT WRITELINE . OPEN_PAREN print-list CLOSE_PAREN DELIM
 
     OPEN_PAREN      shift and go to state 279
 
 
 state 231
 
-    (175) read-statement -> CONSOLE DOT READLINE . OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (175) read-statement -> CONSOLE DOT READLINE . OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
 
     OPEN_PAREN      shift and go to state 280
 
@@ -10458,7 +10458,7 @@ state 278
 
 state 279
 
-    (172) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN . print-list CLOSE_PAREN
+    (172) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN . print-list CLOSE_PAREN DELIM
     (173) print-list -> . expression
     (174) print-list -> . expression COMMA print-list
     (38) expression -> . conditional-expression
@@ -10580,7 +10580,7 @@ state 279
 
 state 280
 
-    (175) read-statement -> CONSOLE DOT READLINE OPEN_PAREN . IDENTIFIER CLOSE_PAREN
+    (175) read-statement -> CONSOLE DOT READLINE OPEN_PAREN . IDENTIFIER CLOSE_PAREN DELIM
 
     IDENTIFIER      shift and go to state 327
 
@@ -11420,7 +11420,7 @@ state 324
 
 state 325
 
-    (172) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list . CLOSE_PAREN
+    (172) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list . CLOSE_PAREN DELIM
 
     CLOSE_PAREN     shift and go to state 365
 
@@ -11436,7 +11436,7 @@ state 326
 
 state 327
 
-    (175) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER . CLOSE_PAREN
+    (175) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER . CLOSE_PAREN DELIM
 
     CLOSE_PAREN     shift and go to state 367
 
@@ -11754,8 +11754,8 @@ state 339
     (230) jump-statement -> . continue-statement
     (231) jump-statement -> . goto-statement
     (232) jump-statement -> . return-statement
-    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
     (179) local-variable-declaration -> . type variable-declarators
     (180) local-constant-declaration -> . CONST type constant-declarators
     (183) statement-expression -> . invocation-expression
@@ -12240,35 +12240,9 @@ state 364
 
 state 365
 
-    (172) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .
+    (172) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN . DELIM
 
-    IDENTIFIER      reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    BLOCK_BEGIN     reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    DELIM           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    CONSOLE         reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    CONST           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    IF              reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    SWITCH          reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    WHILE           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    FOR             reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    FOREACH         reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    DO              reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    BREAK           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    CONTINUE        reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    GOTO            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    RETURN          reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    NEW             reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    INCRE           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    DECRE           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    BOOL            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    INT             reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    UINT            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    CHAR            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    DOUBLE          reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    CASE            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    DEFAULT         reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    BLOCK_END       reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
-    $end            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN .)
+    DELIM           shift and go to state 402
 
 
 state 366
@@ -12384,7 +12358,7 @@ state 366
     pre-increment-expression       shift and go to state 104
     equality-expression            shift and go to state 85
     shift-expression               shift and go to state 106
-    print-list                     shift and go to state 402
+    print-list                     shift and go to state 403
     pre-decrement-expression       shift and go to state 108
     multiplicative-expression      shift and go to state 109
     conditional-or-expression      shift and go to state 115
@@ -12395,35 +12369,9 @@ state 366
 
 state 367
 
-    (175) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .
+    (175) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN . DELIM
 
-    IDENTIFIER      reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    BLOCK_BEGIN     reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    DELIM           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    CONSOLE         reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    CONST           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    IF              reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    SWITCH          reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    WHILE           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    FOR             reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    FOREACH         reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    DO              reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    BREAK           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    CONTINUE        reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    GOTO            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    RETURN          reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    NEW             reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    INCRE           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    DECRE           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    BOOL            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    INT             reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    UINT            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    CHAR            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    DOUBLE          reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    $end            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    BLOCK_END       reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    CASE            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
-    DEFAULT         reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN .)
+    DELIM           shift and go to state 404
 
 
 state 368
@@ -12458,7 +12406,7 @@ state 368
     BLOCK_END       reduce using rule 192 (if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block .)
     CASE            reduce using rule 192 (if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block .)
     DEFAULT         reduce using rule 192 (if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block .)
-    ELSE            shift and go to state 403
+    ELSE            shift and go to state 405
 
 
 state 369
@@ -12468,7 +12416,7 @@ state 369
 
     BLOCK_BEGIN     shift and go to state 57
 
-    block                          shift and go to state 404
+    block                          shift and go to state 406
 
 state 370
 
@@ -12567,7 +12515,7 @@ state 373
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt . CLOSE_PAREN block
 
-    CLOSE_PAREN     shift and go to state 405
+    CLOSE_PAREN     shift and go to state 407
 
 
 state 374
@@ -12630,7 +12578,7 @@ state 378
 
     (206) switch-label -> CASE expression . COLON
 
-    COLON           shift and go to state 406
+    COLON           shift and go to state 408
 
 
 state 379
@@ -12725,8 +12673,8 @@ state 381
     (230) jump-statement -> . continue-statement
     (231) jump-statement -> . goto-statement
     (232) jump-statement -> . return-statement
-    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
-    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    (172) write-statement -> . CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
+    (175) read-statement -> . CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
     (179) local-variable-declaration -> . type variable-declarators
     (180) local-constant-declaration -> . CONST type constant-declarators
     (183) statement-expression -> . invocation-expression
@@ -12938,7 +12886,7 @@ state 385
 
     parameter-modifier             shift and go to state 390
     fixed-parameters               shift and go to state 392
-    formal-parameter-list-opt      shift and go to state 407
+    formal-parameter-list-opt      shift and go to state 409
     parameter-modifier-opt         shift and go to state 391
     formal-parameter-list          shift and go to state 397
     empty                          shift and go to state 396
@@ -12949,7 +12897,7 @@ state 386
     (25) constant-declaration -> CONST simple-type constant-declarators . DELIM
     (36) constant-declarators -> constant-declarators . COMMA constant-declarator
 
-    DELIM           shift and go to state 408
+    DELIM           shift and go to state 410
     COMMA           shift and go to state 274
 
 
@@ -12957,7 +12905,7 @@ state 387
 
     (243) destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN . CLOSE_PAREN destructor-body
 
-    CLOSE_PAREN     shift and go to state 409
+    CLOSE_PAREN     shift and go to state 411
 
 
 state 388
@@ -13003,7 +12951,7 @@ state 389
 
     parameter-modifier             shift and go to state 390
     fixed-parameters               shift and go to state 392
-    formal-parameter-list-opt      shift and go to state 410
+    formal-parameter-list-opt      shift and go to state 412
     parameter-modifier-opt         shift and go to state 391
     fixed-parameter                shift and go to state 395
     empty                          shift and go to state 396
@@ -13045,7 +12993,7 @@ state 391
     simple-type                    shift and go to state 54
     array-type                     shift and go to state 45
     class-type                     shift and go to state 68
-    type                           shift and go to state 411
+    type                           shift and go to state 413
 
 state 392
 
@@ -13053,7 +13001,7 @@ state 392
     (150) fixed-parameters -> fixed-parameters . COMMA fixed-parameter
 
     CLOSE_PAREN     reduce using rule 148 (formal-parameter-list -> fixed-parameters .)
-    COMMA           shift and go to state 412
+    COMMA           shift and go to state 414
 
 
 state 393
@@ -13072,7 +13020,7 @@ state 394
 
     (240) constructor-declarator -> IDENTIFIER OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
 
-    CLOSE_PAREN     shift and go to state 413
+    CLOSE_PAREN     shift and go to state 415
 
 
 state 395
@@ -13113,14 +13061,14 @@ state 398
 
     IDENTIFIER      shift and go to state 221
 
-    constant-declarators           shift and go to state 414
+    constant-declarators           shift and go to state 416
     constant-declarator            shift and go to state 222
 
 state 399
 
     (142) method-header -> modifier VOID member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
 
-    OPEN_PAREN      shift and go to state 415
+    OPEN_PAREN      shift and go to state 417
 
 
 state 400
@@ -13128,7 +13076,7 @@ state 400
     (132) field-declaration -> modifier type variable-declarators . DELIM
     (137) variable-declarators -> variable-declarators . COMMA variable-declarator
 
-    DELIM           shift and go to state 416
+    DELIM           shift and go to state 418
     COMMA           shift and go to state 216
 
 
@@ -13136,17 +13084,83 @@ state 401
 
     (141) method-header -> modifier type member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
 
-    OPEN_PAREN      shift and go to state 417
+    OPEN_PAREN      shift and go to state 419
 
 
 state 402
+
+    (172) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .
+
+    IDENTIFIER      reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    BLOCK_BEGIN     reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    DELIM           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    CONSOLE         reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    CONST           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    IF              reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    SWITCH          reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    WHILE           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    FOR             reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    FOREACH         reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    DO              reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    BREAK           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    CONTINUE        reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    GOTO            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    RETURN          reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    NEW             reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    INCRE           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    DECRE           reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    BOOL            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    INT             reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    UINT            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    CHAR            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    DOUBLE          reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    CASE            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    DEFAULT         reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    BLOCK_END       reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    $end            reduce using rule 172 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+
+
+state 403
 
     (174) print-list -> expression COMMA print-list .
 
     CLOSE_PAREN     reduce using rule 174 (print-list -> expression COMMA print-list .)
 
 
-state 403
+state 404
+
+    (175) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .
+
+    IDENTIFIER      reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    BLOCK_BEGIN     reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    DELIM           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    CONSOLE         reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    CONST           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    IF              reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    SWITCH          reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    WHILE           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    FOR             reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    FOREACH         reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    DO              reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    BREAK           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    CONTINUE        reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    GOTO            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    RETURN          reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    NEW             reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    INCRE           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    DECRE           reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    BOOL            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    INT             reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    UINT            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    CHAR            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    DOUBLE          reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    $end            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    BLOCK_END       reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    CASE            reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+    DEFAULT         reduce using rule 175 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
+
+
+state 405
 
     (193) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE . M_else block
     (195) M_else -> . empty
@@ -13154,10 +13168,10 @@ state 403
 
     BLOCK_BEGIN     reduce using rule 250 (empty -> .)
 
-    empty                          shift and go to state 419
-    M_else                         shift and go to state 418
+    empty                          shift and go to state 421
+    M_else                         shift and go to state 420
 
-state 404
+state 406
 
     (228) foreach-statement -> FOREACH OPEN_PAREN type IDENTIFIER IN expression CLOSE_PAREN block .
 
@@ -13190,16 +13204,16 @@ state 404
     $end            reduce using rule 228 (foreach-statement -> FOREACH OPEN_PAREN type IDENTIFIER IN expression CLOSE_PAREN block .)
 
 
-state 405
+state 407
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt CLOSE_PAREN . block
     (157) block -> . BLOCK_BEGIN statement-list-opt BLOCK_END
 
     BLOCK_BEGIN     shift and go to state 57
 
-    block                          shift and go to state 420
+    block                          shift and go to state 422
 
-state 406
+state 408
 
     (206) switch-label -> CASE expression COLON .
 
@@ -13230,14 +13244,14 @@ state 406
     DOUBLE          reduce using rule 206 (switch-label -> CASE expression COLON .)
 
 
-state 407
+state 409
 
     (144) method-header -> VOID member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
 
-    CLOSE_PAREN     shift and go to state 421
+    CLOSE_PAREN     shift and go to state 423
 
 
-state 408
+state 410
 
     (25) constant-declaration -> CONST simple-type constant-declarators DELIM .
 
@@ -13255,34 +13269,34 @@ state 408
     BLOCK_END       reduce using rule 25 (constant-declaration -> CONST simple-type constant-declarators DELIM .)
 
 
-state 409
+state 411
 
     (243) destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN CLOSE_PAREN . destructor-body
     (244) destructor-body -> . block
     (245) destructor-body -> . DELIM
     (157) block -> . BLOCK_BEGIN statement-list-opt BLOCK_END
 
-    DELIM           shift and go to state 422
+    DELIM           shift and go to state 424
     BLOCK_BEGIN     shift and go to state 57
 
-    destructor-body                shift and go to state 423
-    block                          shift and go to state 424
+    destructor-body                shift and go to state 425
+    block                          shift and go to state 426
 
-state 410
+state 412
 
     (143) method-header -> type member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
 
-    CLOSE_PAREN     shift and go to state 425
+    CLOSE_PAREN     shift and go to state 427
 
 
-state 411
+state 413
 
     (151) fixed-parameter -> parameter-modifier-opt type . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 426
+    IDENTIFIER      shift and go to state 428
 
 
-state 412
+state 414
 
     (150) fixed-parameters -> fixed-parameters COMMA . fixed-parameter
     (151) fixed-parameter -> . parameter-modifier-opt type IDENTIFIER
@@ -13301,10 +13315,10 @@ state 412
 
     parameter-modifier             shift and go to state 390
     parameter-modifier-opt         shift and go to state 391
-    empty                          shift and go to state 427
-    fixed-parameter                shift and go to state 428
+    empty                          shift and go to state 429
+    fixed-parameter                shift and go to state 430
 
-state 413
+state 415
 
     (240) constructor-declarator -> IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13312,16 +13326,16 @@ state 413
     BLOCK_BEGIN     reduce using rule 240 (constructor-declarator -> IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 414
+state 416
 
     (24) constant-declaration -> modifier CONST simple-type constant-declarators . DELIM
     (36) constant-declarators -> constant-declarators . COMMA constant-declarator
 
-    DELIM           shift and go to state 429
+    DELIM           shift and go to state 431
     COMMA           shift and go to state 274
 
 
-state 415
+state 417
 
     (142) method-header -> modifier VOID member-name OPEN_PAREN . formal-parameter-list-opt CLOSE_PAREN
     (145) formal-parameter-list-opt -> . formal-parameter-list
@@ -13347,12 +13361,12 @@ state 415
     parameter-modifier             shift and go to state 390
     parameter-modifier-opt         shift and go to state 391
     fixed-parameters               shift and go to state 392
-    formal-parameter-list-opt      shift and go to state 430
+    formal-parameter-list-opt      shift and go to state 432
     fixed-parameter                shift and go to state 395
     empty                          shift and go to state 396
     formal-parameter-list          shift and go to state 397
 
-state 416
+state 418
 
     (132) field-declaration -> modifier type variable-declarators DELIM .
 
@@ -13370,7 +13384,7 @@ state 416
     BLOCK_END       reduce using rule 132 (field-declaration -> modifier type variable-declarators DELIM .)
 
 
-state 417
+state 419
 
     (141) method-header -> modifier type member-name OPEN_PAREN . formal-parameter-list-opt CLOSE_PAREN
     (145) formal-parameter-list-opt -> . formal-parameter-list
@@ -13396,28 +13410,28 @@ state 417
     parameter-modifier             shift and go to state 390
     parameter-modifier-opt         shift and go to state 391
     fixed-parameters               shift and go to state 392
-    formal-parameter-list-opt      shift and go to state 431
+    formal-parameter-list-opt      shift and go to state 433
     fixed-parameter                shift and go to state 395
     empty                          shift and go to state 396
     formal-parameter-list          shift and go to state 397
 
-state 418
+state 420
 
     (193) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else . block
     (157) block -> . BLOCK_BEGIN statement-list-opt BLOCK_END
 
     BLOCK_BEGIN     shift and go to state 57
 
-    block                          shift and go to state 432
+    block                          shift and go to state 434
 
-state 419
+state 421
 
     (195) M_else -> empty .
 
     BLOCK_BEGIN     reduce using rule 195 (M_else -> empty .)
 
 
-state 420
+state 422
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt CLOSE_PAREN block .
 
@@ -13450,7 +13464,7 @@ state 420
     DEFAULT         reduce using rule 215 (for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt CLOSE_PAREN block .)
 
 
-state 421
+state 423
 
     (144) method-header -> VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13458,7 +13472,7 @@ state 421
     BLOCK_BEGIN     reduce using rule 144 (method-header -> VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 422
+state 424
 
     (245) destructor-body -> DELIM .
 
@@ -13476,7 +13490,7 @@ state 422
     BLOCK_END       reduce using rule 245 (destructor-body -> DELIM .)
 
 
-state 423
+state 425
 
     (243) destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN CLOSE_PAREN destructor-body .
 
@@ -13494,7 +13508,7 @@ state 423
     BLOCK_END       reduce using rule 243 (destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN CLOSE_PAREN destructor-body .)
 
 
-state 424
+state 426
 
     (244) destructor-body -> block .
 
@@ -13512,7 +13526,7 @@ state 424
     BLOCK_END       reduce using rule 244 (destructor-body -> block .)
 
 
-state 425
+state 427
 
     (143) method-header -> type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13520,7 +13534,7 @@ state 425
     BLOCK_BEGIN     reduce using rule 143 (method-header -> type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 426
+state 428
 
     (151) fixed-parameter -> parameter-modifier-opt type IDENTIFIER .
 
@@ -13528,7 +13542,7 @@ state 426
     CLOSE_PAREN     reduce using rule 151 (fixed-parameter -> parameter-modifier-opt type IDENTIFIER .)
 
 
-state 427
+state 429
 
     (153) parameter-modifier-opt -> empty .
 
@@ -13540,7 +13554,7 @@ state 427
     IDENTIFIER      reduce using rule 153 (parameter-modifier-opt -> empty .)
 
 
-state 428
+state 430
 
     (150) fixed-parameters -> fixed-parameters COMMA fixed-parameter .
 
@@ -13548,7 +13562,7 @@ state 428
     CLOSE_PAREN     reduce using rule 150 (fixed-parameters -> fixed-parameters COMMA fixed-parameter .)
 
 
-state 429
+state 431
 
     (24) constant-declaration -> modifier CONST simple-type constant-declarators DELIM .
 
@@ -13566,21 +13580,21 @@ state 429
     BLOCK_END       reduce using rule 24 (constant-declaration -> modifier CONST simple-type constant-declarators DELIM .)
 
 
-state 430
+state 432
 
     (142) method-header -> modifier VOID member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
 
-    CLOSE_PAREN     shift and go to state 433
+    CLOSE_PAREN     shift and go to state 435
 
 
-state 431
+state 433
 
     (141) method-header -> modifier type member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
 
-    CLOSE_PAREN     shift and go to state 434
+    CLOSE_PAREN     shift and go to state 436
 
 
-state 432
+state 434
 
     (193) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else block .
 
@@ -13613,7 +13627,7 @@ state 432
     DEFAULT         reduce using rule 193 (if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else block .)
 
 
-state 433
+state 435
 
     (142) method-header -> modifier VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13621,7 +13635,7 @@ state 433
     BLOCK_BEGIN     reduce using rule 142 (method-header -> modifier VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 434
+state 436
 
     (141) method-header -> modifier type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 

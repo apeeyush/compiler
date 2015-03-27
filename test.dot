@@ -5,7 +5,7 @@ id2[label="statement_list"];
 id3[label="None"];
 id2->id3;
 id4[label="iteration_statement"];
-id5[label="{'nextList': [2]}"];
+id5[label="{'nextList': [4]}"];
 id4->id5;
 id1->id2;
 id1->id4;

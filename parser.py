@@ -134,7 +134,7 @@ def p_constant_declarators(p):
 def p_constant_declarator(p):
     ''' constant-declarator :         IDENTIFIER ASSIGN expression
              '''
-    p[0] = { 'identifier_name' : p[1], 'initLabel' : p[3]['place']}
+    p[0] = { 'identifier_name' : p[1], 'initLabel' : p[3]['place'], 'type' : p[3]['type']}
 
 def p_expression(p):
     ''' expression :         conditional-expression
@@ -149,8 +149,21 @@ def p_conditional_expression(p):
              '''
     if len(p) == 2:
         p[0] = p[1]
-    elif len(p) == 6:
-        pass            # TODO
+    elif len(p) == 6:	#Condop implemented
+        if p[1]['type']!='bool':
+        	print 'lol: condop should have boolean expression'
+        elif p[3]['type']!=p[5]['type']:
+        	print 'lol: condop should have same type in both expressions'
+        else:
+        	p[0]={}
+        	p[0]['place']=ST.gentmp()
+        	p[0]['type']=p[3]['type']
+        	nextquad=TAC.getNextQuad()
+        	TAC.emit(p[1]['place'],'',nextquad+3,'cond_goto')
+        	TAC.emit(p[0]['place'],p[3]['place'],'','=')
+        	nextquad=TAC.getNextQuad()
+        	TAC.emit('','',nextquad+2,'goto')
+        	TAC.emit(p[0]['place'],p[5]['place'],'','=')
 
 def p_conditional_or_expression(p):
     ''' conditional-or-expression :         conditional-and-expression
@@ -550,7 +563,7 @@ def p_variable_declarator(p):
     if len(p) == 2:
         p[0] = {'identifier_name' : p[1]}
     elif len(p) == 4:   # Handle initialization
-        p[0] = { 'identifier_name' : p[1], 'initLabel' : p[3]['place']}
+        p[0] = { 'identifier_name' : p[1], 'initLabel' : p[3]['place'], 'type':p[3]['type']}
 
 def p_method_declaration(p):
     ''' method-declaration :         method-header method-body
@@ -624,7 +637,7 @@ def p_statement_list(p):
     ''' statement-list :         statement
              |         statement-list statement
              '''
-    p[0]=['statement_list']+[p[i] for i in range(1,len(p))]
+    p[0]=['statement_list']+[p[i] for i in range(1,len(p))]	#Duno
 
 def p_statement(p):
     ''' statement :         labeled-statement
@@ -641,9 +654,10 @@ def p_statement(p):
     p[0] = p[1]
 
 def p_write_statement(p):
-    ''' write-statement :         CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN
+    ''' write-statement :         CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
              '''
-    p[0]=['write_statement']+[p[i] for i in range(1,len(p))]
+    for dic in p[5]:
+    	TAC.emit('','',dic['place'],'Print') #Modify(check for type)
 
 def p_print_list(p):
     ''' print-list :         expression
@@ -657,14 +671,19 @@ def p_print_list(p):
     # p[0]=['print_list']+[p[i] for i in range(1,len(p))]
 
 def p_read_statement(p):
-    ''' read-statement :         CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN
+    ''' read-statement :         CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
              '''
-    p[0]=['read_statement']+[p[i] for i in range(1,len(p))]
+    print p[5]
+    var = ST.lookupvar(p[5])	#Modify(managing read address)
+    if var:
+    	TAC.emit('',var['place'],var['width'],'Read')
+    else:
+    	print 'lol : Variable not declared'
 
 def p_labeled_statement(p):
     ''' labeled-statement :         IDENTIFIER COLON statement
              '''
-    p[0]=['labeled_statement']+[p[i] for i in range(1,len(p))]
+    p[0]=['labeled_statement']+[p[i] for i in range(1,len(p))] #Duno
 
 def p_declaration_statement(p):
     ''' declaration-statement :         local-variable-declaration DELIM
@@ -676,13 +695,18 @@ def p_declaration_statement(p):
 def p_local_variable_declaration(p):
     ''' local-variable-declaration :         type variable-declarators
              '''
-    for identifier in p[2]:
-        if ST.lookupvar(identifier['identifier_name']):
-            print 'lol : Variable already declared'
-        else:
-            newVar = ST.addvar(identifier['identifier_name'], p[1])
-            if identifier.get('initLabel'):
-                TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
+    for identifier in p[2]:		#Implemented type checking in declaration
+		if ST.lookupvar(identifier['identifier_name']):
+			print 'lol : Variable already declared'
+		else:
+			if not identifier.get('initLabel'):
+				newVar = ST.addvar(identifier['identifier_name'], p[1])
+			else:
+				if identifier['type']==p[1]:
+					newVar = ST.addvar(identifier['identifier_name'], p[1])
+					TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
+				else:
+					print 'lol : Type mismatch in declaration'
 
 def p_local_constant_declaration(p):
     ''' local-constant-declaration :         CONST type constant-declarators
@@ -691,8 +715,11 @@ def p_local_constant_declaration(p):
         if ST.lookupvar(identifier['identifier_name']):
             print 'lol : Constant already declared'
         else:
-            newVar = ST.addvar(identifier['identifier_name'], p[2])
-            TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
+            if identifier['type']==p[2]:
+            	newVar = ST.addvar(identifier['identifier_name'], p[2])
+            	TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
+            else:
+            	print 'lol: Type mismatch in constant declaration'
 
 def p_empty_statement(p):
     ''' empty-statement :         DELIM

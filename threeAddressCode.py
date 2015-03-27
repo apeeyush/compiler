@@ -20,9 +20,9 @@ class ThreeAddressCode:
         self.code.append([regDest, regSrc1, regSrc2, op])
 
     def printCode(self, fileName=''):
-        print self.code
-        # for i in range(len(self.code)):
-        #     print self.code[i]
+        #print self.code
+        for i in range(len(self.code)):
+            print i,self.code[i]
 
     def merge(self, list1, list2):
         list3 = list(list1)
