@@ -862,7 +862,7 @@ def p_switch_label(p):
 
 def p_iteration_statement(p):
     ''' iteration-statement :         while-statement M_quad
-             |         for-statement
+             |         for-statement M_quad
              |         do-statement M_quad
              '''
     p[0] = p[1]
@@ -899,49 +899,57 @@ def p_do_statement(p):
         print 'lol : Do-While expression not bool'
 
 def p_for_statement(p):
-    ''' for-statement :         FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt CLOSE_PAREN block
+    ''' for-statement :         FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block 
              '''
-    p[0]=['for_statement']+[p[i] for i in range(1,len(p))]
+    #12
+    p[0] = {}
+    if p[6]['type']=='bool':
+        p[0]['nextList']=p[6]['falseList']+p[12]['loopEndList']
+        TAC.backPatch(p[6]['trueList'],p[11])
+        TAC.backPatch(p[12]['loopBeginList'],p[8])
+        TAC.emit('','',p[8],'goto')
+    else:
+        print 'lol : For condition not bool'
+
 
 def p_for_initializer_opt(p):
     ''' for-initializer-opt :         for-initializer
              |         empty
              '''
-    p[0]=['for_initializer_opt']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_for_initializer(p):
-    ''' for-initializer :         local-variable-declaration
-             |         statement-expression-list
+    ''' for-initializer :             statement-expression-list
              '''
-    p[0]=['for_initializer']+[p[i] for i in range(1,len(p))]
-
-def p_for_condition_opt(p):
-    ''' for-condition-opt :         for-condition
-             |         empty
-             '''
-    p[0]=['for_condition_opt']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_for_condition(p):
     ''' for-condition :         expression
              '''
-    p[0]=['for_condition']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
+    p[0]['falseList'] = [TAC.getNextQuad()]
+    TAC.emit(p[1]['place'],'',-1,'cond_goto')
+    p[0]['trueList'] = [TAC.getNextQuad()]
+    TAC.emit('','',-1,'goto')
 
 def p_for_iterator_opt(p):
     ''' for-iterator-opt :         for-iterator
              |         empty
              '''
-    p[0]=['for_iterator_opt']+[p[i] for i in range(1,len(p))]
+    p[0]={}
+    TAC.emit('','',p[-4],'goto')
+
 
 def p_for_iterator(p):
     ''' for-iterator :         statement-expression-list
              '''
-    p[0]=['for_iterator']+[p[i] for i in range(1,len(p))]
+    p[0]=p[1]
 
 def p_statement_expression_list(p):
     ''' statement-expression-list :         statement-expression
              |         statement-expression-list COMMA statement-expression
              '''
-    p[0]=['statement_expression_list']+[p[i] for i in range(1,len(p))]
+    p[0]=p[1]
 
 def p_jump_statement(p):
     ''' jump-statement :         break-statement

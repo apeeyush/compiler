@@ -1,8 +1,7 @@
-int a = 3;
-do{
-	a = a-1;
-	continue;
-} while (a<0);
+int a;
+for(;a<20;){
+	console.writeline(a);
+}
 // int a, d=6;
 // if (d==10){
 // 	int ifin = 10;
