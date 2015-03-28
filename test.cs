@@ -1,4 +1,6 @@
 int a;
+// const int b=1;
+// int[5] c;
 for(;a<20;){
 	console.writeline(a);
 	if (a<15){

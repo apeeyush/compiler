@@ -19,22 +19,16 @@ class SymbolTable():
 		self.idnum+=1;
 		return "t"+str(self.idnum)
 
-	def getwidth(self,width,vartype):
+	def getwidth(self,width,vartype,baseType=None):
+		dic = {"int":4,"double":8,"bool":1,"char":1}
 		if width==-1:
-			if vartype=="int":
-				return 4
-			elif vartype=="double":
-				return 8
-			elif vartype=="char":
-				return 1
-			elif vartype=="bool":
-				return 1
-			else:
-				raise Exception("Type not defined")
-		
-	def addvar(self,varname='',vartype='',varwidth=-1):
+			return dic[vartype]
+		else:
+			return width*dic[baseType]
+
+	def addvar(self,varname='', vartype='',varwidth=-1, baseType=None):
 		#Set variable width on type
-		varwidth=self.getwidth(varwidth,vartype)
+		varwidth=self.getwidth(int(varwidth),vartype,baseType)
 		#Get current table and offset
 		symboltable=self.tablestack[len(self.tablestack)-1]
 		offset=self.offstack[len(self.offstack)-1]

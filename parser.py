@@ -114,12 +114,14 @@ def p_simple_type(p):
              |         CHAR
              |         DOUBLE
              '''
-    p[0] = p[1]
+    p[0] = {'type' : p[1]}
 
 def p_array_type(p):
-    ''' array-type :         simple-type OPEN_BRACKET CLOSE_BRACKET
+    ''' array-type :         simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
              '''
-    p[0] = p[1] + "_array"
+    p[0] = p[1]
+    p[0]['array'] = True
+    p[0]['size'] = p[3]
 
 def p_constant_declarators(p):
     ''' constant-declarators :         constant-declarator
@@ -147,21 +149,21 @@ def p_conditional_expression(p):
              '''
     if len(p) == 2:
         p[0] = p[1]
-    elif len(p) == 6:	#Condop implemented
+    elif len(p) == 6:   #Condop implemented
         if p[1]['type']!='bool':
-        	print 'lol: condop should have boolean expression'
+            print 'lol: condop should have boolean expression'
         elif p[3]['type']!=p[5]['type']:
-        	print 'lol: condop should have same type in both expressions'
+            print 'lol: condop should have same type in both expressions'
         else:
-        	p[0]={}
-        	p[0]['place']=ST.gentmp()
-        	p[0]['type']=p[3]['type']
-        	nextquad=TAC.getNextQuad()
-        	TAC.emit(p[1]['place'],'',nextquad+3,'cond_goto')
-        	TAC.emit(p[0]['place'],p[3]['place'],'','=')
-        	nextquad=TAC.getNextQuad()
-        	TAC.emit('','',nextquad+2,'goto')
-        	TAC.emit(p[0]['place'],p[5]['place'],'','=')
+            p[0]={}
+            p[0]['place']=ST.gentmp()
+            p[0]['type']=p[3]['type']
+            nextquad=TAC.getNextQuad()
+            TAC.emit(p[1]['place'],'',nextquad+3,'cond_goto')
+            TAC.emit(p[0]['place'],p[3]['place'],'','=')
+            nextquad=TAC.getNextQuad()
+            TAC.emit('','',nextquad+2,'goto')
+            TAC.emit(p[0]['place'],p[5]['place'],'','=')
 
 def p_conditional_or_expression(p):
     ''' conditional-or-expression :         conditional-and-expression
@@ -369,7 +371,7 @@ def p_primary_expression(p):
     p[0] = p[1]
 
 def p_array_creation_expression(p):
-    ''' array-creation-expression :         NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    ''' array-creation-expression :         NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
              '''
     # TODO
 
@@ -518,11 +520,11 @@ def p_assignment(p):
     var = ST.lookupvar(p[1])
     if var:
         if var['type']!=p[3]['type']:
-        	print 'lol : Type mismatch in assignment'
+            print 'lol : Type mismatch in assignment'
         else:
-        	TAC.emit(var['place'], p[3]['place'], '', p[2])
-        	p[0]['place']=var['place']
-        	p[0]['type']=var['type']
+            TAC.emit(var['place'], p[3]['place'], '', p[2])
+            p[0]['place']=var['place']
+            p[0]['type']=var['type']
     else:
         print 'lol : Variable not declared'
 
@@ -686,7 +688,7 @@ def p_write_statement(p):
     ''' write-statement :         CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
              '''
     for dic in p[5]:
-    	TAC.emit('','',dic['place'],'Print') #Modify(check for type)
+        TAC.emit('','',dic['place'],'Print') #Modify(check for type)
     p[0] = {}
 
 def p_print_list(p):
@@ -703,11 +705,11 @@ def p_print_list(p):
 def p_read_statement(p):
     ''' read-statement :         CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
              '''
-    var = ST.lookupvar(p[5])	#Modify(managing read address)
+    var = ST.lookupvar(p[5])    #Modify(managing read address)
     if var:
-    	TAC.emit('',var['place'],var['width'],'Read')
+        TAC.emit('',var['place'],var['width'],'Read')
     else:
-    	print 'lol : Variable not declared'
+        print 'lol : Variable not declared'
     p[0] = {}
 
 def p_labeled_statement(p):
@@ -724,18 +726,21 @@ def p_declaration_statement(p):
 def p_local_variable_declaration(p):
     ''' local-variable-declaration :         type variable-declarators
              '''
-    for identifier in p[2]:		#Implemented type checking in declaration
-		if ST.lookupvar_curr(identifier['identifier_name']):
-			print 'lol : Variable already declared'
-		else:
-			if not identifier.get('initLabel'):
-				newVar = ST.addvar(identifier['identifier_name'], p[1])
-			else:
-				if identifier['type']==p[1]:
-					newVar = ST.addvar(identifier['identifier_name'], p[1])
-					TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
-				else:
-					print 'lol : Type mismatch in declaration'
+    for identifier in p[2]:     #Implemented type checking in declaration
+        if ST.lookupvar_curr(identifier['identifier_name']):
+            print 'lol : Variable already declared'
+        else:
+            if not identifier.get('initLabel'):
+                if p[1].get('array', False):
+                    newVar = ST.addvar(identifier['identifier_name'], 'array', p[1]['size'], p[1]['type'])
+                else:
+                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
+            else:
+                if identifier['type']==p[1]['type']:
+                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
+                    TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
+                else:
+                    print 'lol : Type mismatch in declaration'
 
 def p_local_constant_declaration(p):
     ''' local-constant-declaration :         CONST type constant-declarators
@@ -744,11 +749,11 @@ def p_local_constant_declaration(p):
         if ST.lookupvar_curr(identifier['identifier_name']):
             print 'lol : Constant already declared'
         else:
-            if identifier['type']==p[2]:
-            	newVar = ST.addvar(identifier['identifier_name'], p[2])
-            	TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
+            if identifier['type']==p[2]['type']:
+                newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
+                TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
             else:
-            	print 'lol: Type mismatch in constant declaration'
+                print 'lol: Type mismatch in constant declaration'
 
 def p_empty_statement(p):
     ''' empty-statement :         DELIM

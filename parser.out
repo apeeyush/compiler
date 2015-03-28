@@ -54,7 +54,7 @@ Rule 30    simple-type -> INT
 Rule 31    simple-type -> UINT
 Rule 32    simple-type -> CHAR
 Rule 33    simple-type -> DOUBLE
-Rule 34    array-type -> simple-type OPEN_BRACKET CLOSE_BRACKET
+Rule 34    array-type -> simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
 Rule 35    constant-declarators -> constant-declarator
 Rule 36    constant-declarators -> constant-declarators COMMA constant-declarator
 Rule 37    constant-declarator -> IDENTIFIER ASSIGN expression
@@ -100,7 +100,7 @@ Rule 76    unary-expression -> pre-increment-expression
 Rule 77    unary-expression -> pre-decrement-expression
 Rule 78    primary-expression -> array-creation-expression
 Rule 79    primary-expression -> primary-no-array-creation-expression
-Rule 80    array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+Rule 80    array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
 Rule 81    array-initializer-opt -> array-initializer
 Rule 82    array-initializer-opt -> empty
 Rule 83    expression-list -> expression
@@ -315,7 +315,7 @@ FOREACH              :
 GE                   : 59
 GOTO                 : 231
 GT                   : 57
-ICONST               : 242
+ICONST               : 34 80 242
 IDENTIFIER           : 9 13 37 91 100 101 110 112 138 139 147 151 176 177 231 236 239
 IF                   : 193 194
 IN                   : 
@@ -414,7 +414,7 @@ empty-statement      : 166
 equality-expression  : 50 51 53 54
 exclusive-or-expression : 46 47 49
 expression           : 37 41 41 83 84 88 99 107 109 120 174 175 193 194 198 207 212 214 219 233
-expression-list      : 80 84 86 110 111
+expression-list      : 84 86 110 111
 expression-opt       : 232
 expression-statement : 167
 field-declaration    : 20
@@ -564,7 +564,7 @@ state 0
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
     (100) member-access -> . prim-expression DOT IDENTIFIER
     (112) prim-expression -> . IDENTIFIER
     (113) prim-expression -> . member-access
@@ -667,10 +667,10 @@ state 1
     UINT            reduce using rule 171 (statement -> write-statement .)
     CHAR            reduce using rule 171 (statement -> write-statement .)
     DOUBLE          reduce using rule 171 (statement -> write-statement .)
-    $end            reduce using rule 171 (statement -> write-statement .)
-    BLOCK_END       reduce using rule 171 (statement -> write-statement .)
     CASE            reduce using rule 171 (statement -> write-statement .)
     DEFAULT         reduce using rule 171 (statement -> write-statement .)
+    BLOCK_END       reduce using rule 171 (statement -> write-statement .)
+    $end            reduce using rule 171 (statement -> write-statement .)
 
 
 state 2
@@ -723,10 +723,10 @@ state 3
     UINT            reduce using rule 167 (statement -> expression-statement .)
     CHAR            reduce using rule 167 (statement -> expression-statement .)
     DOUBLE          reduce using rule 167 (statement -> expression-statement .)
-    $end            reduce using rule 167 (statement -> expression-statement .)
-    BLOCK_END       reduce using rule 167 (statement -> expression-statement .)
     CASE            reduce using rule 167 (statement -> expression-statement .)
     DEFAULT         reduce using rule 167 (statement -> expression-statement .)
+    BLOCK_END       reduce using rule 167 (statement -> expression-statement .)
+    $end            reduce using rule 167 (statement -> expression-statement .)
 
 
 state 4
@@ -830,10 +830,10 @@ state 9
     UINT            reduce using rule 163 (statement -> labeled-statement .)
     CHAR            reduce using rule 163 (statement -> labeled-statement .)
     DOUBLE          reduce using rule 163 (statement -> labeled-statement .)
-    $end            reduce using rule 163 (statement -> labeled-statement .)
-    BLOCK_END       reduce using rule 163 (statement -> labeled-statement .)
     CASE            reduce using rule 163 (statement -> labeled-statement .)
     DEFAULT         reduce using rule 163 (statement -> labeled-statement .)
+    BLOCK_END       reduce using rule 163 (statement -> labeled-statement .)
+    $end            reduce using rule 163 (statement -> labeled-statement .)
 
 
 state 10
@@ -863,9 +863,9 @@ state 10
     CHAR            reduce using rule 192 (selection-statement -> switch-statement .)
     DOUBLE          reduce using rule 192 (selection-statement -> switch-statement .)
     $end            reduce using rule 192 (selection-statement -> switch-statement .)
-    BLOCK_END       reduce using rule 192 (selection-statement -> switch-statement .)
     CASE            reduce using rule 192 (selection-statement -> switch-statement .)
     DEFAULT         reduce using rule 192 (selection-statement -> switch-statement .)
+    BLOCK_END       reduce using rule 192 (selection-statement -> switch-statement .)
 
 
 state 11
@@ -894,10 +894,10 @@ state 11
     UINT            reduce using rule 170 (statement -> jump-statement .)
     CHAR            reduce using rule 170 (statement -> jump-statement .)
     DOUBLE          reduce using rule 170 (statement -> jump-statement .)
-    $end            reduce using rule 170 (statement -> jump-statement .)
-    BLOCK_END       reduce using rule 170 (statement -> jump-statement .)
     CASE            reduce using rule 170 (statement -> jump-statement .)
     DEFAULT         reduce using rule 170 (statement -> jump-statement .)
+    BLOCK_END       reduce using rule 170 (statement -> jump-statement .)
+    $end            reduce using rule 170 (statement -> jump-statement .)
 
 
 state 12
@@ -986,7 +986,7 @@ state 15
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -1087,9 +1087,9 @@ state 17
     CHAR            reduce using rule 228 (jump-statement -> return-statement .)
     DOUBLE          reduce using rule 228 (jump-statement -> return-statement .)
     $end            reduce using rule 228 (jump-statement -> return-statement .)
-    BLOCK_END       reduce using rule 228 (jump-statement -> return-statement .)
     CASE            reduce using rule 228 (jump-statement -> return-statement .)
     DEFAULT         reduce using rule 228 (jump-statement -> return-statement .)
+    BLOCK_END       reduce using rule 228 (jump-statement -> return-statement .)
 
 
 state 18
@@ -1221,9 +1221,9 @@ state 23
     CHAR            reduce using rule 226 (jump-statement -> continue-statement .)
     DOUBLE          reduce using rule 226 (jump-statement -> continue-statement .)
     $end            reduce using rule 226 (jump-statement -> continue-statement .)
-    BLOCK_END       reduce using rule 226 (jump-statement -> continue-statement .)
     CASE            reduce using rule 226 (jump-statement -> continue-statement .)
     DEFAULT         reduce using rule 226 (jump-statement -> continue-statement .)
+    BLOCK_END       reduce using rule 226 (jump-statement -> continue-statement .)
 
 
 state 24
@@ -1278,9 +1278,9 @@ state 27
     CHAR            reduce using rule 227 (jump-statement -> goto-statement .)
     DOUBLE          reduce using rule 227 (jump-statement -> goto-statement .)
     $end            reduce using rule 227 (jump-statement -> goto-statement .)
-    BLOCK_END       reduce using rule 227 (jump-statement -> goto-statement .)
     CASE            reduce using rule 227 (jump-statement -> goto-statement .)
     DEFAULT         reduce using rule 227 (jump-statement -> goto-statement .)
+    BLOCK_END       reduce using rule 227 (jump-statement -> goto-statement .)
 
 
 state 28
@@ -1352,10 +1352,10 @@ state 30
     UINT            reduce using rule 165 (statement -> block .)
     CHAR            reduce using rule 165 (statement -> block .)
     DOUBLE          reduce using rule 165 (statement -> block .)
-    $end            reduce using rule 165 (statement -> block .)
-    BLOCK_END       reduce using rule 165 (statement -> block .)
     CASE            reduce using rule 165 (statement -> block .)
     DEFAULT         reduce using rule 165 (statement -> block .)
+    BLOCK_END       reduce using rule 165 (statement -> block .)
+    $end            reduce using rule 165 (statement -> block .)
 
 
 state 31
@@ -1416,10 +1416,10 @@ state 32
     UINT            reduce using rule 168 (statement -> selection-statement .)
     CHAR            reduce using rule 168 (statement -> selection-statement .)
     DOUBLE          reduce using rule 168 (statement -> selection-statement .)
-    $end            reduce using rule 168 (statement -> selection-statement .)
-    BLOCK_END       reduce using rule 168 (statement -> selection-statement .)
     CASE            reduce using rule 168 (statement -> selection-statement .)
     DEFAULT         reduce using rule 168 (statement -> selection-statement .)
+    BLOCK_END       reduce using rule 168 (statement -> selection-statement .)
+    $end            reduce using rule 168 (statement -> selection-statement .)
 
 
 state 33
@@ -1484,10 +1484,10 @@ state 36
     UINT            reduce using rule 166 (statement -> empty-statement .)
     CHAR            reduce using rule 166 (statement -> empty-statement .)
     DOUBLE          reduce using rule 166 (statement -> empty-statement .)
-    $end            reduce using rule 166 (statement -> empty-statement .)
-    BLOCK_END       reduce using rule 166 (statement -> empty-statement .)
     CASE            reduce using rule 166 (statement -> empty-statement .)
     DEFAULT         reduce using rule 166 (statement -> empty-statement .)
+    BLOCK_END       reduce using rule 166 (statement -> empty-statement .)
+    $end            reduce using rule 166 (statement -> empty-statement .)
 
 
 state 37
@@ -1502,7 +1502,7 @@ state 37
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
 
     BOOL            shift and go to state 49
     INT             shift and go to state 26
@@ -1543,9 +1543,9 @@ state 38
     CHAR            reduce using rule 225 (jump-statement -> break-statement .)
     DOUBLE          reduce using rule 225 (jump-statement -> break-statement .)
     $end            reduce using rule 225 (jump-statement -> break-statement .)
-    BLOCK_END       reduce using rule 225 (jump-statement -> break-statement .)
     CASE            reduce using rule 225 (jump-statement -> break-statement .)
     DEFAULT         reduce using rule 225 (jump-statement -> break-statement .)
+    BLOCK_END       reduce using rule 225 (jump-statement -> break-statement .)
 
 
 state 39
@@ -1678,10 +1678,10 @@ state 46
     UINT            reduce using rule 164 (statement -> declaration-statement .)
     CHAR            reduce using rule 164 (statement -> declaration-statement .)
     DOUBLE          reduce using rule 164 (statement -> declaration-statement .)
-    $end            reduce using rule 164 (statement -> declaration-statement .)
-    BLOCK_END       reduce using rule 164 (statement -> declaration-statement .)
     CASE            reduce using rule 164 (statement -> declaration-statement .)
     DEFAULT         reduce using rule 164 (statement -> declaration-statement .)
+    BLOCK_END       reduce using rule 164 (statement -> declaration-statement .)
+    $end            reduce using rule 164 (statement -> declaration-statement .)
 
 
 state 47
@@ -1710,10 +1710,10 @@ state 47
     UINT            reduce using rule 169 (statement -> iteration-statement .)
     CHAR            reduce using rule 169 (statement -> iteration-statement .)
     DOUBLE          reduce using rule 169 (statement -> iteration-statement .)
-    $end            reduce using rule 169 (statement -> iteration-statement .)
-    BLOCK_END       reduce using rule 169 (statement -> iteration-statement .)
     CASE            reduce using rule 169 (statement -> iteration-statement .)
     DEFAULT         reduce using rule 169 (statement -> iteration-statement .)
+    BLOCK_END       reduce using rule 169 (statement -> iteration-statement .)
+    $end            reduce using rule 169 (statement -> iteration-statement .)
 
 
 state 48
@@ -1799,7 +1799,7 @@ state 50
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
     (100) member-access -> . prim-expression DOT IDENTIFIER
     (112) prim-expression -> . IDENTIFIER
     (113) prim-expression -> . member-access
@@ -1908,7 +1908,7 @@ state 51
 state 52
 
     (26) type -> simple-type .
-    (34) array-type -> simple-type . OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> simple-type . OPEN_BRACKET ICONST CLOSE_BRACKET
 
     IDENTIFIER      reduce using rule 26 (type -> simple-type .)
     OPEN_PAREN      reduce using rule 26 (type -> simple-type .)
@@ -1938,7 +1938,7 @@ state 54
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
 
     BOOL            shift and go to state 49
     INT             shift and go to state 26
@@ -2053,10 +2053,10 @@ state 58
     UINT            reduce using rule 172 (statement -> read-statement .)
     CHAR            reduce using rule 172 (statement -> read-statement .)
     DOUBLE          reduce using rule 172 (statement -> read-statement .)
-    $end            reduce using rule 172 (statement -> read-statement .)
-    BLOCK_END       reduce using rule 172 (statement -> read-statement .)
     CASE            reduce using rule 172 (statement -> read-statement .)
     DEFAULT         reduce using rule 172 (statement -> read-statement .)
+    BLOCK_END       reduce using rule 172 (statement -> read-statement .)
+    $end            reduce using rule 172 (statement -> read-statement .)
 
 
 state 59
@@ -2183,7 +2183,7 @@ state 67
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -2310,7 +2310,7 @@ state 68
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -2407,10 +2407,10 @@ state 69
     UINT            reduce using rule 183 (expression-statement -> statement-expression DELIM .)
     CHAR            reduce using rule 183 (expression-statement -> statement-expression DELIM .)
     DOUBLE          reduce using rule 183 (expression-statement -> statement-expression DELIM .)
-    CASE            reduce using rule 183 (expression-statement -> statement-expression DELIM .)
-    DEFAULT         reduce using rule 183 (expression-statement -> statement-expression DELIM .)
     BLOCK_END       reduce using rule 183 (expression-statement -> statement-expression DELIM .)
     $end            reduce using rule 183 (expression-statement -> statement-expression DELIM .)
+    CASE            reduce using rule 183 (expression-statement -> statement-expression DELIM .)
+    DEFAULT         reduce using rule 183 (expression-statement -> statement-expression DELIM .)
 
 
 state 70
@@ -2650,8 +2650,8 @@ state 78
     LOGOR           reduce using rule 46 (inclusive-or-expression -> exclusive-or-expression .)
     COMMA           reduce using rule 46 (inclusive-or-expression -> exclusive-or-expression .)
     CLOSE_PAREN     reduce using rule 46 (inclusive-or-expression -> exclusive-or-expression .)
-    DELIM           reduce using rule 46 (inclusive-or-expression -> exclusive-or-expression .)
     CLOSE_BRACKET   reduce using rule 46 (inclusive-or-expression -> exclusive-or-expression .)
+    DELIM           reduce using rule 46 (inclusive-or-expression -> exclusive-or-expression .)
     COLON           reduce using rule 46 (inclusive-or-expression -> exclusive-or-expression .)
     BLOCK_END       reduce using rule 46 (inclusive-or-expression -> exclusive-or-expression .)
     BITXOR          shift and go to state 171
@@ -2700,10 +2700,10 @@ state 79
     LOGOR           reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
     COMMA           reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
     CLOSE_PAREN     reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
-    COLON           reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
-    DELIM           reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
     CLOSE_BRACKET   reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
     BLOCK_END       reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
+    COLON           reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
+    DELIM           reduce using rule 93 (primary-no-array-creation-expression -> member-access .)
     OPEN_PAREN      shift and go to state 68
 
 
@@ -2723,9 +2723,9 @@ state 80
     LOGAND          reduce using rule 52 (equality-expression -> relational-expression .)
     CONDOP          reduce using rule 52 (equality-expression -> relational-expression .)
     LOGOR           reduce using rule 52 (equality-expression -> relational-expression .)
+    DELIM           reduce using rule 52 (equality-expression -> relational-expression .)
     CLOSE_BRACKET   reduce using rule 52 (equality-expression -> relational-expression .)
     COMMA           reduce using rule 52 (equality-expression -> relational-expression .)
-    DELIM           reduce using rule 52 (equality-expression -> relational-expression .)
     CLOSE_PAREN     reduce using rule 52 (equality-expression -> relational-expression .)
     COLON           reduce using rule 52 (equality-expression -> relational-expression .)
     BLOCK_END       reduce using rule 52 (equality-expression -> relational-expression .)
@@ -2768,7 +2768,7 @@ state 81
 
 state 82
 
-    (80) array-creation-expression -> NEW . simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> NEW . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (117) object-creation-expression -> NEW . type OPEN_PAREN argument-list-opt CLOSE_PAREN
     (29) simple-type -> . BOOL
     (30) simple-type -> . INT
@@ -2779,7 +2779,7 @@ state 82
     (27) type -> . class-type
     (28) type -> . array-type
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
 
     BOOL            shift and go to state 49
     INT             shift and go to state 26
@@ -2789,9 +2789,9 @@ state 82
     IDENTIFIER      shift and go to state 127
 
     array-type                     shift and go to state 44
-    type                           shift and go to state 128
     simple-type                    shift and go to state 176
     class-type                     shift and go to state 66
+    type                           shift and go to state 128
 
 state 83
 
@@ -2815,8 +2815,8 @@ state 83
     LOGOR           reduce using rule 60 (shift-expression -> additive-expression .)
     CLOSE_PAREN     reduce using rule 60 (shift-expression -> additive-expression .)
     COMMA           reduce using rule 60 (shift-expression -> additive-expression .)
-    BLOCK_END       reduce using rule 60 (shift-expression -> additive-expression .)
     DELIM           reduce using rule 60 (shift-expression -> additive-expression .)
+    BLOCK_END       reduce using rule 60 (shift-expression -> additive-expression .)
     CLOSE_BRACKET   reduce using rule 60 (shift-expression -> additive-expression .)
     COLON           reduce using rule 60 (shift-expression -> additive-expression .)
     PLUS            shift and go to state 177
@@ -2838,7 +2838,7 @@ state 84
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -2981,7 +2981,7 @@ state 88
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -3079,10 +3079,10 @@ state 89
     LOGOR           reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
     COMMA           reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
     CLOSE_PAREN     reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
-    COLON           reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
-    DELIM           reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
     CLOSE_BRACKET   reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
     BLOCK_END       reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
+    COLON           reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
+    DELIM           reduce using rule 95 (primary-no-array-creation-expression -> element-access .)
 
 
 state 90
@@ -3159,7 +3159,7 @@ state 93
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -3260,10 +3260,10 @@ state 94
     LOGOR           reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
     COMMA           reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
     CLOSE_PAREN     reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
-    COLON           reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
-    DELIM           reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
     CLOSE_BRACKET   reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
     BLOCK_END       reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
+    COLON           reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
+    DELIM           reduce using rule 91 (primary-no-array-creation-expression -> IDENTIFIER .)
     OPEN_PAREN      shift and go to state 131
 
 
@@ -3328,7 +3328,7 @@ state 96
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -3451,7 +3451,7 @@ state 99
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -3867,7 +3867,7 @@ state 113
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -4025,8 +4025,8 @@ state 117
     (43) conditional-or-expression -> conditional-or-expression . LOGOR conditional-and-expression
 
     COMMA           reduce using rule 40 (conditional-expression -> conditional-or-expression .)
-    DELIM           reduce using rule 40 (conditional-expression -> conditional-or-expression .)
     BLOCK_END       reduce using rule 40 (conditional-expression -> conditional-or-expression .)
+    DELIM           reduce using rule 40 (conditional-expression -> conditional-or-expression .)
     CLOSE_PAREN     reduce using rule 40 (conditional-expression -> conditional-or-expression .)
     CLOSE_BRACKET   reduce using rule 40 (conditional-expression -> conditional-or-expression .)
     COLON           reduce using rule 40 (conditional-expression -> conditional-or-expression .)
@@ -4241,9 +4241,9 @@ state 123
     CHAR            reduce using rule 191 (selection-statement -> if-statement M_quad .)
     DOUBLE          reduce using rule 191 (selection-statement -> if-statement M_quad .)
     $end            reduce using rule 191 (selection-statement -> if-statement M_quad .)
-    BLOCK_END       reduce using rule 191 (selection-statement -> if-statement M_quad .)
     CASE            reduce using rule 191 (selection-statement -> if-statement M_quad .)
     DEFAULT         reduce using rule 191 (selection-statement -> if-statement M_quad .)
+    BLOCK_END       reduce using rule 191 (selection-statement -> if-statement M_quad .)
 
 
 state 124
@@ -4302,10 +4302,10 @@ state 125
     LOGAND          reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
     CONDOP          reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
     LOGOR           reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
-    DELIM           reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
-    CLOSE_BRACKET   reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
     COMMA           reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
     CLOSE_PAREN     reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
+    DELIM           reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
+    CLOSE_BRACKET   reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
     COLON           reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
     BLOCK_END       reduce using rule 119 (pre-decrement-expression -> DECRE prim-expression .)
     DOT             shift and go to state 157
@@ -4388,7 +4388,7 @@ state 129
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -4509,7 +4509,7 @@ state 130
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -4636,7 +4636,7 @@ state 131
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -4773,7 +4773,7 @@ state 132
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
     (100) member-access -> . prim-expression DOT IDENTIFIER
     (112) prim-expression -> . IDENTIFIER
     (113) prim-expression -> . member-access
@@ -4846,8 +4846,8 @@ state 133
 
     (136) variable-declarators -> variable-declarator .
 
-    COMMA           reduce using rule 136 (variable-declarators -> variable-declarator .)
     DELIM           reduce using rule 136 (variable-declarators -> variable-declarator .)
+    COMMA           reduce using rule 136 (variable-declarators -> variable-declarator .)
 
 
 state 134
@@ -4967,9 +4967,9 @@ state 138
 
 state 139
 
-    (34) array-type -> simple-type OPEN_BRACKET . CLOSE_BRACKET
+    (34) array-type -> simple-type OPEN_BRACKET . ICONST CLOSE_BRACKET
 
-    CLOSE_BRACKET   shift and go to state 216
+    ICONST          shift and go to state 216
 
 
 state 140
@@ -5064,7 +5064,7 @@ state 142
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
     (100) member-access -> . prim-expression DOT IDENTIFIER
     (112) prim-expression -> . IDENTIFIER
     (113) prim-expression -> . member-access
@@ -5260,7 +5260,7 @@ state 146
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -5391,9 +5391,9 @@ state 149
     CONDOP          reduce using rule 116 (post-decrement-expression -> prim-expression DECRE .)
     LOGOR           reduce using rule 116 (post-decrement-expression -> prim-expression DECRE .)
     CLOSE_BRACKET   reduce using rule 116 (post-decrement-expression -> prim-expression DECRE .)
-    BLOCK_END       reduce using rule 116 (post-decrement-expression -> prim-expression DECRE .)
     CLOSE_PAREN     reduce using rule 116 (post-decrement-expression -> prim-expression DECRE .)
     COLON           reduce using rule 116 (post-decrement-expression -> prim-expression DECRE .)
+    BLOCK_END       reduce using rule 116 (post-decrement-expression -> prim-expression DECRE .)
 
 
 state 150
@@ -5653,7 +5653,7 @@ state 161
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -5813,7 +5813,7 @@ state 167
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -5922,10 +5922,10 @@ state 170
     UINT            reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
     CHAR            reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
     DOUBLE          reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
-    BLOCK_END       reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
-    $end            reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
     CASE            reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
     DEFAULT         reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
+    BLOCK_END       reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
+    $end            reduce using rule 231 (goto-statement -> GOTO IDENTIFIER DELIM .)
 
 
 state 171
@@ -5963,7 +5963,7 @@ state 171
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6005,18 +6005,18 @@ state 171
     FALSE           shift and go to state 105
     OPEN_PAREN      shift and go to state 96
 
-    unary-expression               shift and go to state 103
+    prim-expression                shift and go to state 181
     member-access                  shift and go to state 180
     relational-expression          shift and go to state 80
     additive-expression            shift and go to state 83
     primary-no-array-creation-expression shift and go to state 100
-    prim-expression                shift and go to state 181
+    post-increment-expression      shift and go to state 85
     element-access                 shift and go to state 182
     literal                        shift and go to state 98
     post-decrement-expression      shift and go to state 92
     array-creation-expression      shift and go to state 81
-    post-increment-expression      shift and go to state 85
     object-creation-expression     shift and go to state 102
+    unary-expression               shift and go to state 103
     pre-increment-expression       shift and go to state 106
     equality-expression            shift and go to state 87
     shift-expression               shift and go to state 108
@@ -6052,7 +6052,7 @@ state 172
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6138,7 +6138,7 @@ state 173
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6224,7 +6224,7 @@ state 174
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6310,7 +6310,7 @@ state 175
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6373,9 +6373,9 @@ state 175
 
 state 176
 
-    (80) array-creation-expression -> NEW simple-type . OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> NEW simple-type . OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (26) type -> simple-type .
-    (34) array-type -> simple-type . OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> simple-type . OPEN_BRACKET ICONST CLOSE_BRACKET
 
     OPEN_BRACKET    shift and go to state 244
     OPEN_PAREN      reduce using rule 26 (type -> simple-type .)
@@ -6400,7 +6400,7 @@ state 177
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6478,7 +6478,7 @@ state 178
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6729,7 +6729,7 @@ state 184
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6777,7 +6777,6 @@ state 184
     relational-expression          shift and go to state 80
     additive-expression            shift and go to state 83
     primary-no-array-creation-expression shift and go to state 100
-    equality-expression            shift and go to state 87
     prim-expression                shift and go to state 181
     element-access                 shift and go to state 182
     literal                        shift and go to state 98
@@ -6786,6 +6785,7 @@ state 184
     post-increment-expression      shift and go to state 85
     object-creation-expression     shift and go to state 102
     pre-increment-expression       shift and go to state 106
+    equality-expression            shift and go to state 87
     shift-expression               shift and go to state 108
     and-expression                 shift and go to state 109
     pre-decrement-expression       shift and go to state 110
@@ -6824,7 +6824,7 @@ state 185
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -6916,7 +6916,7 @@ state 186
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7048,7 +7048,7 @@ state 188
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7097,7 +7097,6 @@ state 188
     additive-expression            shift and go to state 83
     primary-no-array-creation-expression shift and go to state 100
     inclusive-or-expression        shift and go to state 250
-    equality-expression            shift and go to state 87
     prim-expression                shift and go to state 181
     element-access                 shift and go to state 182
     literal                        shift and go to state 98
@@ -7106,6 +7105,7 @@ state 188
     post-increment-expression      shift and go to state 85
     object-creation-expression     shift and go to state 102
     pre-increment-expression       shift and go to state 106
+    equality-expression            shift and go to state 87
     shift-expression               shift and go to state 108
     and-expression                 shift and go to state 109
     pre-decrement-expression       shift and go to state 110
@@ -7210,9 +7210,9 @@ state 192
     CHAR            reduce using rule 232 (return-statement -> RETURN expression-opt DELIM .)
     DOUBLE          reduce using rule 232 (return-statement -> RETURN expression-opt DELIM .)
     BLOCK_END       reduce using rule 232 (return-statement -> RETURN expression-opt DELIM .)
-    $end            reduce using rule 232 (return-statement -> RETURN expression-opt DELIM .)
     CASE            reduce using rule 232 (return-statement -> RETURN expression-opt DELIM .)
     DEFAULT         reduce using rule 232 (return-statement -> RETURN expression-opt DELIM .)
+    $end            reduce using rule 232 (return-statement -> RETURN expression-opt DELIM .)
 
 
 state 193
@@ -7237,7 +7237,7 @@ state 193
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7319,7 +7319,7 @@ state 194
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7412,7 +7412,7 @@ state 195
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7459,7 +7459,6 @@ state 195
     relational-expression          shift and go to state 80
     additive-expression            shift and go to state 83
     primary-no-array-creation-expression shift and go to state 100
-    equality-expression            shift and go to state 254
     post-increment-expression      shift and go to state 85
     element-access                 shift and go to state 182
     literal                        shift and go to state 98
@@ -7468,6 +7467,7 @@ state 195
     object-creation-expression     shift and go to state 102
     unary-expression               shift and go to state 103
     pre-increment-expression       shift and go to state 106
+    equality-expression            shift and go to state 254
     shift-expression               shift and go to state 108
     pre-decrement-expression       shift and go to state 110
     multiplicative-expression      shift and go to state 111
@@ -7490,7 +7490,7 @@ state 196
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7563,7 +7563,7 @@ state 197
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7636,7 +7636,7 @@ state 198
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7766,7 +7766,7 @@ state 200
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -7887,7 +7887,7 @@ state 201
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -8069,7 +8069,7 @@ state 208
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -8195,7 +8195,7 @@ state 209
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -8388,7 +8388,7 @@ state 215
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -8458,17 +8458,16 @@ state 215
 
 state 216
 
-    (34) array-type -> simple-type OPEN_BRACKET CLOSE_BRACKET .
+    (34) array-type -> simple-type OPEN_BRACKET ICONST . CLOSE_BRACKET
 
-    IDENTIFIER      reduce using rule 34 (array-type -> simple-type OPEN_BRACKET CLOSE_BRACKET .)
-    OPEN_PAREN      reduce using rule 34 (array-type -> simple-type OPEN_BRACKET CLOSE_BRACKET .)
+    CLOSE_BRACKET   shift and go to state 272
 
 
 state 217
 
     (214) do-statement -> DO M_quad block . WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM
 
-    WHILE           shift and go to state 272
+    WHILE           shift and go to state 273
 
 
 state 218
@@ -8477,14 +8476,14 @@ state 218
     (36) constant-declarators -> constant-declarators . COMMA constant-declarator
 
     DELIM           reduce using rule 181 (local-constant-declaration -> CONST type constant-declarators .)
-    COMMA           shift and go to state 273
+    COMMA           shift and go to state 274
 
 
 state 219
 
     (37) constant-declarator -> IDENTIFIER . ASSIGN expression
 
-    ASSIGN          shift and go to state 274
+    ASSIGN          shift and go to state 275
 
 
 state 220
@@ -8569,7 +8568,7 @@ state 222
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
     (100) member-access -> . prim-expression DOT IDENTIFIER
     (112) prim-expression -> . IDENTIFIER
     (113) prim-expression -> . member-access
@@ -8643,19 +8642,19 @@ state 223
 
     (157) block -> BLOCK_BEGIN M_bstart statement-list-opt . BLOCK_END
 
-    BLOCK_END       shift and go to state 275
+    BLOCK_END       shift and go to state 276
 
 
 state 224
 
     (120) assignment -> prim-expression assignment-operator expression .
 
-    DELIM           reduce using rule 120 (assignment -> prim-expression assignment-operator expression .)
     COMMA           reduce using rule 120 (assignment -> prim-expression assignment-operator expression .)
     CLOSE_PAREN     reduce using rule 120 (assignment -> prim-expression assignment-operator expression .)
+    DELIM           reduce using rule 120 (assignment -> prim-expression assignment-operator expression .)
     CLOSE_BRACKET   reduce using rule 120 (assignment -> prim-expression assignment-operator expression .)
-    COLON           reduce using rule 120 (assignment -> prim-expression assignment-operator expression .)
     BLOCK_END       reduce using rule 120 (assignment -> prim-expression assignment-operator expression .)
+    COLON           reduce using rule 120 (assignment -> prim-expression assignment-operator expression .)
 
 
 state 225
@@ -8697,8 +8696,8 @@ state 225
     LOGAND          reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
     CONDOP          reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
     LOGOR           reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
-    CLOSE_PAREN     reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
     DELIM           reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
+    CLOSE_PAREN     reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
     CLOSE_BRACKET   reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
     COMMA           reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
     COLON           reduce using rule 100 (member-access -> prim-expression DOT IDENTIFIER .)
@@ -8710,9 +8709,9 @@ state 226
     (9) class-declaration -> CLASS IDENTIFIER class-base-opt . class-body semi-opt
     (14) class-body -> . BLOCK_BEGIN class-member-declarations-opt BLOCK_END
 
-    BLOCK_BEGIN     shift and go to state 277
+    BLOCK_BEGIN     shift and go to state 278
 
-    class-body                     shift and go to state 276
+    class-body                     shift and go to state 277
 
 state 227
 
@@ -8728,7 +8727,7 @@ state 228
 
     IDENTIFIER      shift and go to state 127
 
-    class-type                     shift and go to state 278
+    class-type                     shift and go to state 279
 
 state 229
 
@@ -8741,14 +8740,14 @@ state 230
 
     (173) write-statement -> CONSOLE DOT WRITELINE . OPEN_PAREN print-list CLOSE_PAREN DELIM
 
-    OPEN_PAREN      shift and go to state 279
+    OPEN_PAREN      shift and go to state 280
 
 
 state 231
 
     (176) read-statement -> CONSOLE DOT READLINE . OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
 
-    OPEN_PAREN      shift and go to state 280
+    OPEN_PAREN      shift and go to state 281
 
 
 state 232
@@ -8756,7 +8755,7 @@ state 232
     (193) if-statement -> IF OPEN_PAREN expression . CLOSE_PAREN M_if block
     (194) if-statement -> IF OPEN_PAREN expression . CLOSE_PAREN M_if block ELSE M_else block
 
-    CLOSE_PAREN     shift and go to state 281
+    CLOSE_PAREN     shift and go to state 282
 
 
 state 233
@@ -8858,7 +8857,7 @@ state 234
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -8917,7 +8916,7 @@ state 234
     and-expression                 shift and go to state 109
     pre-decrement-expression       shift and go to state 110
     multiplicative-expression      shift and go to state 111
-    expression                     shift and go to state 282
+    expression                     shift and go to state 283
     primary-expression             shift and go to state 115
     invocation-expression          shift and go to state 116
     conditional-or-expression      shift and go to state 117
@@ -9026,7 +9025,7 @@ state 238
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -9066,7 +9065,7 @@ state 238
     unary-expression               shift and go to state 103
     exclusive-or-expression        shift and go to state 78
     member-access                  shift and go to state 79
-    argument                       shift and go to state 283
+    argument                       shift and go to state 284
     relational-expression          shift and go to state 80
     additive-expression            shift and go to state 83
     primary-no-array-creation-expression shift and go to state 100
@@ -9226,127 +9225,11 @@ state 243
 
 state 244
 
-    (80) array-creation-expression -> NEW simple-type OPEN_BRACKET . expression-list CLOSE_BRACKET array-initializer-opt
-    (34) array-type -> simple-type OPEN_BRACKET . CLOSE_BRACKET
-    (83) expression-list -> . expression
-    (84) expression-list -> . expression-list COMMA expression
-    (38) expression -> . conditional-expression
-    (39) expression -> . assignment
-    (40) conditional-expression -> . conditional-or-expression
-    (41) conditional-expression -> . conditional-or-expression CONDOP expression COLON expression
-    (120) assignment -> . prim-expression assignment-operator expression
-    (42) conditional-or-expression -> . conditional-and-expression
-    (43) conditional-or-expression -> . conditional-or-expression LOGOR conditional-and-expression
-    (112) prim-expression -> . IDENTIFIER
-    (113) prim-expression -> . member-access
-    (114) prim-expression -> . element-access
-    (44) conditional-and-expression -> . inclusive-or-expression
-    (45) conditional-and-expression -> . conditional-and-expression LOGAND inclusive-or-expression
-    (100) member-access -> . prim-expression DOT IDENTIFIER
-    (110) element-access -> . IDENTIFIER OPEN_BRACKET expression-list CLOSE_BRACKET
-    (111) element-access -> . member-access OPEN_BRACKET expression-list CLOSE_BRACKET
-    (46) inclusive-or-expression -> . exclusive-or-expression
-    (47) inclusive-or-expression -> . inclusive-or-expression BITOR exclusive-or-expression
-    (48) exclusive-or-expression -> . and-expression
-    (49) exclusive-or-expression -> . exclusive-or-expression BITXOR and-expression
-    (50) and-expression -> . equality-expression
-    (51) and-expression -> . and-expression BITAND equality-expression
-    (52) equality-expression -> . relational-expression
-    (53) equality-expression -> . equality-expression EQ relational-expression
-    (54) equality-expression -> . equality-expression NE relational-expression
-    (55) relational-expression -> . shift-expression
-    (56) relational-expression -> . relational-expression LT shift-expression
-    (57) relational-expression -> . relational-expression GT shift-expression
-    (58) relational-expression -> . relational-expression LE shift-expression
-    (59) relational-expression -> . relational-expression GE shift-expression
-    (60) shift-expression -> . additive-expression
-    (61) shift-expression -> . shift-expression LSHIFT additive-expression
-    (62) shift-expression -> . shift-expression RSHIFT additive-expression
-    (63) additive-expression -> . multiplicative-expression
-    (64) additive-expression -> . additive-expression PLUS multiplicative-expression
-    (65) additive-expression -> . additive-expression MINUS multiplicative-expression
-    (66) multiplicative-expression -> . unary-expression
-    (67) multiplicative-expression -> . multiplicative-expression TIMES unary-expression
-    (68) multiplicative-expression -> . multiplicative-expression DIV unary-expression
-    (69) multiplicative-expression -> . multiplicative-expression MOD unary-expression
-    (70) unary-expression -> . primary-expression
-    (71) unary-expression -> . PLUS unary-expression
-    (72) unary-expression -> . MINUS unary-expression
-    (73) unary-expression -> . BITNOT unary-expression
-    (74) unary-expression -> . BITCOMP unary-expression
-    (75) unary-expression -> . TIMES unary-expression
-    (76) unary-expression -> . pre-increment-expression
-    (77) unary-expression -> . pre-decrement-expression
-    (78) primary-expression -> . array-creation-expression
-    (79) primary-expression -> . primary-no-array-creation-expression
-    (118) pre-increment-expression -> . INCRE prim-expression
-    (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
-    (90) primary-no-array-creation-expression -> . literal
-    (91) primary-no-array-creation-expression -> . IDENTIFIER
-    (92) primary-no-array-creation-expression -> . parenthesized-expression
-    (93) primary-no-array-creation-expression -> . member-access
-    (94) primary-no-array-creation-expression -> . invocation-expression
-    (95) primary-no-array-creation-expression -> . element-access
-    (96) primary-no-array-creation-expression -> . post-increment-expression
-    (97) primary-no-array-creation-expression -> . post-decrement-expression
-    (98) primary-no-array-creation-expression -> . object-creation-expression
-    (242) literal -> . ICONST
-    (243) literal -> . DCONST
-    (244) literal -> . TRUE
-    (245) literal -> . FALSE
-    (99) parenthesized-expression -> . OPEN_PAREN expression CLOSE_PAREN
-    (101) invocation-expression -> . IDENTIFIER OPEN_PAREN argument-list-opt CLOSE_PAREN
-    (102) invocation-expression -> . member-access OPEN_PAREN argument-list-opt CLOSE_PAREN
-    (115) post-increment-expression -> . prim-expression INCRE
-    (116) post-decrement-expression -> . prim-expression DECRE
-    (117) object-creation-expression -> . NEW type OPEN_PAREN argument-list-opt CLOSE_PAREN
+    (80) array-creation-expression -> NEW simple-type OPEN_BRACKET . ICONST CLOSE_BRACKET array-initializer-opt
+    (34) array-type -> simple-type OPEN_BRACKET . ICONST CLOSE_BRACKET
 
-    CLOSE_BRACKET   shift and go to state 216
-    IDENTIFIER      shift and go to state 94
-    PLUS            shift and go to state 93
-    MINUS           shift and go to state 84
-    BITNOT          shift and go to state 113
-    BITCOMP         shift and go to state 88
-    TIMES           shift and go to state 99
-    INCRE           shift and go to state 6
-    DECRE           shift and go to state 33
-    NEW             shift and go to state 82
-    ICONST          shift and go to state 101
-    DCONST          shift and go to state 114
-    TRUE            shift and go to state 107
-    FALSE           shift and go to state 105
-    OPEN_PAREN      shift and go to state 96
+    ICONST          shift and go to state 285
 
-    unary-expression               shift and go to state 103
-    exclusive-or-expression        shift and go to state 78
-    member-access                  shift and go to state 79
-    relational-expression          shift and go to state 80
-    additive-expression            shift and go to state 83
-    primary-no-array-creation-expression shift and go to state 100
-    inclusive-or-expression        shift and go to state 86
-    expression-list                shift and go to state 284
-    prim-expression                shift and go to state 77
-    element-access                 shift and go to state 89
-    literal                        shift and go to state 98
-    conditional-expression         shift and go to state 90
-    conditional-and-expression     shift and go to state 91
-    post-decrement-expression      shift and go to state 92
-    array-creation-expression      shift and go to state 81
-    assignment                     shift and go to state 97
-    post-increment-expression      shift and go to state 85
-    object-creation-expression     shift and go to state 102
-    pre-increment-expression       shift and go to state 106
-    equality-expression            shift and go to state 87
-    shift-expression               shift and go to state 108
-    and-expression                 shift and go to state 109
-    pre-decrement-expression       shift and go to state 110
-    multiplicative-expression      shift and go to state 111
-    expression                     shift and go to state 163
-    primary-expression             shift and go to state 115
-    invocation-expression          shift and go to state 116
-    conditional-or-expression      shift and go to state 117
-    parenthesized-expression       shift and go to state 118
 
 state 245
 
@@ -9427,8 +9310,8 @@ state 247
     LOGOR           reduce using rule 47 (inclusive-or-expression -> inclusive-or-expression BITOR exclusive-or-expression .)
     COMMA           reduce using rule 47 (inclusive-or-expression -> inclusive-or-expression BITOR exclusive-or-expression .)
     CLOSE_PAREN     reduce using rule 47 (inclusive-or-expression -> inclusive-or-expression BITOR exclusive-or-expression .)
-    DELIM           reduce using rule 47 (inclusive-or-expression -> inclusive-or-expression BITOR exclusive-or-expression .)
     CLOSE_BRACKET   reduce using rule 47 (inclusive-or-expression -> inclusive-or-expression BITOR exclusive-or-expression .)
+    DELIM           reduce using rule 47 (inclusive-or-expression -> inclusive-or-expression BITOR exclusive-or-expression .)
     COLON           reduce using rule 47 (inclusive-or-expression -> inclusive-or-expression BITOR exclusive-or-expression .)
     BLOCK_END       reduce using rule 47 (inclusive-or-expression -> inclusive-or-expression BITOR exclusive-or-expression .)
     BITXOR          shift and go to state 171
@@ -9450,9 +9333,9 @@ state 248
     LOGAND          reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
     CONDOP          reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
     LOGOR           reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
+    DELIM           reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
     CLOSE_BRACKET   reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
     COMMA           reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
-    DELIM           reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
     CLOSE_PAREN     reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
     COLON           reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
     BLOCK_END       reduce using rule 53 (equality-expression -> equality-expression EQ relational-expression .)
@@ -9478,9 +9361,9 @@ state 249
     LOGAND          reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
     CONDOP          reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
     LOGOR           reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
+    DELIM           reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
     CLOSE_BRACKET   reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
     COMMA           reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
-    DELIM           reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
     CLOSE_PAREN     reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
     COLON           reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
     BLOCK_END       reduce using rule 54 (equality-expression -> equality-expression NE relational-expression .)
@@ -9530,9 +9413,9 @@ state 251
     LOGAND          reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
     CONDOP          reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
     LOGOR           reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
+    DELIM           reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
     CLOSE_BRACKET   reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
     COMMA           reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
-    DELIM           reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
     CLOSE_PAREN     reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
     COLON           reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
     BLOCK_END       reduce using rule 99 (parenthesized-expression -> OPEN_PAREN expression CLOSE_PAREN .)
@@ -9560,8 +9443,8 @@ state 252
     LOGOR           reduce using rule 62 (shift-expression -> shift-expression RSHIFT additive-expression .)
     CLOSE_PAREN     reduce using rule 62 (shift-expression -> shift-expression RSHIFT additive-expression .)
     COMMA           reduce using rule 62 (shift-expression -> shift-expression RSHIFT additive-expression .)
-    BLOCK_END       reduce using rule 62 (shift-expression -> shift-expression RSHIFT additive-expression .)
     DELIM           reduce using rule 62 (shift-expression -> shift-expression RSHIFT additive-expression .)
+    BLOCK_END       reduce using rule 62 (shift-expression -> shift-expression RSHIFT additive-expression .)
     CLOSE_BRACKET   reduce using rule 62 (shift-expression -> shift-expression RSHIFT additive-expression .)
     COLON           reduce using rule 62 (shift-expression -> shift-expression RSHIFT additive-expression .)
     PLUS            shift and go to state 177
@@ -9590,8 +9473,8 @@ state 253
     LOGOR           reduce using rule 61 (shift-expression -> shift-expression LSHIFT additive-expression .)
     CLOSE_PAREN     reduce using rule 61 (shift-expression -> shift-expression LSHIFT additive-expression .)
     COMMA           reduce using rule 61 (shift-expression -> shift-expression LSHIFT additive-expression .)
-    BLOCK_END       reduce using rule 61 (shift-expression -> shift-expression LSHIFT additive-expression .)
     DELIM           reduce using rule 61 (shift-expression -> shift-expression LSHIFT additive-expression .)
+    BLOCK_END       reduce using rule 61 (shift-expression -> shift-expression LSHIFT additive-expression .)
     CLOSE_BRACKET   reduce using rule 61 (shift-expression -> shift-expression LSHIFT additive-expression .)
     COLON           reduce using rule 61 (shift-expression -> shift-expression LSHIFT additive-expression .)
     PLUS            shift and go to state 177
@@ -9733,7 +9616,7 @@ state 259
 
     (41) conditional-expression -> conditional-or-expression CONDOP expression . COLON expression
 
-    COLON           shift and go to state 285
+    COLON           shift and go to state 286
 
 
 state 260
@@ -9772,7 +9655,7 @@ state 260
     post-increment-expression      shift and go to state 4
     element-access                 shift and go to state 19
     post-decrement-expression      shift and go to state 45
-    statement-expression           shift and go to state 286
+    statement-expression           shift and go to state 287
     object-creation-expression     shift and go to state 63
     invocation-expression          shift and go to state 14
     pre-increment-expression       shift and go to state 64
@@ -9799,21 +9682,21 @@ state 261
     FALSE           reduce using rule 246 (empty -> .)
     OPEN_PAREN      reduce using rule 246 (empty -> .)
 
-    M_quad                         shift and go to state 287
+    M_quad                         shift and go to state 288
     empty                          shift and go to state 74
 
 state 262
 
     (212) while-statement -> WHILE M_quad OPEN_PAREN expression . CLOSE_PAREN M_while block
 
-    CLOSE_PAREN     shift and go to state 288
+    CLOSE_PAREN     shift and go to state 289
 
 
 state 263
 
     (117) object-creation-expression -> NEW type OPEN_PAREN argument-list-opt . CLOSE_PAREN
 
-    CLOSE_PAREN     shift and go to state 289
+    CLOSE_PAREN     shift and go to state 290
 
 
 state 264
@@ -9821,9 +9704,9 @@ state 264
     (198) switch-statement -> SWITCH OPEN_PAREN expression CLOSE_PAREN . switch-block
     (199) switch-block -> . BLOCK_BEGIN switch-sections-opt BLOCK_END
 
-    BLOCK_BEGIN     shift and go to state 290
+    BLOCK_BEGIN     shift and go to state 291
 
-    switch-block                   shift and go to state 291
+    switch-block                   shift and go to state 292
 
 state 265
 
@@ -9905,8 +9788,8 @@ state 267
 
     (137) variable-declarators -> variable-declarators COMMA variable-declarator .
 
-    COMMA           reduce using rule 137 (variable-declarators -> variable-declarators COMMA variable-declarator .)
     DELIM           reduce using rule 137 (variable-declarators -> variable-declarators COMMA variable-declarator .)
+    COMMA           reduce using rule 137 (variable-declarators -> variable-declarators COMMA variable-declarator .)
 
 
 state 268
@@ -9968,7 +9851,7 @@ state 268
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -10012,15 +9895,15 @@ state 268
     additive-expression            shift and go to state 83
     primary-no-array-creation-expression shift and go to state 100
     inclusive-or-expression        shift and go to state 86
-    expression-list                shift and go to state 294
+    expression-list                shift and go to state 295
     prim-expression                shift and go to state 77
     element-access                 shift and go to state 89
     literal                        shift and go to state 98
     conditional-expression         shift and go to state 90
     conditional-and-expression     shift and go to state 91
     post-decrement-expression      shift and go to state 92
-    variable-initializer-list-opt  shift and go to state 293
-    empty                          shift and go to state 292
+    variable-initializer-list-opt  shift and go to state 294
+    empty                          shift and go to state 293
     array-creation-expression      shift and go to state 81
     assignment                     shift and go to state 97
     post-increment-expression      shift and go to state 85
@@ -10049,8 +9932,8 @@ state 270
 
     (139) variable-declarator -> IDENTIFIER ASSIGN variable-initializer .
 
-    COMMA           reduce using rule 139 (variable-declarator -> IDENTIFIER ASSIGN variable-initializer .)
     DELIM           reduce using rule 139 (variable-declarator -> IDENTIFIER ASSIGN variable-initializer .)
+    COMMA           reduce using rule 139 (variable-declarator -> IDENTIFIER ASSIGN variable-initializer .)
 
 
 state 271
@@ -10063,21 +9946,29 @@ state 271
 
 state 272
 
-    (214) do-statement -> DO M_quad block WHILE . OPEN_PAREN M_quad expression CLOSE_PAREN DELIM
+    (34) array-type -> simple-type OPEN_BRACKET ICONST CLOSE_BRACKET .
 
-    OPEN_PAREN      shift and go to state 295
+    IDENTIFIER      reduce using rule 34 (array-type -> simple-type OPEN_BRACKET ICONST CLOSE_BRACKET .)
+    OPEN_PAREN      reduce using rule 34 (array-type -> simple-type OPEN_BRACKET ICONST CLOSE_BRACKET .)
 
 
 state 273
+
+    (214) do-statement -> DO M_quad block WHILE . OPEN_PAREN M_quad expression CLOSE_PAREN DELIM
+
+    OPEN_PAREN      shift and go to state 296
+
+
+state 274
 
     (36) constant-declarators -> constant-declarators COMMA . constant-declarator
     (37) constant-declarator -> . IDENTIFIER ASSIGN expression
 
     IDENTIFIER      shift and go to state 219
 
-    constant-declarator            shift and go to state 296
+    constant-declarator            shift and go to state 297
 
-state 274
+state 275
 
     (37) constant-declarator -> IDENTIFIER ASSIGN . expression
     (38) expression -> . conditional-expression
@@ -10131,7 +10022,7 @@ state 274
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -10193,10 +10084,10 @@ state 274
     conditional-or-expression      shift and go to state 117
     primary-expression             shift and go to state 115
     invocation-expression          shift and go to state 116
-    expression                     shift and go to state 297
+    expression                     shift and go to state 298
     parenthesized-expression       shift and go to state 118
 
-state 275
+state 276
 
     (157) block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .
 
@@ -10223,9 +10114,9 @@ state 275
     CHAR            reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
     DOUBLE          reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
     $end            reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
-    BLOCK_END       reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
     CASE            reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
     DEFAULT         reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
+    BLOCK_END       reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
     BITCOMP         reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
     PUBLIC          reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
     PRIVATE         reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
@@ -10233,21 +10124,21 @@ state 275
     ELSE            reduce using rule 157 (block -> BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END .)
 
 
-state 276
+state 277
 
     (9) class-declaration -> CLASS IDENTIFIER class-base-opt class-body . semi-opt
     (3) semi-opt -> . DELIM
     (4) semi-opt -> . empty
     (246) empty -> .
 
-    DELIM           shift and go to state 298
+    DELIM           shift and go to state 299
     CLASS           reduce using rule 246 (empty -> .)
     $end            reduce using rule 246 (empty -> .)
 
-    semi-opt                       shift and go to state 299
-    empty                          shift and go to state 300
+    semi-opt                       shift and go to state 300
+    empty                          shift and go to state 301
 
-state 277
+state 278
 
     (14) class-body -> BLOCK_BEGIN . class-member-declarations-opt BLOCK_END
     (15) class-member-declarations-opt -> . class-member-declarations
@@ -10283,46 +10174,46 @@ state 277
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
 
     BLOCK_END       reduce using rule 246 (empty -> .)
-    CONST           shift and go to state 303
-    BITCOMP         shift and go to state 305
-    PUBLIC          shift and go to state 319
-    PRIVATE         shift and go to state 304
-    VOID            shift and go to state 302
-    IDENTIFIER      shift and go to state 314
+    CONST           shift and go to state 304
+    BITCOMP         shift and go to state 306
+    PUBLIC          shift and go to state 320
+    PRIVATE         shift and go to state 305
+    VOID            shift and go to state 303
+    IDENTIFIER      shift and go to state 315
     BOOL            shift and go to state 49
     INT             shift and go to state 26
     UINT            shift and go to state 62
     CHAR            shift and go to state 34
     DOUBLE          shift and go to state 13
 
-    method-header                  shift and go to state 301
-    class-member-declaration       shift and go to state 317
-    method-declaration             shift and go to state 306
-    class-member-declarations-opt  shift and go to state 311
-    type                           shift and go to state 309
-    empty                          shift and go to state 310
+    method-header                  shift and go to state 302
+    class-member-declaration       shift and go to state 318
+    method-declaration             shift and go to state 307
+    class-member-declarations-opt  shift and go to state 312
+    type                           shift and go to state 310
+    empty                          shift and go to state 311
     array-type                     shift and go to state 44
-    field-declaration              shift and go to state 307
-    constructor-declaration        shift and go to state 312
-    class-member-declarations      shift and go to state 313
-    constant-declaration           shift and go to state 308
-    destructor-declaration         shift and go to state 315
-    constructor-declarator         shift and go to state 316
+    field-declaration              shift and go to state 308
+    constructor-declaration        shift and go to state 313
+    class-member-declarations      shift and go to state 314
+    constant-declaration           shift and go to state 309
+    destructor-declaration         shift and go to state 316
+    constructor-declarator         shift and go to state 317
     class-type                     shift and go to state 66
     simple-type                    shift and go to state 52
-    modifier                       shift and go to state 318
+    modifier                       shift and go to state 319
 
-state 278
+state 279
 
     (12) class-base -> COLON class-type .
 
     BLOCK_BEGIN     reduce using rule 12 (class-base -> COLON class-type .)
 
 
-state 279
+state 280
 
     (173) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN . print-list CLOSE_PAREN DELIM
     (174) print-list -> . expression
@@ -10378,7 +10269,7 @@ state 279
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -10435,23 +10326,23 @@ state 279
     pre-increment-expression       shift and go to state 106
     equality-expression            shift and go to state 87
     shift-expression               shift and go to state 108
-    print-list                     shift and go to state 320
+    print-list                     shift and go to state 321
     pre-decrement-expression       shift and go to state 110
     multiplicative-expression      shift and go to state 111
-    expression                     shift and go to state 321
+    expression                     shift and go to state 322
     primary-expression             shift and go to state 115
     invocation-expression          shift and go to state 116
     conditional-or-expression      shift and go to state 117
     parenthesized-expression       shift and go to state 118
 
-state 280
+state 281
 
     (176) read-statement -> CONSOLE DOT READLINE OPEN_PAREN . IDENTIFIER CLOSE_PAREN DELIM
 
-    IDENTIFIER      shift and go to state 322
+    IDENTIFIER      shift and go to state 323
 
 
-state 281
+state 282
 
     (193) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN . M_if block
     (194) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN . M_if block ELSE M_else block
@@ -10460,10 +10351,10 @@ state 281
 
     BLOCK_BEGIN     reduce using rule 246 (empty -> .)
 
-    M_if                           shift and go to state 323
-    empty                          shift and go to state 324
+    M_if                           shift and go to state 324
+    empty                          shift and go to state 325
 
-state 282
+state 283
 
     (84) expression-list -> expression-list COMMA expression .
 
@@ -10472,7 +10363,7 @@ state 282
     BLOCK_END       reduce using rule 84 (expression-list -> expression-list COMMA expression .)
 
 
-state 283
+state 284
 
     (106) argument-list -> argument-list COMMA argument .
 
@@ -10480,16 +10371,15 @@ state 283
     CLOSE_PAREN     reduce using rule 106 (argument-list -> argument-list COMMA argument .)
 
 
-state 284
-
-    (80) array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list . CLOSE_BRACKET array-initializer-opt
-    (84) expression-list -> expression-list . COMMA expression
-
-    CLOSE_BRACKET   shift and go to state 325
-    COMMA           shift and go to state 234
-
-
 state 285
+
+    (80) array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST . CLOSE_BRACKET array-initializer-opt
+    (34) array-type -> simple-type OPEN_BRACKET ICONST . CLOSE_BRACKET
+
+    CLOSE_BRACKET   shift and go to state 326
+
+
+state 286
 
     (41) conditional-expression -> conditional-or-expression CONDOP expression COLON . expression
     (38) expression -> . conditional-expression
@@ -10543,7 +10433,7 @@ state 285
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -10602,13 +10492,13 @@ state 285
     and-expression                 shift and go to state 109
     pre-decrement-expression       shift and go to state 110
     multiplicative-expression      shift and go to state 111
-    expression                     shift and go to state 326
+    expression                     shift and go to state 327
     primary-expression             shift and go to state 115
     invocation-expression          shift and go to state 116
     conditional-or-expression      shift and go to state 117
     parenthesized-expression       shift and go to state 118
 
-state 286
+state 287
 
     (224) statement-expression-list -> statement-expression-list COMMA statement-expression .
 
@@ -10617,7 +10507,7 @@ state 286
     CLOSE_PAREN     reduce using rule 224 (statement-expression-list -> statement-expression-list COMMA statement-expression .)
 
 
-state 287
+state 288
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad . for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block
     (219) for-condition -> . expression
@@ -10672,7 +10562,7 @@ state 287
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -10714,7 +10604,7 @@ state 287
     relational-expression          shift and go to state 80
     additive-expression            shift and go to state 83
     primary-no-array-creation-expression shift and go to state 100
-    for-condition                  shift and go to state 327
+    for-condition                  shift and go to state 328
     prim-expression                shift and go to state 77
     element-access                 shift and go to state 89
     literal                        shift and go to state 98
@@ -10731,14 +10621,14 @@ state 287
     and-expression                 shift and go to state 109
     pre-decrement-expression       shift and go to state 110
     multiplicative-expression      shift and go to state 111
-    expression                     shift and go to state 328
+    expression                     shift and go to state 329
     parenthesized-expression       shift and go to state 118
     inclusive-or-expression        shift and go to state 86
     primary-expression             shift and go to state 115
     invocation-expression          shift and go to state 116
     conditional-or-expression      shift and go to state 117
 
-state 288
+state 289
 
     (212) while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN . M_while block
     (213) M_while -> . empty
@@ -10746,10 +10636,10 @@ state 288
 
     BLOCK_BEGIN     reduce using rule 246 (empty -> .)
 
-    M_while                        shift and go to state 329
-    empty                          shift and go to state 330
+    M_while                        shift and go to state 330
+    empty                          shift and go to state 331
 
-state 289
+state 290
 
     (117) object-creation-expression -> NEW type OPEN_PAREN argument-list-opt CLOSE_PAREN .
 
@@ -10780,7 +10670,7 @@ state 289
     BLOCK_END       reduce using rule 117 (object-creation-expression -> NEW type OPEN_PAREN argument-list-opt CLOSE_PAREN .)
 
 
-state 290
+state 291
 
     (199) switch-block -> BLOCK_BEGIN . switch-sections-opt BLOCK_END
     (200) switch-sections-opt -> . switch-sections
@@ -10795,17 +10685,17 @@ state 290
     (208) switch-label -> . DEFAULT COLON
 
     BLOCK_END       reduce using rule 246 (empty -> .)
-    CASE            shift and go to state 331
-    DEFAULT         shift and go to state 332
+    CASE            shift and go to state 332
+    DEFAULT         shift and go to state 333
 
-    switch-sections-opt            shift and go to state 335
-    switch-section                 shift and go to state 333
-    switch-labels                  shift and go to state 334
-    switch-sections                shift and go to state 336
-    empty                          shift and go to state 337
-    switch-label                   shift and go to state 338
+    switch-sections-opt            shift and go to state 336
+    switch-section                 shift and go to state 334
+    switch-labels                  shift and go to state 335
+    switch-sections                shift and go to state 337
+    empty                          shift and go to state 338
+    switch-label                   shift and go to state 339
 
-state 291
+state 292
 
     (198) switch-statement -> SWITCH OPEN_PAREN expression CLOSE_PAREN switch-block .
 
@@ -10837,21 +10727,21 @@ state 291
     $end            reduce using rule 198 (switch-statement -> SWITCH OPEN_PAREN expression CLOSE_PAREN switch-block .)
 
 
-state 292
+state 293
 
     (87) variable-initializer-list-opt -> empty .
 
     BLOCK_END       reduce using rule 87 (variable-initializer-list-opt -> empty .)
 
 
-state 293
+state 294
 
     (85) array-initializer -> BLOCK_BEGIN variable-initializer-list-opt . BLOCK_END
 
-    BLOCK_END       shift and go to state 339
+    BLOCK_END       shift and go to state 340
 
 
-state 294
+state 295
 
     (86) variable-initializer-list-opt -> expression-list .
     (84) expression-list -> expression-list . COMMA expression
@@ -10860,7 +10750,7 @@ state 294
     COMMA           shift and go to state 234
 
 
-state 295
+state 296
 
     (214) do-statement -> DO M_quad block WHILE OPEN_PAREN . M_quad expression CLOSE_PAREN DELIM
     (197) M_quad -> . empty
@@ -10881,10 +10771,10 @@ state 295
     FALSE           reduce using rule 246 (empty -> .)
     OPEN_PAREN      reduce using rule 246 (empty -> .)
 
-    M_quad                         shift and go to state 340
+    M_quad                         shift and go to state 341
     empty                          shift and go to state 74
 
-state 296
+state 297
 
     (36) constant-declarators -> constant-declarators COMMA constant-declarator .
 
@@ -10892,15 +10782,15 @@ state 296
     COMMA           reduce using rule 36 (constant-declarators -> constant-declarators COMMA constant-declarator .)
 
 
-state 297
+state 298
 
     (37) constant-declarator -> IDENTIFIER ASSIGN expression .
 
-    DELIM           reduce using rule 37 (constant-declarator -> IDENTIFIER ASSIGN expression .)
     COMMA           reduce using rule 37 (constant-declarator -> IDENTIFIER ASSIGN expression .)
+    DELIM           reduce using rule 37 (constant-declarator -> IDENTIFIER ASSIGN expression .)
 
 
-state 298
+state 299
 
     (3) semi-opt -> DELIM .
 
@@ -10908,7 +10798,7 @@ state 298
     $end            reduce using rule 3 (semi-opt -> DELIM .)
 
 
-state 299
+state 300
 
     (9) class-declaration -> CLASS IDENTIFIER class-base-opt class-body semi-opt .
 
@@ -10916,7 +10806,7 @@ state 299
     $end            reduce using rule 9 (class-declaration -> CLASS IDENTIFIER class-base-opt class-body semi-opt .)
 
 
-state 300
+state 301
 
     (4) semi-opt -> empty .
 
@@ -10924,29 +10814,29 @@ state 300
     $end            reduce using rule 4 (semi-opt -> empty .)
 
 
-state 301
+state 302
 
     (140) method-declaration -> method-header . method-body
     (155) method-body -> . block
     (156) method-body -> . DELIM
     (157) block -> . BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
 
-    DELIM           shift and go to state 341
+    DELIM           shift and go to state 342
     BLOCK_BEGIN     shift and go to state 55
 
-    method-body                    shift and go to state 342
-    block                          shift and go to state 343
+    method-body                    shift and go to state 343
+    block                          shift and go to state 344
 
-state 302
+state 303
 
     (144) method-header -> VOID . member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
     (147) member-name -> . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 345
+    IDENTIFIER      shift and go to state 346
 
-    member-name                    shift and go to state 344
+    member-name                    shift and go to state 345
 
-state 303
+state 304
 
     (25) constant-declaration -> CONST . simple-type constant-declarators DELIM
     (29) simple-type -> . BOOL
@@ -10961,9 +10851,9 @@ state 303
     CHAR            shift and go to state 34
     DOUBLE          shift and go to state 13
 
-    simple-type                    shift and go to state 346
+    simple-type                    shift and go to state 347
 
-state 304
+state 305
 
     (135) modifier -> PRIVATE .
 
@@ -10977,14 +10867,14 @@ state 304
     IDENTIFIER      reduce using rule 135 (modifier -> PRIVATE .)
 
 
-state 305
+state 306
 
     (239) destructor-declaration -> BITCOMP . IDENTIFIER OPEN_PAREN CLOSE_PAREN destructor-body
 
-    IDENTIFIER      shift and go to state 347
+    IDENTIFIER      shift and go to state 348
 
 
-state 306
+state 307
 
     (21) class-member-declaration -> method-declaration .
 
@@ -11002,7 +10892,7 @@ state 306
     BLOCK_END       reduce using rule 21 (class-member-declaration -> method-declaration .)
 
 
-state 307
+state 308
 
     (20) class-member-declaration -> field-declaration .
 
@@ -11020,7 +10910,7 @@ state 307
     BLOCK_END       reduce using rule 20 (class-member-declaration -> field-declaration .)
 
 
-state 308
+state 309
 
     (19) class-member-declaration -> constant-declaration .
 
@@ -11038,7 +10928,7 @@ state 308
     BLOCK_END       reduce using rule 19 (class-member-declaration -> constant-declaration .)
 
 
-state 309
+state 310
 
     (133) field-declaration -> type . variable-declarators DELIM
     (143) method-header -> type . member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
@@ -11048,27 +10938,27 @@ state 309
     (138) variable-declarator -> . IDENTIFIER
     (139) variable-declarator -> . IDENTIFIER ASSIGN variable-initializer
 
-    IDENTIFIER      shift and go to state 350
+    IDENTIFIER      shift and go to state 351
 
     variable-declarator            shift and go to state 133
-    variable-declarators           shift and go to state 348
-    member-name                    shift and go to state 349
+    variable-declarators           shift and go to state 349
+    member-name                    shift and go to state 350
 
-state 310
+state 311
 
     (16) class-member-declarations-opt -> empty .
 
     BLOCK_END       reduce using rule 16 (class-member-declarations-opt -> empty .)
 
 
-state 311
+state 312
 
     (14) class-body -> BLOCK_BEGIN class-member-declarations-opt . BLOCK_END
 
-    BLOCK_END       shift and go to state 351
+    BLOCK_END       shift and go to state 352
 
 
-state 312
+state 313
 
     (22) class-member-declaration -> constructor-declaration .
 
@@ -11086,7 +10976,7 @@ state 312
     BLOCK_END       reduce using rule 22 (class-member-declaration -> constructor-declaration .)
 
 
-state 313
+state 314
 
     (15) class-member-declarations-opt -> class-member-declarations .
     (18) class-member-declarations -> class-member-declarations . class-member-declaration
@@ -11118,15 +11008,15 @@ state 313
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
 
     BLOCK_END       reduce using rule 15 (class-member-declarations-opt -> class-member-declarations .)
-    CONST           shift and go to state 303
-    BITCOMP         shift and go to state 305
-    PUBLIC          shift and go to state 319
-    PRIVATE         shift and go to state 304
-    VOID            shift and go to state 302
-    IDENTIFIER      shift and go to state 314
+    CONST           shift and go to state 304
+    BITCOMP         shift and go to state 306
+    PUBLIC          shift and go to state 320
+    PRIVATE         shift and go to state 305
+    VOID            shift and go to state 303
+    IDENTIFIER      shift and go to state 315
     BOOL            shift and go to state 49
     INT             shift and go to state 26
     UINT            shift and go to state 62
@@ -11134,29 +11024,29 @@ state 313
     DOUBLE          shift and go to state 13
 
     array-type                     shift and go to state 44
-    modifier                       shift and go to state 318
-    method-header                  shift and go to state 301
-    constructor-declaration        shift and go to state 312
-    type                           shift and go to state 309
-    constructor-declarator         shift and go to state 316
-    method-declaration             shift and go to state 306
-    class-member-declaration       shift and go to state 352
-    field-declaration              shift and go to state 307
+    modifier                       shift and go to state 319
+    method-header                  shift and go to state 302
+    constructor-declaration        shift and go to state 313
+    type                           shift and go to state 310
+    constructor-declarator         shift and go to state 317
+    method-declaration             shift and go to state 307
+    class-member-declaration       shift and go to state 353
+    field-declaration              shift and go to state 308
     class-type                     shift and go to state 66
     simple-type                    shift and go to state 52
-    constant-declaration           shift and go to state 308
-    destructor-declaration         shift and go to state 315
+    constant-declaration           shift and go to state 309
+    destructor-declaration         shift and go to state 316
 
-state 314
+state 315
 
     (236) constructor-declarator -> IDENTIFIER . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
     (13) class-type -> IDENTIFIER .
 
-    OPEN_PAREN      shift and go to state 353
+    OPEN_PAREN      shift and go to state 354
     IDENTIFIER      reduce using rule 13 (class-type -> IDENTIFIER .)
 
 
-state 315
+state 316
 
     (23) class-member-declaration -> destructor-declaration .
 
@@ -11174,20 +11064,20 @@ state 315
     BLOCK_END       reduce using rule 23 (class-member-declaration -> destructor-declaration .)
 
 
-state 316
+state 317
 
     (235) constructor-declaration -> constructor-declarator . constructor-body
     (237) constructor-body -> . block
     (238) constructor-body -> . DELIM
     (157) block -> . BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
 
-    DELIM           shift and go to state 355
+    DELIM           shift and go to state 356
     BLOCK_BEGIN     shift and go to state 55
 
-    constructor-body               shift and go to state 354
-    block                          shift and go to state 356
+    constructor-body               shift and go to state 355
+    block                          shift and go to state 357
 
-state 317
+state 318
 
     (17) class-member-declarations -> class-member-declaration .
 
@@ -11205,7 +11095,7 @@ state 317
     BLOCK_END       reduce using rule 17 (class-member-declarations -> class-member-declaration .)
 
 
-state 318
+state 319
 
     (24) constant-declaration -> modifier . CONST simple-type constant-declarators DELIM
     (132) field-declaration -> modifier . type variable-declarators DELIM
@@ -11220,10 +11110,10 @@ state 318
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
 
-    CONST           shift and go to state 357
-    VOID            shift and go to state 358
+    CONST           shift and go to state 358
+    VOID            shift and go to state 359
     BOOL            shift and go to state 49
     INT             shift and go to state 26
     UINT            shift and go to state 62
@@ -11234,9 +11124,9 @@ state 318
     array-type                     shift and go to state 44
     simple-type                    shift and go to state 52
     class-type                     shift and go to state 66
-    type                           shift and go to state 359
+    type                           shift and go to state 360
 
-state 319
+state 320
 
     (134) modifier -> PUBLIC .
 
@@ -11250,30 +11140,30 @@ state 319
     IDENTIFIER      reduce using rule 134 (modifier -> PUBLIC .)
 
 
-state 320
+state 321
 
     (173) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list . CLOSE_PAREN DELIM
 
-    CLOSE_PAREN     shift and go to state 360
+    CLOSE_PAREN     shift and go to state 361
 
 
-state 321
+state 322
 
     (174) print-list -> expression .
     (175) print-list -> expression . COMMA print-list
 
     CLOSE_PAREN     reduce using rule 174 (print-list -> expression .)
-    COMMA           shift and go to state 361
-
-
-state 322
-
-    (176) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER . CLOSE_PAREN DELIM
-
-    CLOSE_PAREN     shift and go to state 362
+    COMMA           shift and go to state 362
 
 
 state 323
+
+    (176) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER . CLOSE_PAREN DELIM
+
+    CLOSE_PAREN     shift and go to state 363
+
+
+state 324
 
     (193) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if . block
     (194) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if . block ELSE M_else block
@@ -11281,23 +11171,25 @@ state 323
 
     BLOCK_BEGIN     shift and go to state 55
 
-    block                          shift and go to state 363
+    block                          shift and go to state 364
 
-state 324
+state 325
 
     (195) M_if -> empty .
 
     BLOCK_BEGIN     reduce using rule 195 (M_if -> empty .)
 
 
-state 325
+state 326
 
-    (80) array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET . array-initializer-opt
+    (80) array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET . array-initializer-opt
+    (34) array-type -> simple-type OPEN_BRACKET ICONST CLOSE_BRACKET .
     (81) array-initializer-opt -> . array-initializer
     (82) array-initializer-opt -> . empty
     (85) array-initializer -> . BLOCK_BEGIN variable-initializer-list-opt BLOCK_END
     (246) empty -> .
 
+    OPEN_PAREN      reduce using rule 34 (array-type -> simple-type OPEN_BRACKET ICONST CLOSE_BRACKET .)
     BLOCK_BEGIN     shift and go to state 268
     TIMES           reduce using rule 246 (empty -> .)
     DIV             reduce using rule 246 (empty -> .)
@@ -11325,53 +11217,53 @@ state 325
     COLON           reduce using rule 246 (empty -> .)
     BLOCK_END       reduce using rule 246 (empty -> .)
 
-    array-initializer              shift and go to state 364
-    array-initializer-opt          shift and go to state 365
-    empty                          shift and go to state 366
+    array-initializer-opt          shift and go to state 366
+    empty                          shift and go to state 367
+    array-initializer              shift and go to state 365
 
-state 326
+state 327
 
     (41) conditional-expression -> conditional-or-expression CONDOP expression COLON expression .
 
     COMMA           reduce using rule 41 (conditional-expression -> conditional-or-expression CONDOP expression COLON expression .)
-    DELIM           reduce using rule 41 (conditional-expression -> conditional-or-expression CONDOP expression COLON expression .)
     BLOCK_END       reduce using rule 41 (conditional-expression -> conditional-or-expression CONDOP expression COLON expression .)
+    DELIM           reduce using rule 41 (conditional-expression -> conditional-or-expression CONDOP expression COLON expression .)
     CLOSE_PAREN     reduce using rule 41 (conditional-expression -> conditional-or-expression CONDOP expression COLON expression .)
     CLOSE_BRACKET   reduce using rule 41 (conditional-expression -> conditional-or-expression CONDOP expression COLON expression .)
     COLON           reduce using rule 41 (conditional-expression -> conditional-or-expression CONDOP expression COLON expression .)
 
 
-state 327
+state 328
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition . DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block
 
-    DELIM           shift and go to state 367
+    DELIM           shift and go to state 368
 
 
-state 328
+state 329
 
     (219) for-condition -> expression .
 
     DELIM           reduce using rule 219 (for-condition -> expression .)
 
 
-state 329
+state 330
 
     (212) while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while . block
     (157) block -> . BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
 
     BLOCK_BEGIN     shift and go to state 55
 
-    block                          shift and go to state 368
+    block                          shift and go to state 369
 
-state 330
+state 331
 
     (213) M_while -> empty .
 
     BLOCK_BEGIN     reduce using rule 213 (M_while -> empty .)
 
 
-state 331
+state 332
 
     (207) switch-label -> CASE . expression COLON
     (38) expression -> . conditional-expression
@@ -11425,7 +11317,7 @@ state 331
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -11487,17 +11379,17 @@ state 331
     conditional-or-expression      shift and go to state 117
     primary-expression             shift and go to state 115
     invocation-expression          shift and go to state 116
-    expression                     shift and go to state 369
+    expression                     shift and go to state 370
     parenthesized-expression       shift and go to state 118
 
-state 332
+state 333
 
     (208) switch-label -> DEFAULT . COLON
 
-    COLON           shift and go to state 370
+    COLON           shift and go to state 371
 
 
-state 333
+state 334
 
     (202) switch-sections -> switch-section .
 
@@ -11506,7 +11398,7 @@ state 333
     BLOCK_END       reduce using rule 202 (switch-sections -> switch-section .)
 
 
-state 334
+state 335
 
     (204) switch-section -> switch-labels . statement-list
     (206) switch-labels -> switch-labels . switch-label
@@ -11577,7 +11469,7 @@ state 334
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
     (100) member-access -> . prim-expression DOT IDENTIFIER
     (112) prim-expression -> . IDENTIFIER
     (113) prim-expression -> . member-access
@@ -11585,8 +11477,8 @@ state 334
     (110) element-access -> . IDENTIFIER OPEN_BRACKET expression-list CLOSE_BRACKET
     (111) element-access -> . member-access OPEN_BRACKET expression-list CLOSE_BRACKET
 
-    CASE            shift and go to state 331
-    DEFAULT         shift and go to state 332
+    CASE            shift and go to state 332
+    DEFAULT         shift and go to state 333
     IDENTIFIER      shift and go to state 41
     BLOCK_BEGIN     shift and go to state 55
     DELIM           shift and go to state 31
@@ -11623,7 +11515,7 @@ state 334
     element-access                 shift and go to state 19
     statement-expression           shift and go to state 5
     local-constant-declaration     shift and go to state 20
-    switch-label                   shift and go to state 371
+    switch-label                   shift and go to state 372
     statement                      shift and go to state 40
     assignment                     shift and go to state 60
     for-statement                  shift and go to state 7
@@ -11644,20 +11536,20 @@ state 334
     local-variable-declaration     shift and go to state 25
     goto-statement                 shift and go to state 27
     if-statement                   shift and go to state 28
-    statement-list                 shift and go to state 372
+    statement-list                 shift and go to state 373
     class-type                     shift and go to state 66
     while-statement                shift and go to state 51
     simple-type                    shift and go to state 52
     block                          shift and go to state 30
 
-state 335
+state 336
 
     (199) switch-block -> BLOCK_BEGIN switch-sections-opt . BLOCK_END
 
-    BLOCK_END       shift and go to state 373
+    BLOCK_END       shift and go to state 374
 
 
-state 336
+state 337
 
     (200) switch-sections-opt -> switch-sections .
     (203) switch-sections -> switch-sections . switch-section
@@ -11668,21 +11560,21 @@ state 336
     (208) switch-label -> . DEFAULT COLON
 
     BLOCK_END       reduce using rule 200 (switch-sections-opt -> switch-sections .)
-    CASE            shift and go to state 331
-    DEFAULT         shift and go to state 332
+    CASE            shift and go to state 332
+    DEFAULT         shift and go to state 333
 
-    switch-section                 shift and go to state 374
-    switch-labels                  shift and go to state 334
-    switch-label                   shift and go to state 338
+    switch-section                 shift and go to state 375
+    switch-labels                  shift and go to state 335
+    switch-label                   shift and go to state 339
 
-state 337
+state 338
 
     (201) switch-sections-opt -> empty .
 
     BLOCK_END       reduce using rule 201 (switch-sections-opt -> empty .)
 
 
-state 338
+state 339
 
     (205) switch-labels -> switch-label .
 
@@ -11712,7 +11604,7 @@ state 338
     DOUBLE          reduce using rule 205 (switch-labels -> switch-label .)
 
 
-state 339
+state 340
 
     (85) array-initializer -> BLOCK_BEGIN variable-initializer-list-opt BLOCK_END .
 
@@ -11743,7 +11635,7 @@ state 339
     BLOCK_END       reduce using rule 85 (array-initializer -> BLOCK_BEGIN variable-initializer-list-opt BLOCK_END .)
 
 
-state 340
+state 341
 
     (214) do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad . expression CLOSE_PAREN DELIM
     (38) expression -> . conditional-expression
@@ -11797,7 +11689,7 @@ state 340
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -11859,10 +11751,10 @@ state 340
     conditional-or-expression      shift and go to state 117
     primary-expression             shift and go to state 115
     invocation-expression          shift and go to state 116
-    expression                     shift and go to state 375
+    expression                     shift and go to state 376
     parenthesized-expression       shift and go to state 118
 
-state 341
+state 342
 
     (156) method-body -> DELIM .
 
@@ -11880,7 +11772,7 @@ state 341
     BLOCK_END       reduce using rule 156 (method-body -> DELIM .)
 
 
-state 342
+state 343
 
     (140) method-declaration -> method-header method-body .
 
@@ -11898,7 +11790,7 @@ state 342
     BLOCK_END       reduce using rule 140 (method-declaration -> method-header method-body .)
 
 
-state 343
+state 344
 
     (155) method-body -> block .
 
@@ -11916,21 +11808,21 @@ state 343
     BLOCK_END       reduce using rule 155 (method-body -> block .)
 
 
-state 344
+state 345
 
     (144) method-header -> VOID member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
 
-    OPEN_PAREN      shift and go to state 376
+    OPEN_PAREN      shift and go to state 377
 
 
-state 345
+state 346
 
     (147) member-name -> IDENTIFIER .
 
     OPEN_PAREN      reduce using rule 147 (member-name -> IDENTIFIER .)
 
 
-state 346
+state 347
 
     (25) constant-declaration -> CONST simple-type . constant-declarators DELIM
     (35) constant-declarators -> . constant-declarator
@@ -11939,33 +11831,33 @@ state 346
 
     IDENTIFIER      shift and go to state 219
 
-    constant-declarators           shift and go to state 377
+    constant-declarators           shift and go to state 378
     constant-declarator            shift and go to state 220
-
-state 347
-
-    (239) destructor-declaration -> BITCOMP IDENTIFIER . OPEN_PAREN CLOSE_PAREN destructor-body
-
-    OPEN_PAREN      shift and go to state 378
-
 
 state 348
 
-    (133) field-declaration -> type variable-declarators . DELIM
-    (137) variable-declarators -> variable-declarators . COMMA variable-declarator
+    (239) destructor-declaration -> BITCOMP IDENTIFIER . OPEN_PAREN CLOSE_PAREN destructor-body
 
-    DELIM           shift and go to state 379
-    COMMA           shift and go to state 214
+    OPEN_PAREN      shift and go to state 379
 
 
 state 349
 
-    (143) method-header -> type member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+    (133) field-declaration -> type variable-declarators . DELIM
+    (137) variable-declarators -> variable-declarators . COMMA variable-declarator
 
-    OPEN_PAREN      shift and go to state 380
+    DELIM           shift and go to state 380
+    COMMA           shift and go to state 214
 
 
 state 350
+
+    (143) method-header -> type member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+
+    OPEN_PAREN      shift and go to state 381
+
+
+state 351
 
     (147) member-name -> IDENTIFIER .
     (138) variable-declarator -> IDENTIFIER .
@@ -11977,7 +11869,7 @@ state 350
     ASSIGN          shift and go to state 215
 
 
-state 351
+state 352
 
     (14) class-body -> BLOCK_BEGIN class-member-declarations-opt BLOCK_END .
 
@@ -11986,7 +11878,7 @@ state 351
     $end            reduce using rule 14 (class-body -> BLOCK_BEGIN class-member-declarations-opt BLOCK_END .)
 
 
-state 352
+state 353
 
     (18) class-member-declarations -> class-member-declarations class-member-declaration .
 
@@ -12004,7 +11896,7 @@ state 352
     BLOCK_END       reduce using rule 18 (class-member-declarations -> class-member-declarations class-member-declaration .)
 
 
-state 353
+state 354
 
     (236) constructor-declarator -> IDENTIFIER OPEN_PAREN . formal-parameter-list-opt CLOSE_PAREN
     (145) formal-parameter-list-opt -> . formal-parameter-list
@@ -12025,17 +11917,17 @@ state 353
     CHAR            reduce using rule 246 (empty -> .)
     DOUBLE          reduce using rule 246 (empty -> .)
     IDENTIFIER      reduce using rule 246 (empty -> .)
-    OUT             shift and go to state 384
+    OUT             shift and go to state 385
 
-    parameter-modifier             shift and go to state 381
-    fixed-parameters               shift and go to state 383
-    formal-parameter-list-opt      shift and go to state 385
-    parameter-modifier-opt         shift and go to state 382
-    formal-parameter-list          shift and go to state 388
-    empty                          shift and go to state 387
-    fixed-parameter                shift and go to state 386
+    parameter-modifier             shift and go to state 382
+    fixed-parameters               shift and go to state 384
+    formal-parameter-list-opt      shift and go to state 386
+    parameter-modifier-opt         shift and go to state 383
+    formal-parameter-list          shift and go to state 389
+    empty                          shift and go to state 388
+    fixed-parameter                shift and go to state 387
 
-state 354
+state 355
 
     (235) constructor-declaration -> constructor-declarator constructor-body .
 
@@ -12053,7 +11945,7 @@ state 354
     BLOCK_END       reduce using rule 235 (constructor-declaration -> constructor-declarator constructor-body .)
 
 
-state 355
+state 356
 
     (238) constructor-body -> DELIM .
 
@@ -12071,7 +11963,7 @@ state 355
     BLOCK_END       reduce using rule 238 (constructor-body -> DELIM .)
 
 
-state 356
+state 357
 
     (237) constructor-body -> block .
 
@@ -12089,7 +11981,7 @@ state 356
     BLOCK_END       reduce using rule 237 (constructor-body -> block .)
 
 
-state 357
+state 358
 
     (24) constant-declaration -> modifier CONST . simple-type constant-declarators DELIM
     (29) simple-type -> . BOOL
@@ -12104,18 +11996,18 @@ state 357
     CHAR            shift and go to state 34
     DOUBLE          shift and go to state 13
 
-    simple-type                    shift and go to state 389
+    simple-type                    shift and go to state 390
 
-state 358
+state 359
 
     (142) method-header -> modifier VOID . member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
     (147) member-name -> . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 345
+    IDENTIFIER      shift and go to state 346
 
-    member-name                    shift and go to state 390
+    member-name                    shift and go to state 391
 
-state 359
+state 360
 
     (132) field-declaration -> modifier type . variable-declarators DELIM
     (141) method-header -> modifier type . member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
@@ -12125,20 +12017,20 @@ state 359
     (138) variable-declarator -> . IDENTIFIER
     (139) variable-declarator -> . IDENTIFIER ASSIGN variable-initializer
 
-    IDENTIFIER      shift and go to state 350
+    IDENTIFIER      shift and go to state 351
 
     variable-declarator            shift and go to state 133
-    variable-declarators           shift and go to state 391
-    member-name                    shift and go to state 392
+    variable-declarators           shift and go to state 392
+    member-name                    shift and go to state 393
 
-state 360
+state 361
 
     (173) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN . DELIM
 
-    DELIM           shift and go to state 393
+    DELIM           shift and go to state 394
 
 
-state 361
+state 362
 
     (175) print-list -> expression COMMA . print-list
     (174) print-list -> . expression
@@ -12194,7 +12086,7 @@ state 361
     (79) primary-expression -> . primary-no-array-creation-expression
     (118) pre-increment-expression -> . INCRE prim-expression
     (119) pre-decrement-expression -> . DECRE prim-expression
-    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt
+    (80) array-creation-expression -> . NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt
     (90) primary-no-array-creation-expression -> . literal
     (91) primary-no-array-creation-expression -> . IDENTIFIER
     (92) primary-no-array-creation-expression -> . parenthesized-expression
@@ -12251,23 +12143,23 @@ state 361
     pre-increment-expression       shift and go to state 106
     equality-expression            shift and go to state 87
     shift-expression               shift and go to state 108
-    print-list                     shift and go to state 394
+    print-list                     shift and go to state 395
     pre-decrement-expression       shift and go to state 110
     multiplicative-expression      shift and go to state 111
     conditional-or-expression      shift and go to state 117
     primary-expression             shift and go to state 115
     invocation-expression          shift and go to state 116
-    expression                     shift and go to state 321
+    expression                     shift and go to state 322
     parenthesized-expression       shift and go to state 118
 
-state 362
+state 363
 
     (176) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN . DELIM
 
-    DELIM           shift and go to state 395
+    DELIM           shift and go to state 396
 
 
-state 363
+state 364
 
     (193) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block .
     (194) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block . ELSE M_else block
@@ -12298,10 +12190,10 @@ state 363
     DEFAULT         reduce using rule 193 (if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block .)
     BLOCK_END       reduce using rule 193 (if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block .)
     $end            reduce using rule 193 (if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block .)
-    ELSE            shift and go to state 396
+    ELSE            shift and go to state 397
 
 
-state 364
+state 365
 
     (81) array-initializer-opt -> array-initializer .
 
@@ -12332,38 +12224,38 @@ state 364
     BLOCK_END       reduce using rule 81 (array-initializer-opt -> array-initializer .)
 
 
-state 365
-
-    (80) array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .
-
-    TIMES           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    DIV             reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    MOD             reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    PLUS            reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    MINUS           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    LSHIFT          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    RSHIFT          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    LT              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    GT              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    LE              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    GE              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    EQ              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    NE              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    BITAND          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    BITXOR          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    BITOR           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    LOGAND          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    CONDOP          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    LOGOR           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    DELIM           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    CLOSE_BRACKET   reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    COMMA           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    CLOSE_PAREN     reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    COLON           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-    BLOCK_END       reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET expression-list CLOSE_BRACKET array-initializer-opt .)
-
-
 state 366
+
+    (80) array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .
+
+    TIMES           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    DIV             reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    MOD             reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    PLUS            reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    MINUS           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    LSHIFT          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    RSHIFT          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    LT              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    GT              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    LE              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    GE              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    EQ              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    NE              reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    BITAND          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    BITXOR          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    BITOR           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    LOGAND          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    CONDOP          reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    LOGOR           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    DELIM           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    CLOSE_BRACKET   reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    COMMA           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    CLOSE_PAREN     reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    COLON           reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+    BLOCK_END       reduce using rule 80 (array-creation-expression -> NEW simple-type OPEN_BRACKET ICONST CLOSE_BRACKET array-initializer-opt .)
+
+
+state 367
 
     (82) array-initializer-opt -> empty .
 
@@ -12394,7 +12286,7 @@ state 366
     BLOCK_END       reduce using rule 82 (array-initializer-opt -> empty .)
 
 
-state 367
+state 368
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM . M_quad for-iterator-opt CLOSE_PAREN M_quad block
     (197) M_quad -> . empty
@@ -12406,10 +12298,10 @@ state 367
     DECRE           reduce using rule 246 (empty -> .)
     CLOSE_PAREN     reduce using rule 246 (empty -> .)
 
-    M_quad                         shift and go to state 397
+    M_quad                         shift and go to state 398
     empty                          shift and go to state 74
 
-state 368
+state 369
 
     (212) while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .
 
@@ -12435,20 +12327,20 @@ state 368
     UINT            reduce using rule 212 (while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .)
     CHAR            reduce using rule 212 (while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .)
     DOUBLE          reduce using rule 212 (while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .)
+    BLOCK_END       reduce using rule 212 (while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .)
     CASE            reduce using rule 212 (while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .)
     DEFAULT         reduce using rule 212 (while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .)
-    BLOCK_END       reduce using rule 212 (while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .)
     $end            reduce using rule 212 (while-statement -> WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block .)
 
 
-state 369
+state 370
 
     (207) switch-label -> CASE expression . COLON
 
-    COLON           shift and go to state 398
+    COLON           shift and go to state 399
 
 
-state 370
+state 371
 
     (208) switch-label -> DEFAULT COLON .
 
@@ -12478,7 +12370,7 @@ state 370
     DOUBLE          reduce using rule 208 (switch-label -> DEFAULT COLON .)
 
 
-state 371
+state 372
 
     (206) switch-labels -> switch-labels switch-label .
 
@@ -12508,7 +12400,7 @@ state 371
     DOUBLE          reduce using rule 206 (switch-labels -> switch-labels switch-label .)
 
 
-state 372
+state 373
 
     (204) switch-section -> switch-labels statement-list .
     (162) statement-list -> statement-list . statement
@@ -12575,7 +12467,7 @@ state 372
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
     (100) member-access -> . prim-expression DOT IDENTIFIER
     (112) prim-expression -> . IDENTIFIER
     (113) prim-expression -> . member-access
@@ -12647,7 +12539,7 @@ state 372
     simple-type                    shift and go to state 52
     block                          shift and go to state 30
 
-state 373
+state 374
 
     (199) switch-block -> BLOCK_BEGIN switch-sections-opt BLOCK_END .
 
@@ -12679,7 +12571,7 @@ state 373
     DEFAULT         reduce using rule 199 (switch-block -> BLOCK_BEGIN switch-sections-opt BLOCK_END .)
 
 
-state 374
+state 375
 
     (203) switch-sections -> switch-sections switch-section .
 
@@ -12688,14 +12580,14 @@ state 374
     BLOCK_END       reduce using rule 203 (switch-sections -> switch-sections switch-section .)
 
 
-state 375
+state 376
 
     (214) do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression . CLOSE_PAREN DELIM
 
-    CLOSE_PAREN     shift and go to state 399
+    CLOSE_PAREN     shift and go to state 400
 
 
-state 376
+state 377
 
     (144) method-header -> VOID member-name OPEN_PAREN . formal-parameter-list-opt CLOSE_PAREN
     (145) formal-parameter-list-opt -> . formal-parameter-list
@@ -12716,33 +12608,33 @@ state 376
     CHAR            reduce using rule 246 (empty -> .)
     DOUBLE          reduce using rule 246 (empty -> .)
     IDENTIFIER      reduce using rule 246 (empty -> .)
-    OUT             shift and go to state 384
+    OUT             shift and go to state 385
 
-    parameter-modifier             shift and go to state 381
-    fixed-parameters               shift and go to state 383
-    formal-parameter-list-opt      shift and go to state 400
-    parameter-modifier-opt         shift and go to state 382
-    formal-parameter-list          shift and go to state 388
-    empty                          shift and go to state 387
-    fixed-parameter                shift and go to state 386
+    parameter-modifier             shift and go to state 382
+    fixed-parameters               shift and go to state 384
+    formal-parameter-list-opt      shift and go to state 401
+    parameter-modifier-opt         shift and go to state 383
+    formal-parameter-list          shift and go to state 389
+    empty                          shift and go to state 388
+    fixed-parameter                shift and go to state 387
 
-state 377
+state 378
 
     (25) constant-declaration -> CONST simple-type constant-declarators . DELIM
     (36) constant-declarators -> constant-declarators . COMMA constant-declarator
 
-    DELIM           shift and go to state 401
-    COMMA           shift and go to state 273
-
-
-state 378
-
-    (239) destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN . CLOSE_PAREN destructor-body
-
-    CLOSE_PAREN     shift and go to state 402
+    DELIM           shift and go to state 402
+    COMMA           shift and go to state 274
 
 
 state 379
+
+    (239) destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN . CLOSE_PAREN destructor-body
+
+    CLOSE_PAREN     shift and go to state 403
+
+
+state 380
 
     (133) field-declaration -> type variable-declarators DELIM .
 
@@ -12760,7 +12652,7 @@ state 379
     BLOCK_END       reduce using rule 133 (field-declaration -> type variable-declarators DELIM .)
 
 
-state 380
+state 381
 
     (143) method-header -> type member-name OPEN_PAREN . formal-parameter-list-opt CLOSE_PAREN
     (145) formal-parameter-list-opt -> . formal-parameter-list
@@ -12781,17 +12673,17 @@ state 380
     CHAR            reduce using rule 246 (empty -> .)
     DOUBLE          reduce using rule 246 (empty -> .)
     IDENTIFIER      reduce using rule 246 (empty -> .)
-    OUT             shift and go to state 384
+    OUT             shift and go to state 385
 
-    parameter-modifier             shift and go to state 381
-    fixed-parameters               shift and go to state 383
-    formal-parameter-list-opt      shift and go to state 403
-    parameter-modifier-opt         shift and go to state 382
-    fixed-parameter                shift and go to state 386
-    empty                          shift and go to state 387
-    formal-parameter-list          shift and go to state 388
+    parameter-modifier             shift and go to state 382
+    fixed-parameters               shift and go to state 384
+    formal-parameter-list-opt      shift and go to state 404
+    parameter-modifier-opt         shift and go to state 383
+    fixed-parameter                shift and go to state 387
+    empty                          shift and go to state 388
+    formal-parameter-list          shift and go to state 389
 
-state 381
+state 382
 
     (152) parameter-modifier-opt -> parameter-modifier .
 
@@ -12803,7 +12695,7 @@ state 381
     IDENTIFIER      reduce using rule 152 (parameter-modifier-opt -> parameter-modifier .)
 
 
-state 382
+state 383
 
     (151) fixed-parameter -> parameter-modifier-opt . type IDENTIFIER
     (26) type -> . simple-type
@@ -12815,7 +12707,7 @@ state 382
     (32) simple-type -> . CHAR
     (33) simple-type -> . DOUBLE
     (13) class-type -> . IDENTIFIER
-    (34) array-type -> . simple-type OPEN_BRACKET CLOSE_BRACKET
+    (34) array-type -> . simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
 
     BOOL            shift and go to state 49
     INT             shift and go to state 26
@@ -12827,18 +12719,18 @@ state 382
     simple-type                    shift and go to state 52
     array-type                     shift and go to state 44
     class-type                     shift and go to state 66
-    type                           shift and go to state 404
+    type                           shift and go to state 405
 
-state 383
+state 384
 
     (148) formal-parameter-list -> fixed-parameters .
     (150) fixed-parameters -> fixed-parameters . COMMA fixed-parameter
 
     CLOSE_PAREN     reduce using rule 148 (formal-parameter-list -> fixed-parameters .)
-    COMMA           shift and go to state 405
+    COMMA           shift and go to state 406
 
 
-state 384
+state 385
 
     (154) parameter-modifier -> OUT .
 
@@ -12850,14 +12742,14 @@ state 384
     IDENTIFIER      reduce using rule 154 (parameter-modifier -> OUT .)
 
 
-state 385
+state 386
 
     (236) constructor-declarator -> IDENTIFIER OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
 
-    CLOSE_PAREN     shift and go to state 406
+    CLOSE_PAREN     shift and go to state 407
 
 
-state 386
+state 387
 
     (149) fixed-parameters -> fixed-parameter .
 
@@ -12865,7 +12757,7 @@ state 386
     CLOSE_PAREN     reduce using rule 149 (fixed-parameters -> fixed-parameter .)
 
 
-state 387
+state 388
 
     (146) formal-parameter-list-opt -> empty .
     (153) parameter-modifier-opt -> empty .
@@ -12879,14 +12771,14 @@ state 387
     IDENTIFIER      reduce using rule 153 (parameter-modifier-opt -> empty .)
 
 
-state 388
+state 389
 
     (145) formal-parameter-list-opt -> formal-parameter-list .
 
     CLOSE_PAREN     reduce using rule 145 (formal-parameter-list-opt -> formal-parameter-list .)
 
 
-state 389
+state 390
 
     (24) constant-declaration -> modifier CONST simple-type . constant-declarators DELIM
     (35) constant-declarators -> . constant-declarator
@@ -12895,33 +12787,33 @@ state 389
 
     IDENTIFIER      shift and go to state 219
 
-    constant-declarators           shift and go to state 407
+    constant-declarators           shift and go to state 408
     constant-declarator            shift and go to state 220
-
-state 390
-
-    (142) method-header -> modifier VOID member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
-
-    OPEN_PAREN      shift and go to state 408
-
 
 state 391
 
-    (132) field-declaration -> modifier type variable-declarators . DELIM
-    (137) variable-declarators -> variable-declarators . COMMA variable-declarator
+    (142) method-header -> modifier VOID member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
 
-    DELIM           shift and go to state 409
-    COMMA           shift and go to state 214
+    OPEN_PAREN      shift and go to state 409
 
 
 state 392
 
-    (141) method-header -> modifier type member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+    (132) field-declaration -> modifier type variable-declarators . DELIM
+    (137) variable-declarators -> variable-declarators . COMMA variable-declarator
 
-    OPEN_PAREN      shift and go to state 410
+    DELIM           shift and go to state 410
+    COMMA           shift and go to state 214
 
 
 state 393
+
+    (141) method-header -> modifier type member-name . OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+
+    OPEN_PAREN      shift and go to state 411
+
+
+state 394
 
     (173) write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .
 
@@ -12948,19 +12840,19 @@ state 393
     CHAR            reduce using rule 173 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
     DOUBLE          reduce using rule 173 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
     BLOCK_END       reduce using rule 173 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
+    $end            reduce using rule 173 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
     CASE            reduce using rule 173 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
     DEFAULT         reduce using rule 173 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
-    $end            reduce using rule 173 (write-statement -> CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM .)
 
 
-state 394
+state 395
 
     (175) print-list -> expression COMMA print-list .
 
     CLOSE_PAREN     reduce using rule 175 (print-list -> expression COMMA print-list .)
 
 
-state 395
+state 396
 
     (176) read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .
 
@@ -12992,7 +12884,7 @@ state 395
     DEFAULT         reduce using rule 176 (read-statement -> CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM .)
 
 
-state 396
+state 397
 
     (194) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE . M_else block
     (196) M_else -> . empty
@@ -13000,10 +12892,10 @@ state 396
 
     BLOCK_BEGIN     reduce using rule 246 (empty -> .)
 
-    empty                          shift and go to state 412
-    M_else                         shift and go to state 411
+    empty                          shift and go to state 413
+    M_else                         shift and go to state 412
 
-state 397
+state 398
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad . for-iterator-opt CLOSE_PAREN M_quad block
     (220) for-iterator-opt -> . for-iterator
@@ -13042,21 +12934,21 @@ state 397
 
     post-increment-expression      shift and go to state 4
     member-access                  shift and go to state 2
-    for-iterator-opt               shift and go to state 413
+    for-iterator-opt               shift and go to state 414
     prim-expression                shift and go to state 56
     element-access                 shift and go to state 19
     statement-expression           shift and go to state 203
     post-decrement-expression      shift and go to state 45
-    statement-expression-list      shift and go to state 414
-    empty                          shift and go to state 415
+    statement-expression-list      shift and go to state 415
+    empty                          shift and go to state 416
     assignment                     shift and go to state 60
-    for-iterator                   shift and go to state 416
+    for-iterator                   shift and go to state 417
     object-creation-expression     shift and go to state 63
     pre-increment-expression       shift and go to state 64
     pre-decrement-expression       shift and go to state 24
     invocation-expression          shift and go to state 14
 
-state 398
+state 399
 
     (207) switch-label -> CASE expression COLON .
 
@@ -13086,21 +12978,21 @@ state 398
     DOUBLE          reduce using rule 207 (switch-label -> CASE expression COLON .)
 
 
-state 399
+state 400
 
     (214) do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN . DELIM
 
-    DELIM           shift and go to state 417
-
-
-state 400
-
-    (144) method-header -> VOID member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
-
-    CLOSE_PAREN     shift and go to state 418
+    DELIM           shift and go to state 418
 
 
 state 401
+
+    (144) method-header -> VOID member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
+
+    CLOSE_PAREN     shift and go to state 419
+
+
+state 402
 
     (25) constant-declaration -> CONST simple-type constant-declarators DELIM .
 
@@ -13118,34 +13010,34 @@ state 401
     BLOCK_END       reduce using rule 25 (constant-declaration -> CONST simple-type constant-declarators DELIM .)
 
 
-state 402
+state 403
 
     (239) destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN CLOSE_PAREN . destructor-body
     (240) destructor-body -> . block
     (241) destructor-body -> . DELIM
     (157) block -> . BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
 
-    DELIM           shift and go to state 419
+    DELIM           shift and go to state 420
     BLOCK_BEGIN     shift and go to state 55
 
-    destructor-body                shift and go to state 420
-    block                          shift and go to state 421
-
-state 403
-
-    (143) method-header -> type member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
-
-    CLOSE_PAREN     shift and go to state 422
-
+    destructor-body                shift and go to state 421
+    block                          shift and go to state 422
 
 state 404
 
-    (151) fixed-parameter -> parameter-modifier-opt type . IDENTIFIER
+    (143) method-header -> type member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
 
-    IDENTIFIER      shift and go to state 423
+    CLOSE_PAREN     shift and go to state 423
 
 
 state 405
+
+    (151) fixed-parameter -> parameter-modifier-opt type . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 424
+
+
+state 406
 
     (150) fixed-parameters -> fixed-parameters COMMA . fixed-parameter
     (151) fixed-parameter -> . parameter-modifier-opt type IDENTIFIER
@@ -13154,7 +13046,7 @@ state 405
     (154) parameter-modifier -> . OUT
     (246) empty -> .
 
-    OUT             shift and go to state 384
+    OUT             shift and go to state 385
     BOOL            reduce using rule 246 (empty -> .)
     INT             reduce using rule 246 (empty -> .)
     UINT            reduce using rule 246 (empty -> .)
@@ -13162,12 +13054,12 @@ state 405
     DOUBLE          reduce using rule 246 (empty -> .)
     IDENTIFIER      reduce using rule 246 (empty -> .)
 
-    parameter-modifier             shift and go to state 381
-    parameter-modifier-opt         shift and go to state 382
-    empty                          shift and go to state 424
-    fixed-parameter                shift and go to state 425
+    parameter-modifier             shift and go to state 382
+    parameter-modifier-opt         shift and go to state 383
+    empty                          shift and go to state 425
+    fixed-parameter                shift and go to state 426
 
-state 406
+state 407
 
     (236) constructor-declarator -> IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13175,16 +13067,16 @@ state 406
     BLOCK_BEGIN     reduce using rule 236 (constructor-declarator -> IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 407
+state 408
 
     (24) constant-declaration -> modifier CONST simple-type constant-declarators . DELIM
     (36) constant-declarators -> constant-declarators . COMMA constant-declarator
 
-    DELIM           shift and go to state 426
-    COMMA           shift and go to state 273
+    DELIM           shift and go to state 427
+    COMMA           shift and go to state 274
 
 
-state 408
+state 409
 
     (142) method-header -> modifier VOID member-name OPEN_PAREN . formal-parameter-list-opt CLOSE_PAREN
     (145) formal-parameter-list-opt -> . formal-parameter-list
@@ -13205,17 +13097,17 @@ state 408
     CHAR            reduce using rule 246 (empty -> .)
     DOUBLE          reduce using rule 246 (empty -> .)
     IDENTIFIER      reduce using rule 246 (empty -> .)
-    OUT             shift and go to state 384
+    OUT             shift and go to state 385
 
-    parameter-modifier             shift and go to state 381
-    parameter-modifier-opt         shift and go to state 382
-    fixed-parameters               shift and go to state 383
-    formal-parameter-list-opt      shift and go to state 427
-    fixed-parameter                shift and go to state 386
-    empty                          shift and go to state 387
-    formal-parameter-list          shift and go to state 388
+    parameter-modifier             shift and go to state 382
+    parameter-modifier-opt         shift and go to state 383
+    fixed-parameters               shift and go to state 384
+    formal-parameter-list-opt      shift and go to state 428
+    fixed-parameter                shift and go to state 387
+    empty                          shift and go to state 388
+    formal-parameter-list          shift and go to state 389
 
-state 409
+state 410
 
     (132) field-declaration -> modifier type variable-declarators DELIM .
 
@@ -13233,7 +13125,7 @@ state 409
     BLOCK_END       reduce using rule 132 (field-declaration -> modifier type variable-declarators DELIM .)
 
 
-state 410
+state 411
 
     (141) method-header -> modifier type member-name OPEN_PAREN . formal-parameter-list-opt CLOSE_PAREN
     (145) formal-parameter-list-opt -> . formal-parameter-list
@@ -13254,40 +13146,40 @@ state 410
     CHAR            reduce using rule 246 (empty -> .)
     DOUBLE          reduce using rule 246 (empty -> .)
     IDENTIFIER      reduce using rule 246 (empty -> .)
-    OUT             shift and go to state 384
+    OUT             shift and go to state 385
 
-    parameter-modifier             shift and go to state 381
-    parameter-modifier-opt         shift and go to state 382
-    fixed-parameters               shift and go to state 383
-    formal-parameter-list-opt      shift and go to state 428
-    fixed-parameter                shift and go to state 386
-    empty                          shift and go to state 387
-    formal-parameter-list          shift and go to state 388
+    parameter-modifier             shift and go to state 382
+    parameter-modifier-opt         shift and go to state 383
+    fixed-parameters               shift and go to state 384
+    formal-parameter-list-opt      shift and go to state 429
+    fixed-parameter                shift and go to state 387
+    empty                          shift and go to state 388
+    formal-parameter-list          shift and go to state 389
 
-state 411
+state 412
 
     (194) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else . block
     (157) block -> . BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
 
     BLOCK_BEGIN     shift and go to state 55
 
-    block                          shift and go to state 429
+    block                          shift and go to state 430
 
-state 412
+state 413
 
     (196) M_else -> empty .
 
     BLOCK_BEGIN     reduce using rule 196 (M_else -> empty .)
 
 
-state 413
+state 414
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt . CLOSE_PAREN M_quad block
 
-    CLOSE_PAREN     shift and go to state 430
+    CLOSE_PAREN     shift and go to state 431
 
 
-state 414
+state 415
 
     (222) for-iterator -> statement-expression-list .
     (224) statement-expression-list -> statement-expression-list . COMMA statement-expression
@@ -13296,21 +13188,21 @@ state 414
     COMMA           shift and go to state 260
 
 
-state 415
+state 416
 
     (221) for-iterator-opt -> empty .
 
     CLOSE_PAREN     reduce using rule 221 (for-iterator-opt -> empty .)
 
 
-state 416
+state 417
 
     (220) for-iterator-opt -> for-iterator .
 
     CLOSE_PAREN     reduce using rule 220 (for-iterator-opt -> for-iterator .)
 
 
-state 417
+state 418
 
     (214) do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM .
 
@@ -13337,12 +13229,12 @@ state 417
     CHAR            reduce using rule 214 (do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM .)
     DOUBLE          reduce using rule 214 (do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM .)
     BLOCK_END       reduce using rule 214 (do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM .)
-    $end            reduce using rule 214 (do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM .)
     CASE            reduce using rule 214 (do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM .)
     DEFAULT         reduce using rule 214 (do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM .)
+    $end            reduce using rule 214 (do-statement -> DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM .)
 
 
-state 418
+state 419
 
     (144) method-header -> VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13350,7 +13242,7 @@ state 418
     BLOCK_BEGIN     reduce using rule 144 (method-header -> VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 419
+state 420
 
     (241) destructor-body -> DELIM .
 
@@ -13368,7 +13260,7 @@ state 419
     BLOCK_END       reduce using rule 241 (destructor-body -> DELIM .)
 
 
-state 420
+state 421
 
     (239) destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN CLOSE_PAREN destructor-body .
 
@@ -13386,7 +13278,7 @@ state 420
     BLOCK_END       reduce using rule 239 (destructor-declaration -> BITCOMP IDENTIFIER OPEN_PAREN CLOSE_PAREN destructor-body .)
 
 
-state 421
+state 422
 
     (240) destructor-body -> block .
 
@@ -13404,7 +13296,7 @@ state 421
     BLOCK_END       reduce using rule 240 (destructor-body -> block .)
 
 
-state 422
+state 423
 
     (143) method-header -> type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13412,7 +13304,7 @@ state 422
     BLOCK_BEGIN     reduce using rule 143 (method-header -> type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 423
+state 424
 
     (151) fixed-parameter -> parameter-modifier-opt type IDENTIFIER .
 
@@ -13420,7 +13312,7 @@ state 423
     CLOSE_PAREN     reduce using rule 151 (fixed-parameter -> parameter-modifier-opt type IDENTIFIER .)
 
 
-state 424
+state 425
 
     (153) parameter-modifier-opt -> empty .
 
@@ -13432,7 +13324,7 @@ state 424
     IDENTIFIER      reduce using rule 153 (parameter-modifier-opt -> empty .)
 
 
-state 425
+state 426
 
     (150) fixed-parameters -> fixed-parameters COMMA fixed-parameter .
 
@@ -13440,7 +13332,7 @@ state 425
     CLOSE_PAREN     reduce using rule 150 (fixed-parameters -> fixed-parameters COMMA fixed-parameter .)
 
 
-state 426
+state 427
 
     (24) constant-declaration -> modifier CONST simple-type constant-declarators DELIM .
 
@@ -13458,21 +13350,21 @@ state 426
     BLOCK_END       reduce using rule 24 (constant-declaration -> modifier CONST simple-type constant-declarators DELIM .)
 
 
-state 427
-
-    (142) method-header -> modifier VOID member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
-
-    CLOSE_PAREN     shift and go to state 431
-
-
 state 428
 
-    (141) method-header -> modifier type member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
+    (142) method-header -> modifier VOID member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
 
     CLOSE_PAREN     shift and go to state 432
 
 
 state 429
+
+    (141) method-header -> modifier type member-name OPEN_PAREN formal-parameter-list-opt . CLOSE_PAREN
+
+    CLOSE_PAREN     shift and go to state 433
+
+
+state 430
 
     (194) if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else block .
 
@@ -13504,7 +13396,7 @@ state 429
     $end            reduce using rule 194 (if-statement -> IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else block .)
 
 
-state 430
+state 431
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN . M_quad block
     (197) M_quad -> . empty
@@ -13512,10 +13404,10 @@ state 430
 
     BLOCK_BEGIN     reduce using rule 246 (empty -> .)
 
-    M_quad                         shift and go to state 433
+    M_quad                         shift and go to state 434
     empty                          shift and go to state 74
 
-state 431
+state 432
 
     (142) method-header -> modifier VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13523,7 +13415,7 @@ state 431
     BLOCK_BEGIN     reduce using rule 142 (method-header -> modifier VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 432
+state 433
 
     (141) method-header -> modifier type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .
 
@@ -13531,16 +13423,16 @@ state 432
     BLOCK_BEGIN     reduce using rule 141 (method-header -> modifier type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN .)
 
 
-state 433
+state 434
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad . block
     (157) block -> . BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
 
     BLOCK_BEGIN     shift and go to state 55
 
-    block                          shift and go to state 434
+    block                          shift and go to state 435
 
-state 434
+state 435
 
     (215) for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block .
 
@@ -13567,7 +13459,7 @@ state 434
     CHAR            reduce using rule 215 (for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block .)
     DOUBLE          reduce using rule 215 (for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block .)
     $end            reduce using rule 215 (for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block .)
-    BLOCK_END       reduce using rule 215 (for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block .)
     CASE            reduce using rule 215 (for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block .)
     DEFAULT         reduce using rule 215 (for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block .)
+    BLOCK_END       reduce using rule 215 (for-statement -> FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block .)
 
