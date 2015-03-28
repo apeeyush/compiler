@@ -9,6 +9,9 @@ class ThreeAddressCode:
         self.nextQuad = self.nextQuad + 1
         return self.quad
 
+    def getCurrentQuad(self):
+        return self.quad
+
     def getNextQuad(self):
         return self.nextQuad
 

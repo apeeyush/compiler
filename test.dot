@@ -1,17 +1,5 @@
 digraph G{
 id0[label="compilation_unit"];
-id1[label="statement_list"];
-id2[label="statement_list"];
-id3[label="statement_list"];
-id4[label="None"];
-id3->id4;
-id5[label="None"];
-id2->id3;
-id2->id5;
-id6[label="selection_statement"];
-id7[label="{'nextList': [10]}"];
-id6->id7;
-id1->id2;
-id1->id6;
+id1[label="{'loopEndList': [], 'loopBeginList': []}"];
 id0->id1;
 }

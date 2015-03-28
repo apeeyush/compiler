@@ -1,12 +1,7 @@
-const int a=6;
-int b = 3;
-if (a==4)
-{
-	b *= a+= 3;
-}
-else
-{
-	b=4;
+int a = 3;
+while (a<0){
+	a = a-1;
+	break;
 }
 // int a, d=6;
 // if (d==10){

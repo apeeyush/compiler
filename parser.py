@@ -32,7 +32,7 @@ def p_semi_opt(p):
     ''' semi-opt :         DELIM
              |         empty
              '''
-    p[0]=['semi_opt']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_class_declarations_opt(p):
     ''' class-declarations-opt :         class-declarations
@@ -106,7 +106,6 @@ def p_type(p):
              |         array-type
              '''
     p[0] = p[1]
-    # p[0]=['type']+[p[i] for i in range(1,len(p))]
 
 def p_simple_type(p):
     ''' simple-type :         BOOL
@@ -141,7 +140,6 @@ def p_expression(p):
              |         assignment
              '''
     p[0] = p[1]
-    # p[0]=['expression']+[p[i] for i in range(1,len(p))]
 
 def p_conditional_expression(p):
     ''' conditional-expression :         conditional-or-expression
@@ -438,7 +436,7 @@ def p_primary_no_array_creation_expression(p):
 def p_parenthesized_expression(p):
     ''' parenthesized-expression :         OPEN_PAREN expression CLOSE_PAREN
              '''
-    p[0]=['parenthesized_expression']+[p[i] for i in range(1,len(p))]
+    p[0]=p[2]
 
 def p_member_access(p):
     ''' member-access :         prim-expression DOT IDENTIFIER
@@ -633,19 +631,32 @@ def p_method_body(p):
 def p_block(p):
     ''' block :         BLOCK_BEGIN statement-list-opt BLOCK_END
              '''
+    p[0] = {}
 
+    p[0]['loopBeginList'] = p[2].get('loopBeginList', [])
+    p[0]['loopEndList'] = p[2].get('loopEndList', [])
 
 def p_statement_list_opt(p):
     ''' statement-list-opt :         statement-list
              |         empty
              '''
-    p[0]=['statement_list_opt']+[p[i] for i in range(1,len(p))]
+    p[0] = {}
+
+    p[0]['loopBeginList'] = p[1].get('loopBeginList', [])
+    p[0]['loopEndList'] = p[1].get('loopEndList', [])
 
 def p_statement_list(p):
     ''' statement-list :         statement
              |         statement-list statement
              '''
-    p[0]=['statement_list']+[p[i] for i in range(1,len(p))]	#Duno
+    p[0] = {}
+
+    if len(p) == 2:
+        p[0]['loopBeginList'] = p[1].get('loopBeginList',[])
+        p[0]['loopEndList'] = p[1].get('loopEndList',[])
+    elif len(p) == 3:
+        p[0]['loopBeginList'] = p[1].get('loopBeginList',[]) + p[2].get('loopBeginList',[])
+        p[0]['loopEndList'] = p[1].get('loopEndList',[]) + p[2].get('loopEndList',[])
 
 def p_statement(p):
     ''' statement :         labeled-statement
@@ -659,13 +670,18 @@ def p_statement(p):
              |         write-statement
              |         read-statement
              '''
-    p[0] = p[1]
+    p[0] = {}
+    print p[1]
+
+    p[0]['loopBeginList'] = p[1].get('loopBeginList', [])
+    p[0]['loopEndList'] = p[1].get('loopEndList', [])
 
 def p_write_statement(p):
     ''' write-statement :         CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
              '''
     for dic in p[5]:
     	TAC.emit('','',dic['place'],'Print') #Modify(check for type)
+    p[0] = {}
 
 def p_print_list(p):
     ''' print-list :         expression
@@ -681,24 +697,23 @@ def p_print_list(p):
 def p_read_statement(p):
     ''' read-statement :         CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
              '''
-    print p[5]
     var = ST.lookupvar(p[5])	#Modify(managing read address)
     if var:
     	TAC.emit('',var['place'],var['width'],'Read')
     else:
     	print 'lol : Variable not declared'
+    p[0] = {}
 
 def p_labeled_statement(p):
     ''' labeled-statement :         IDENTIFIER COLON statement
              '''
-    p[0]=['labeled_statement']+[p[i] for i in range(1,len(p))] #Duno
+    p[0] = {}
 
 def p_declaration_statement(p):
     ''' declaration-statement :         local-variable-declaration DELIM
              |         local-constant-declaration DELIM
              '''
-    p[0] = p[1]
-    # p[0]=['declaration_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = {}       # Return void
 
 def p_local_variable_declaration(p):
     ''' local-variable-declaration :         type variable-declarators
@@ -737,7 +752,7 @@ def p_empty_statement(p):
 def p_expression_statement(p):
     ''' expression-statement :         statement-expression DELIM
              '''
-    p[0]=['expression_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_statement_expression(p):
     ''' statement-expression :         invocation-expression
@@ -748,34 +763,39 @@ def p_statement_expression(p):
              |         pre-increment-expression
              |         pre-decrement-expression
              '''
-    p[0]=['statement_expression']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_selection_statement(p):
     ''' selection-statement :         if-statement
              |         switch-statement
              '''
-    p[0]=['selection_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_if_statement(p):
     ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN M_if block
              '''
+    p[0] = {}
     if p[3]['type']=="bool":
-        pass
+        p[0] = {'nextList' : p[5]['falseList']}
+
+        p[0]['loopBeginList'] = p[6].get('loopBeginList',[])
+        p[0]['loopEndList'] = p[6].get('loopEndList',[])
     else:
         print 'lol : If else expression not bool'
-    p[0]={'nextList':p[5]['falseList']}
     # TODO continue and break        
 
 def p_if_else_statement(p):
     ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else block
              '''
+    p[0] = {}
     if p[3]['type']=="bool":
-        pass
+        TAC.backPatch(p[5]['falseList'],p[8]['start'])
+        p[0]={'nextList':p[8]['nextList']}
+
+        p[0]['loopBeginList'] = p[6].get('loopBeginList',[]) + p[9].get('loopBeginList',[])
+        p[0]['loopEndList'] = p[6].get('loopEndList',[]) + p[9].get('loopEndList',[])
     else:
         print 'lol : If else expression not bool'
-    TAC.backPatch(p[5]['falseList'],p[8]['start'])
-    p[0]={'nextList':p[8]['nextList']}
-    # TODO continue and break        
 
 def p_M_if(p):
     ''' M_if : empty
@@ -840,18 +860,20 @@ def p_iteration_statement(p):
              |         foreach-statement
              |         do-statement
              '''
-    p[0]=['iteration_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_while_statement(p):
     ''' while-statement :         WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block
              '''
+    p[0] = {}
     if p[4]['type'] == 'bool':
-        pass
+        TAC.backPatch(p[7].get('loopBeginList',[]), p[2])
+        TAC.emit('','',p[2],'goto')
+        p[0]['nextList'] = p[6]['falseList'] + p[7].get('loopEndList', [])
+
+        TAC.backPatch(p[7].get('loopEndList', []), TAC.getNextQuad())   # FIXME
     else:
         print 'lol : While expression not bool'
-    p[0] = {}
-    p[0]['nextList'] = p[6]['falseList']
-    TAC.emit('','',p[2],'goto')
 
 def p_M_while(p):
     ''' M_while : empty
@@ -920,17 +942,21 @@ def p_jump_statement(p):
              |         goto-statement
              |         return-statement
              '''
-    p[0]=['jump_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_break_statement(p):
     ''' break-statement :         BREAK DELIM
              '''
-    p[0]=['break_statement']+[p[i] for i in range(1,len(p))]
+    p[0]={}
+    TAC.emit('','',-1,'goto')
+    p[0]['loopEndList'] = [TAC.getCurrentQuad()]
 
 def p_continue_statement(p):
     ''' continue-statement :         CONTINUE DELIM
              '''
-    p[0]=['continue_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = {}
+    TAC.emit('','',-1,'goto')
+    p[0]['loopBeginList'] = [TAC.getCurrentQuad()]
 
 def p_goto_statement(p):
     ''' goto-statement :         GOTO IDENTIFIER DELIM
@@ -946,7 +972,7 @@ def p_expression_opt(p):
     ''' expression-opt :         expression
              |         empty
              '''
-    p[0]=['expression_opt']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_constructor_declaration(p):
     ''' constructor-declaration :         constructor-declarator constructor-body
