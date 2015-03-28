@@ -144,7 +144,7 @@ def p_constant_declarators(p):
 def p_constant_declarator(p):
     ''' constant-declarator :         IDENTIFIER ASSIGN expression
              '''
-    p[0] = { 'identifier_name' : p[1], 'initLabel' : p[3]['place'], 'type' : p[3]['type']}
+    p[0] = { 'identifier_name' : p[1], 'place' : p[3]['place'], 'type' : p[3]['type']}
 
 def p_expression(p):
     ''' expression :         conditional-expression
@@ -401,7 +401,7 @@ def p_expression_list(p):
 def p_array_initializer(p):
     ''' array-initializer :         BLOCK_BEGIN variable-initializer-list-opt BLOCK_END
              '''
-    # TODO
+    p[0] = p[2]
 
 def p_variable_initializer_list_opt(p):
     ''' variable-initializer-list-opt :         expression-list
@@ -579,7 +579,7 @@ def p_variable_declarator(p):
     if len(p) == 2:
         p[0] = {'identifier_name' : p[1]}
     elif len(p) == 4:   # Handle initialization
-        p[0] = { 'identifier_name' : p[1], 'initLabel' : p[3]['place'], 'type':p[3]['type']}
+        p[0] = { 'identifier_name' : p[1], 'initializer' : p[3]}
 
 def p_method_declaration(p):
     ''' method-declaration :         method-header method-body
@@ -738,17 +738,22 @@ def p_local_variable_declaration(p):
         if ST.lookupvar_curr(identifier['identifier_name']):
             error('alreadyDeclared','Variable already declared')
         else:
-            if not identifier.get('initLabel'):
+            if not identifier.get('initializer'):     # If not initialized
                 if p[1].get('array', False):
                     newVar = ST.addvar(identifier['identifier_name'], 'array', p[1]['size'], p[1]['type'])
                 else:
                     newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
-            else:
-                if identifier['type']==p[1]['type']:
-                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
-                    TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
+            else:       # Variable initialized
+                if p[1].get('array', False):
+                    newVar = ST.addvar(identifier['identifier_name'], 'array', p[1]['size'], p[1]['type'])
+                    for index, initializer in enumerate(identifier['initializer']):
+                        TAC.emit([newVar['place'], index], initializer['place'], '','=dec')
                 else:
-                    error('typeError','Type mismatch in declaration')
+                    if identifier['initializer']['type']==p[1]['type']:
+                        newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
+                        TAC.emit(newVar['place'], identifier['initializer']['place'], '', '=')
+                    else:
+                        error('typeError','Type mismatch in declaration')
 
 def p_local_constant_declaration(p):
     ''' local-constant-declaration :         CONST type constant-declarators
@@ -759,7 +764,7 @@ def p_local_constant_declaration(p):
         else:
             if identifier['type']==p[2]['type']:
                 newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
-                TAC.emit(newVar['place'], identifier['initLabel'], '', '=')
+                TAC.emit(newVar['place'], identifier['place'], '', '=')
             else:
                 error('typeError','Type mismatch in constant declaration')
 
