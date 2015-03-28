@@ -1,14 +1,17 @@
 int a;
+if(10){
+	a = a+1;
+}
 // const int b=1;
 // int[5] c;
-for(;a<20;){
-	console.writeline(a);
-	if (a<15){
-		break;
-	}else{
-		continue;
-	}
-}
+// for(;a<20;){
+// 	console.writeline(a);
+// 	if (a<15){
+// 		break;
+// 	}else{
+// 		continue;
+// 	}
+// }
 // int a, d=6;
 // if (d==10){
 // 	int ifin = 10;
@@ -23,3 +26,5 @@ t3 : 10
 t4 : t3==t2
 
 */
+
+// https://pypi.python.org/pypi/termcolor
