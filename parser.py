@@ -629,12 +629,18 @@ def p_method_body(p):
     p[0]=['method_body']+[p[i] for i in range(1,len(p))]
 
 def p_block(p):
-    ''' block :         BLOCK_BEGIN statement-list-opt BLOCK_END
+    ''' block :         BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
              '''
     p[0] = {}
 
-    p[0]['loopBeginList'] = p[2].get('loopBeginList', [])
-    p[0]['loopEndList'] = p[2].get('loopEndList', [])
+    p[0]['loopBeginList'] = p[3].get('loopBeginList', [])
+    p[0]['loopEndList'] = p[3].get('loopEndList', [])
+    ST.deletebscope()
+
+def p_M_bstart(p):
+    ''' M_bstart : empty
+             '''
+    ST.addbscope()
 
 def p_statement_list_opt(p):
     ''' statement-list-opt :         statement-list
@@ -855,12 +861,15 @@ def p_switch_label(p):
     p[0]=['switch_label']+[p[i] for i in range(1,len(p))]
 
 def p_iteration_statement(p):
-    ''' iteration-statement :         while-statement
+    ''' iteration-statement :         while-statement M_quad
              |         for-statement
              |         foreach-statement
              |         do-statement
              '''
+    
     p[0] = p[1]
+    if len(p)==3:
+        TAC.backPatch(p[0]['nextList'],p[2])
 
 def p_while_statement(p):
     ''' while-statement :         WHILE M_quad OPEN_PAREN expression CLOSE_PAREN M_while block
@@ -870,8 +879,6 @@ def p_while_statement(p):
         TAC.backPatch(p[7].get('loopBeginList',[]), p[2])
         TAC.emit('','',p[2],'goto')
         p[0]['nextList'] = p[6]['falseList'] + p[7].get('loopEndList', [])
-
-        TAC.backPatch(p[7].get('loopEndList', []), TAC.getNextQuad())   # FIXME
     else:
         print 'lol : While expression not bool'
 
