@@ -1,6 +1,11 @@
 int a;
 for(;a<20;){
 	console.writeline(a);
+	if (a<15){
+		break;
+	}else{
+		continue;
+	}
 }
 // int a, d=6;
 // if (d==10){

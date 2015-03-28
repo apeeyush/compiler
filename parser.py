@@ -772,10 +772,12 @@ def p_statement_expression(p):
     p[0] = p[1]
 
 def p_selection_statement(p):
-    ''' selection-statement :         if-statement
+    ''' selection-statement :         if-statement M_quad
              |         switch-statement
              '''
     p[0] = p[1]
+    if len(p)==3:
+        TAC.backPatch(p[0]['nextList'],p[2])
 
 def p_if_statement(p):
     ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN M_if block
