@@ -719,7 +719,7 @@ def p_local_variable_declaration(p):
     ''' local-variable-declaration :         type variable-declarators
              '''
     for identifier in p[2]:		#Implemented type checking in declaration
-		if ST.lookupvar(identifier['identifier_name']):
+		if ST.lookupvar_curr(identifier['identifier_name']):
 			print 'lol : Variable already declared'
 		else:
 			if not identifier.get('initLabel'):
@@ -735,7 +735,7 @@ def p_local_constant_declaration(p):
     ''' local-constant-declaration :         CONST type constant-declarators
              '''
     for identifier in p[3]:
-        if ST.lookupvar(identifier['identifier_name']):
+        if ST.lookupvar_curr(identifier['identifier_name']):
             print 'lol : Constant already declared'
         else:
             if identifier['type']==p[2]:
