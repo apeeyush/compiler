@@ -863,10 +863,8 @@ def p_switch_label(p):
 def p_iteration_statement(p):
     ''' iteration-statement :         while-statement M_quad
              |         for-statement
-             |         foreach-statement
-             |         do-statement
+             |         do-statement M_quad
              '''
-    
     p[0] = p[1]
     if len(p)==3:
         TAC.backPatch(p[0]['nextList'],p[2])
@@ -889,9 +887,16 @@ def p_M_while(p):
     TAC.emit(p[-2]['place'],'',-1,'cond_goto')
 
 def p_do_statement(p):
-    ''' do-statement :         DO block WHILE OPEN_PAREN expression CLOSE_PAREN DELIM
+    ''' do-statement :         DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM
              '''
-    p[0]=['do_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = {}
+    if p[7]['type'] == 'bool':
+        TAC.backPatch(p[3]['loopBeginList'],p[6])
+        p[0]['nextList']=[TAC.getNextQuad()]+p[3]['loopEndList']
+        TAC.emit(p[7]['place'], '', -1, 'cond_goto')
+        TAC.emit('','',p[2], 'goto')
+    else:
+        print 'lol : Do-While expression not bool'
 
 def p_for_statement(p):
     ''' for-statement :         FOR OPEN_PAREN for-initializer-opt DELIM for-condition-opt DELIM for-iterator-opt CLOSE_PAREN block
@@ -937,11 +942,6 @@ def p_statement_expression_list(p):
              |         statement-expression-list COMMA statement-expression
              '''
     p[0]=['statement_expression_list']+[p[i] for i in range(1,len(p))]
-
-def p_foreach_statement(p):
-    ''' foreach-statement :         FOREACH OPEN_PAREN type IDENTIFIER IN expression CLOSE_PAREN block
-             '''
-    p[0]=['foreach_statement']+[p[i] for i in range(1,len(p))]
 
 def p_jump_statement(p):
     ''' jump-statement :         break-statement

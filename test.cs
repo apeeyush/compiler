@@ -1,9 +1,8 @@
 int a = 3;
-int b = 4;
-while (a<0){
+do{
 	a = a-1;
-	break;
-}
+	continue;
+} while (a<0);
 // int a, d=6;
 // if (d==10){
 // 	int ifin = 10;
