@@ -380,16 +380,20 @@ def p_unary_expression_op(p):
              |         BITNOT unary-expression
              |         BITCOMP unary-expression
              '''
-    #Modify(make the unary operation TACs more specific)
-    p[0] = {}
-    p[0]['place'] = ST.gentmp()
-    p[0]['type'] = p[2]['type']
-    if p[2]['type'] in ['int', 'double'] and p[1] in ['~', '-', '+']:   # TODO
-        TAC.emit('',p[0]['place'],p[2]['place'],p[1])
-    elif p[2]['type'] in ['bool'] and p[1] in ['!']:                    # TODO
-        TAC.emit('',p[0]['place'],p[2]['place'],p[1])
+    if p[2]['type'] in ['int', 'double'] and p[1] == '+':
+        p[0] = p[2]
+    elif p[2]['type'] in ['int', 'double'] and p[1] in ['~', '-']:
+        p[0] = {}
+        p[0]['place'] = ST.gentmp()
+        p[0]['type'] = p[2]['type']
+        TAC.emit(p[0]['place'],p[2]['place'], '', p[1])
+    elif p[2]['type'] in ['bool'] and p[1] in ['!']:
+        p[0] = {}
+        p[0]['place'] = ST.gentmp()
+        p[0]['type'] = p[2]['type']
+        TAC.emit(p[0]['place'],p[2]['place'],'',p[1])
     else:
-        error('typeError', 'Unary expression Type Mismatch', str(p.lineno))
+        error('typeError', 'Unary expression type mismatch', str(p.lineno))
 
 def p_primary_expression(p):
     ''' primary-expression :         array-creation-expression
@@ -482,15 +486,30 @@ def p_member_access(p):
              |                  member-access DOT IDENTIFIER
              '''
 
-def p_invocation_expression(p):
+def p_invocation_expression_1(p):
     ''' invocation-expression :         IDENTIFIER OPEN_PAREN argument-list-opt CLOSE_PAREN
-             |         member-access OPEN_PAREN argument-list-opt CLOSE_PAREN
              '''
+    p[0] = {}
+    # Print function parameters
+    for argument in p[3]:
+        TAC.emit(argument['place'],'','','PARAM')
+    # Jump to function
+    TAC.emit('', '', p[1], 'JUMPLABEL')
+
+    p[0]['type'] = 'void'   # TODO set return type
+    p[0]['place'] = ST.gentmp()
+    TAC.emit(p[0]['place'],'','','SETRETURN')
+
+def p_invocation_expression_2(p):
+    ''' invocation-expression :         member-access OPEN_PAREN argument-list-opt CLOSE_PAREN
+             '''
+    # TODO
 
 def p_argument_list_opt(p):
     ''' argument-list-opt :         expression-list
              |         empty
              '''
+    p[0] = p[1]
 
 def p_element_access(p):
     ''' element-access :         IDENTIFIER OPEN_BRACKET expression CLOSE_BRACKET
@@ -1048,6 +1067,7 @@ def p_literal_bool(p):
 
 def p_empty(p):
     'empty :'
+    p[0] = {}
     pass
 
 def p_error(p):

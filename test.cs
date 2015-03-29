@@ -1,14 +1,18 @@
-int a = 2, n;
+// int nam(int a,int b)
+// {
+// 	return 4;
+// }
+int a;
 if (a==1){
 	a = 3;
 }else if (a > 7){
 	a = 4;
-}else {
+}else if (a < 3){
 	a = 7;
 }
-// if(10){
-// 	a = a+1;
-// }
+else{
+	int d = 3;
+}
 // int [5]a = {}
 // const int b=1;
 // int[5] c;
@@ -20,20 +24,3 @@ if (a==1){
 // 		continue;
 // 	}
 // }
-// int a, d=6;
-// if (d==10){
-// 	int ifin = 10;
-// }else{
-// 	int elsea = 20;
-// }
-/*
-t0 : 6
-t1 : a
-t2 : d
-t3 : 10
-t4 : t3==t2
-
-*/
-
-// https://pypi.python.org/pypi/termcolor
-
