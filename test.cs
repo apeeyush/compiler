@@ -1,7 +1,10 @@
-int a=6+5-1
-a=10;
-// bool b = false;
-// int [5] b = {1,2,3,4,5};
+int a = 2, n;
+a = n*(3)/2;
+// if (a==1){
+// }else{
+// 	if (a > 7){
+// 	}
+// }
 // if(10){
 // 	a = a+1;
 // }
@@ -32,3 +35,4 @@ t4 : t3==t2
 */
 
 // https://pypi.python.org/pypi/termcolor
+

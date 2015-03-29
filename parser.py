@@ -355,6 +355,10 @@ def p_multiplicative_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
+
+        print p[1] , '1'
+        print p[3] , '3'
+
         if p[1]['type'] == p[3]['type'] == 'int':
             p[0]['type'] = p[1]['type']
         elif p[1]['type'] == p[3]['type'] == 'double' and p[2] in ['*','/']:
@@ -446,11 +450,22 @@ def p_primary_no_array_creation_expression_identifier(p):
     else:
         p[0] = var
 
-def p_primary_no_array_creation_expression(p):
+def p_primary_no_array_creation_expression_element(p):
+    ''' primary-no-array-creation-expression :         element-access
+             '''
+    p[0] = {}
+    p[0]['place']=ST.gentmp()
+    p[0]['type']=p[1]['var']['type']
+    TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr')
+
+def p_primary_no_array_creation_expression_parenthesized(p):
     ''' primary-no-array-creation-expression :         parenthesized-expression
-             |         member-access
+             '''
+    p[0] = p[1]
+
+def p_primary_no_array_creation_expression(p):
+    ''' primary-no-array-creation-expression :         member-access
              |         invocation-expression
-             |         element-access
              '''
     p[0] = {}
     # TODO
@@ -458,6 +473,8 @@ def p_primary_no_array_creation_expression(p):
 def p_parenthesized_expression(p):
     ''' parenthesized-expression :         OPEN_PAREN expression CLOSE_PAREN
              '''
+    print 'haha'
+    print p[2]
     p[0]=p[2]
 
 def p_member_access(p):
@@ -479,18 +496,20 @@ def p_element_access(p):
     ''' element-access :         IDENTIFIER OPEN_BRACKET expression CLOSE_BRACKET
              |         member-access OPEN_BRACKET expression CLOSE_BRACKET
              '''
+    p[0]={}
+    var = ST.lookupvar(p[1])
+    if var:
+        if p[3]['type']=='int':
+            p[0]['var']=var
+            p[0]['exp']=p[3]
+        else:
+            error('Non integer index','Array indice not an integer',p.lineno())
+    else:
+        error('undefinedVariable','Array not defined',p.lineno())
 
-def p_prim_expression(p):
-    ''' prim-expression :         IDENTIFIER
-             |         member-access
-             |         element-access
+def p_assignment_identifier(p):
+    ''' assignment :         IDENTIFIER assignment-operator expression
              '''
-    p[0] = p[1]
-
-def p_assignment(p):
-    ''' assignment :         prim-expression assignment-operator expression
-             '''
-    #Duno(may need to check for returning var[place])
     p[0]={}
     var = ST.lookupvar(p[1])
     if var:
@@ -500,6 +519,30 @@ def p_assignment(p):
             TAC.emit(var['place'], p[3]['place'], '', p[2])
             p[0]['place']=var['place']
             p[0]['type']=var['type']
+    else:
+        error('undefinedVariable','Variable not declared', str(p.lineno))
+
+
+def p_assignment_member(p):
+    ''' assignment :         member-access assignment-operator expression
+             '''
+    # TODO
+
+def p_assignment_element(p):
+    ''' assignment :         element-access assignment-operator expression
+             '''
+    #Duno(may need to check for returning var[place])
+    p[0]={}
+    var = p[1]['var']
+    if var:
+        if var['type']!=p[3]['type']:
+            error('typeError', 'Type mismatch in assignment', str(p.lineno))
+        else:
+            TAC.emit(var['place']+'['+p[1]['exp']['place']+']', p[3]['place'], '', p[2]+'arr')
+            p[0]['place']=ST.gentmp()
+            p[0]['type']=var['type']
+            TAC.emit( p[0]['place'], var['place']+'['+p[1]['exp']['place']+']','', p[2]+'arr')
+            
     else:
         error('undefinedVariable','Variable not declared', str(p.lineno))
 
@@ -605,9 +648,9 @@ def p_statement_list_opt(p):
              |         empty
              '''
     p[0] = {}
-
-    p[0]['loopBeginList'] = p[1].get('loopBeginList', [])
-    p[0]['loopEndList'] = p[1].get('loopEndList', [])
+    if p[1]:
+        p[0]['loopBeginList'] = p[1].get('loopBeginList', [])
+        p[0]['loopEndList'] = p[1].get('loopEndList', [])
 
 def p_statement_list(p):
     ''' statement-list :         statement
@@ -685,14 +728,14 @@ def p_local_variable_declaration(p):
         else:
             if not identifier.get('initializer'):     # If not initialized
                 if p[1].get('array', False):
-                    newVar = ST.addvar(identifier['identifier_name'], 'array', p[1]['size'], p[1]['type'])
+                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
                 else:
                     newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
             else:       # Variable initialized
                 if p[1].get('array', False):
-                    newVar = ST.addvar(identifier['identifier_name'], 'array', p[1]['size'], p[1]['type'])
+                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
                     for index, initializer in enumerate(identifier['initializer']):
-                        TAC.emit([newVar['place'], index], initializer['place'], '','=dec')
+                        TAC.emit(newVar['place'] + '[' + str(index) + ']', initializer['place'], '','=arr')
                 else:
                     if identifier['initializer']['type']==p[1]['type']:
                         newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
