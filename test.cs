@@ -1,10 +1,17 @@
+// int a=10;
+// while(a<0){
+// 	int b=10;
+// 	if (b>1){
+// 		continue;
+// 	}
+// }
 int a=10;
 int f (int c, char asd){
 	int b = 6;
 	int d = 5;
 	int a = 10;
 }
-f(a,b);
+// f(a,b);
 // int nam(int a,int b)
 // {
 // 	return 4;

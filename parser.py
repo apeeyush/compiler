@@ -62,29 +62,37 @@ def p_class_declarations_opt(p):
     ''' class-declarations-opt :         class-declarations
              |         empty
              '''
-    p[0]=['class_declarations_opt']+[p[i] for i in range(1,len(p))]
+    p[0]=p[1]
 
 def p_class_declarations(p):
     ''' class-declarations :         class-declaration
              |         class-declarations class-declaration
              '''
-    p[0]=['class_declarations']+[p[i] for i in range(1,len(p))]
+    if len(p) == 2:
+        p[0] = [p[1]]
+    elif len(p) == 3:
+        p[0] = p[1] + [p[2]]
 
 def p_class_declaration(p):
-    ''' class-declaration :         CLASS IDENTIFIER class-base-opt class-body semi-opt
+    ''' class-declaration :          class-header class-body semi-opt
              '''
-    p[0]=['class_declaration']+[p[i] for i in range(1,len(p))]
+    ST.end_scope()
+
+def p_class_header(p):
+    ''' class-header : CLASS IDENTIFIER class-base-opt
+             '''
+    ST.begin_scope(p[2],'classType')
 
 def p_class_base_opt(p):
     ''' class-base-opt :         class-base
              |         empty
              '''
-    p[0]=['class_base_opt']+[p[i] for i in range(1,len(p))]
+    p[0] = p[1]
 
 def p_class_base(p):
     ''' class-base :         COLON class-type
              '''
-    p[0]=['class_base']+[p[i] for i in range(1,len(p))]
+    p[0] = p[2]
 
 def p_class_type(p):
     ''' class-type :         IDENTIFIER
@@ -581,9 +589,32 @@ def p_assignment_operator(p):
 
 def p_field_declaration(p):
     ''' field-declaration :         modifier type variable-declarators DELIM
-             |         type variable-declarators DELIM
              '''
-    p[0]=['field_declaration']+[p[i] for i in range(1,len(p))]
+    # TODO
+
+def p_field_declaration(p):
+    ''' field-declaration :         type variable-declarators DELIM
+             '''
+    for identifier in p[2]:
+        if ST.lookupvar_curr(identifier['identifier_name']):
+            error('alreadyDeclared','Class field already declared', str(p.lexer.lineno))
+        else:
+            if not identifier.get('initializer'):     # If not initialized
+                if p[1].get('array', False):
+                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
+                else:
+                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
+            else:       # Variable initialized
+                if p[1].get('array', False):
+                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
+                    for index, initializer in enumerate(identifier['initializer']):
+                        TAC.emit(newVar['place'] + '[' + str(index) + ']', initializer['place'], '','=arr')
+                else:
+                    if identifier['initializer']['type']==p[1]['type']:
+                        newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
+                        TAC.emit(newVar['place'], identifier['initializer']['place'], '', '=')
+                    else:
+                        error('typeError','Type mismatch in declaration', str(p.lexer.lineno))
 
 def p_modifier(p):
     ''' modifier :         PUBLIC
@@ -624,14 +655,14 @@ def p_method_header(p):
 def p_method_header_type(p):
     ''' method-header :         type IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
-    ST.begin_scope(p[2],'methodType')
+    ST.begin_scope(p[2],'methodType',p[1]['type'])
     for parameter in p[4]:
-        ST.addvar(parameter['identifier_name'], p[1]['type'])
+        ST.addvar(parameter['identifier_name'], parameter['type'])
 
 def p_method_header_void(p):
     ''' method-header :         VOID IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
-    ST.begin_scope(p[2],'methodType')
+    ST.begin_scope(p[2],'methodType','void')
     for parameter in p[4]:
         ST.addvar(parameter['identifier_name'], p[1])
 
@@ -658,7 +689,7 @@ def p_fixed_parameters(p):
 def p_fixed_parameter(p):
     ''' fixed-parameter :          type IDENTIFIER
              '''
-    p[0] = {'type' : p[1], 'identifier_name' : p[2]}
+    p[0] = {'type' : p[1]['type'], 'identifier_name' : p[2]}
 
 def p_method_body(p):
     ''' method-body :         method-block
