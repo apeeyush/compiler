@@ -1,5 +1,6 @@
-int a=+10;
-bool b = false;
+int a=6+5-1
+a=10;
+// bool b = false;
 // int [5] b = {1,2,3,4,5};
 // if(10){
 // 	a = a+1;

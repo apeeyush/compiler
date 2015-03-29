@@ -8,14 +8,17 @@ from symbol_table import *
 from threeAddressCode import *
 from termcolor import colored, cprint
 
+
 ST = SymbolTable()
 TAC = ThreeAddressCode()
 
 variables = { }       # Dictionary of stored variables
 errors_list = []
-tokens = lexer.tokens
 
+tokens = lexer.tokens
 lexer = lexer.lexer
+
+errorFlag = False
 
 precedence = (
 ('left', 'CLOSE_PAREN'),
@@ -23,13 +26,26 @@ precedence = (
 )
 
 
-def error(errorType, errorMessage):
-    cprint('Error :', 'red', end= ' ')
-    print errorMessage
+def error(errorType, errorMessage, errorLine=None):
+    global errorFlag
+    errorFlag = True
+    cprint('Error:', 'red', end= ' ')
+    if errorLine:
+        cprint(str(errorLine), 'red', end= ' ')
+    cprint(' ::', 'red', end= ' ')
+    cprint(errorMessage, 'red')
 
-def warning(warningType, warningMessage):
-    cprint('Hello, World!', 'red', end= ' ')
-    print warningMessage
+def warning(warningType, warningMessage, warningLine=None):
+    cprint('Warning:', 'yellow', end= ' ')
+    if warningLine:
+        cprint(str(warningLine), 'yellow', end=' ')
+    cprint(warningMessage, 'yellow')
+
+def showCompilationStatus():
+    if errorFlag:
+        cprint('Compilation Failed', 'red')
+    else:
+        cprint('Compilation Successful', 'green')
 
 def p_compilation_unit(p):
     ''' compilation-unit :         class-declarations-opt
@@ -163,9 +179,9 @@ def p_conditional_expression(p):
         p[0] = p[1]
     elif len(p) == 6:   #Condop implemented
         if p[1]['type']!='bool':
-            error('typeError', 'condop should have boolean expression')
+            error('typeError', 'condop should have boolean expression', str(p.lineno))
         elif p[3]['type']!=p[5]['type']:
-            error('typeError', 'condop should have same type in both expressions')
+            error('typeError', 'condop should have same type in both expressions', str(p.lineno))
         else:
             p[0]={}
             p[0]['place']=ST.gentmp()
@@ -188,7 +204,7 @@ def p_conditional_or_expression(p):
         if p[1]['type'] == p[4]['type'] == 'bool':
             p[0]['type'] = 'bool'
         else:
-            error('typeError', 'Incorrect type in LOGOR expression')
+            error('typeError', 'Incorrect type in LOGOR expression', str(p.lineno))
             p[0]['type'] = 'typeError'
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
@@ -205,7 +221,7 @@ def p_conditional_and_expression(p):
             p[0]['type'] = 'bool'
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in LOGAND expression')
+            error('typeError', 'Incorrect type in LOGAND expression', str(p.lineno))
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
@@ -221,7 +237,7 @@ def p_inclusive_or_expression(p):
             p[0]['type'] = 'int'
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in BITOR expression')
+            error('typeError', 'Incorrect type in BITOR expression', str(p.lineno))
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
@@ -237,7 +253,7 @@ def p_exclusive_or_expression(p):
             p[0]['type'] = 'int'
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in BITXOR expression')
+            error('typeError', 'Incorrect type in BITXOR expression', str(p.lineno))
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
@@ -253,7 +269,7 @@ def p_and_expression(p):
             p[0]['type'] = 'int'
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in BITAND expression')
+            error('typeError', 'Incorrect type in BITAND expression', str(p.lineno))
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
@@ -270,7 +286,7 @@ def p_equality_expression(p):
             p[0]['type'] = 'bool'
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in Equality expression')
+            error('typeError', 'Incorrect type in Equality expression', str(p.lineno))
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
@@ -289,7 +305,7 @@ def p_relational_expression(p):
             p[0]['type'] = 'bool'
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in Relational expression')
+            error('typeError', 'Incorrect type in Relational expression', str(p.lineno))
 
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
@@ -307,7 +323,7 @@ def p_shift_expression(p):
             p[0]['type'] = 'int'
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in Shift expression')
+            error('typeError', 'Incorrect type in Shift expression', str(p.lineno))
 
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
@@ -325,7 +341,7 @@ def p_additive_expression(p):
             p[0]['type'] = p[1]['type']
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in Additive expression')
+            error('typeError', 'Incorrect type in Additive expression', str(p.lineno))
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
@@ -345,7 +361,7 @@ def p_multiplicative_expression(p):
             p[0]['type'] = p[1]['type']
         else:
             p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in Multiplicative expression')
+            error('typeError', 'Incorrect type in Multiplicative expression', str(p.lineno))
         p[0]['place'] = ST.gentmp()
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
@@ -369,7 +385,7 @@ def p_unary_expression_op(p):
     elif p[2]['type'] in ['bool'] and p[1] in ['!']:                    # TODO
         TAC.emit('',p[0]['place'],p[2]['place'],p[1])
     else:
-        error('typeError', 'Unary expression Type Mismatch')
+        error('typeError', 'Unary expression Type Mismatch', str(p.lineno))
 
 def p_primary_expression(p):
     ''' primary-expression :         array-creation-expression
@@ -426,7 +442,7 @@ def p_primary_no_array_creation_expression_identifier(p):
              '''
     var = ST.lookupvar(p[1])
     if not var:
-        error('undefinedVariable', 'Used before initialization')
+        error('undefinedVariable', 'Used before initialization', str(p.lineno))
     else:
         p[0] = var
 
@@ -479,13 +495,13 @@ def p_assignment(p):
     var = ST.lookupvar(p[1])
     if var:
         if var['type']!=p[3]['type']:
-            error('typeError', 'Type mismatch in assignment')
+            error('typeError', 'Type mismatch in assignment', str(p.lineno))
         else:
             TAC.emit(var['place'], p[3]['place'], '', p[2])
             p[0]['place']=var['place']
             p[0]['type']=var['type']
     else:
-        error('undefinedVariable','Variable not declared')
+        error('undefinedVariable','Variable not declared', str(p.lineno))
 
 def p_assignment_operator(p):
     ''' assignment-operator :         ASSIGN
@@ -646,7 +662,7 @@ def p_read_statement(p):
     if var:
         TAC.emit('',var['place'],var['width'],'Read')
     else:
-        error('undefinedVariable','Variable not declared')
+        error('undefinedVariable','Variable not declared', str(p.lineno))
     p[0] = {}
 
 def p_labeled_statement(p):
@@ -665,7 +681,7 @@ def p_local_variable_declaration(p):
              '''
     for identifier in p[2]:     #Implemented type checking in declaration
         if ST.lookupvar_curr(identifier['identifier_name']):
-            error('alreadyDeclared','Variable already declared')
+            error('alreadyDeclared','Variable already declared', str(p.lineno))
         else:
             if not identifier.get('initializer'):     # If not initialized
                 if p[1].get('array', False):
@@ -682,20 +698,20 @@ def p_local_variable_declaration(p):
                         newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
                         TAC.emit(newVar['place'], identifier['initializer']['place'], '', '=')
                     else:
-                        error('typeError','Type mismatch in declaration')
+                        error('typeError','Type mismatch in declaration', str(p.lineno))
 
 def p_local_constant_declaration(p):
     ''' local-constant-declaration :         CONST type constant-declarators
              '''
     for identifier in p[3]:
         if ST.lookupvar_curr(identifier['identifier_name']):
-            error('alreadyDeclared','Constant already declared')
+            error('alreadyDeclared','Constant already declared', str(p.lineno))
         else:
             if identifier['type']==p[2]['type']:
                 newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
                 TAC.emit(newVar['place'], identifier['place'], '', '=')
             else:
-                error('typeError','Type mismatch in constant declaration')
+                error('typeError','Type mismatch in constant declaration', str(p.lineno))
 
 def p_empty_statement(p):
     ''' empty-statement :         DELIM
@@ -731,7 +747,7 @@ def p_if_statement(p):
         p[0]['loopBeginList'] = p[6].get('loopBeginList',[])
         p[0]['loopEndList'] = p[6].get('loopEndList',[])
     else:
-        error('typeError','If else expression not bool')
+        error('typeError','If else expression not bool', str(p.lineno))
 
 def p_if_else_statement(p):
     ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else block
@@ -744,7 +760,7 @@ def p_if_else_statement(p):
         p[0]['loopBeginList'] = p[6].get('loopBeginList',[]) + p[9].get('loopBeginList',[])
         p[0]['loopEndList'] = p[6].get('loopEndList',[]) + p[9].get('loopEndList',[])
     else:
-        error('typeError','If else expression not bool')
+        error('typeError','If else expression not bool', str(p.lineno))
 
 def p_M_if(p):
     ''' M_if : empty
@@ -821,7 +837,7 @@ def p_while_statement(p):
         TAC.emit('','',p[2],'goto')
         p[0]['nextList'] = p[6]['falseList'] + p[7].get('loopEndList', [])
     else:
-        error('typeError','While expression not bool')
+        error('typeError','While expression not bool', str(p.lineno))
 
 def p_M_while(p):
     ''' M_while : empty
@@ -839,7 +855,7 @@ def p_do_statement(p):
         TAC.emit(p[7]['place'], '', -1, 'cond_goto')
         TAC.emit('','',p[2], 'goto')
     else:
-        error('typeError','Do-While expression not bool')
+        error('typeError','Do-While expression not bool', str(p.lineno))
 
 def p_for_statement(p):
     ''' for-statement :         FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block 
@@ -852,7 +868,7 @@ def p_for_statement(p):
         TAC.backPatch(p[12]['loopBeginList'],p[8])
         TAC.emit('','',p[8],'goto')
     else:
-        error('typeError','For condition not bool')
+        error('typeError','For condition not bool', str(p.lineno))
 
 
 def p_for_initializer_opt(p):
@@ -990,10 +1006,10 @@ def p_empty(p):
 
 def p_error(p):
     if p:
-        error('SyntaxError', "Syntax error at line " + str(p.lineno))
+        error('SyntaxError', "Syntax error", str(p.lineno))
         print 'Token : {}'.format(p)
     else:
-        error('SyntaxError', "Syntax error!")
+        error('SyntaxError', "Syntax error")
     # while True:
     #     tok = yacc.token()
     #     if not tok or tok.type == 'DELIM': break
@@ -1031,9 +1047,12 @@ if __name__ == "__main__":
     # lex.runmain(lexer)
     inputFile = argv[1]
     parse = runParser(inputFile)
+    showCompilationStatus()
+
     filename = inputFile.split('.')[0] + '.dot'
     png_filename = inputFile.split('.')[0] + '.png'
     createdot.createFile(parse, filename)
+
     ST.printTable()
     TAC.printCode()
     # from subprocess import call
