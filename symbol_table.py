@@ -1,20 +1,18 @@
 from pprint import pprint
+baseEnv = None
 
-class SymbolTable():
-	def __init__(self):
-		self.symboltable={
-			"main":{
-				"classname": "main", 
-				"funcname": "main",
-				"funclist": {}, # to be empty as of now(there is no funclist for functions)
-				"varlist": {}, #This stores list of variables in scope
-				"addrtable": {} #This stores relative addresses for the 'place'
-				}
-			}
-		self.tablestack=[self.symboltable["main"]]
-		self.offstack=[0]
+class Env:
+	def __init__(self, prev=None, scopeName=None, scopeType=None, returnType=None):
+		self.type = scopeType
+		self.returnType = None
+		self.name = scopeName
+		self.varlist = {}
+		self.addrtable = {}
+		self.children = []
+		self.prev_env=prev
 		self.idnum=-1
-		
+		self.offset = 0
+
 	def gentmp(self):
 		self.idnum+=1;
 		return "t"+str(self.idnum)
@@ -27,55 +25,74 @@ class SymbolTable():
 			return width*dic[vartype]
 		elif uppertype == 'class':
 			return width
-	
-	def addvar(self,varname,vartype,uppertype='simple',varwidth=-1,className=None,pclassName=None,symtable=None):
-		#Set variable width on type
-		varwidth=self.getwidth(vartype,uppertype,int(varwidth))
-		#Get current table and offset
-		symboltable=self.tablestack[len(self.tablestack)-1]
-		offset=self.offstack[len(self.offstack)-1]
-		place=self.gentmp()
-		#Add to symboltable
-		#assuming variable being added doesn't exist
-		symboltable['varlist'][varname]={"type":vartype,'uppertype':uppertype,"address":offset,"width":varwidth,"place":place}
-		symboltable['addrtable'][place]={'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype}
-		#Add class and parentclass for object
-		if uppertype=='class':
-			symboltable['varlist'][varname]['className']=className
-			symboltable['varlist'][varname]['pclassName']=pclassName
-			symboltable['varlist'][varname]['symboltable']=symtable
-		self.offstack[len(self.offstack)-1]+=varwidth
-		return symboltable['varlist'][varname]
 
-	def lookupvar(self,varname):
-		currscope=len(self.tablestack)-1
-		while currscope!=-1:
-			symboltable=self.tablestack[currscope]
-			if varname in symboltable['varlist']:
-				return symboltable['varlist'][varname]
-			else:
-				currscope-=1
+	def addvar(self,varname,vartype,uppertype='simple',varwidth=-1):
+		varwidth = self.getwidth(vartype,uppertype,int(varwidth))
+		place = self.gentmp()
+		offset = self.offset
+		self.varlist[varname] = {"type":vartype,'uppertype':uppertype,"address":offset,"width":varwidth,"place":place}
+		self.addrtable[place] = {'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype}
+		self.offset += varwidth
+		return self.varlist[varname]
+
+	def lookupvar(self, varname):
+		curr_env = self
+		while curr_env != None:
+			if varname in curr_env.varlist:
+				return curr_env.varlist[varname]
+			curr_env = curr_env.prev_env
 		return None
-	
-	def lookupvar_curr(self,varname):
-		currscope=len(self.tablestack)-1
-		symboltable=self.tablestack[currscope]
-		if varname in symboltable['varlist']:
-			return symboltable['varlist'][varname]
-		else:
-			return None
-	
-	def addbscope(self):
-		offset=self.offstack[len(self.offstack)-1]
-		symboltable={"varlist":{},"addrtable":{}}
-		self.tablestack.append(symboltable)
-		self.offstack.append(offset)		
-	
-	def deletebscope(self):
-		symboltable=self.tablestack.pop()
-		offset=self.offstack.pop()
-		currtable=self.tablestack[len(self.tablestack)-1]
-		currtable['addrtable'].update(symboltable['addrtable'])
+
+	def lookupvar_curr(self, varname):
+		curr_env = self
+		if varname in curr_env.varlist:
+			return curr_env.varlist[varname]
+		return None
 
 	def printTable(self):
-		pprint(self.symboltable)
+		print self.varlist
+		for child in self.children:
+			child.printTable()
+
+class SymbolTable:
+	def __init__(self):
+		self.curr_env = Env(None)
+		global baseEnv
+		baseEnv = self.curr_env
+
+	def addvar(self,varname,vartype,uppertype='simple',varwidth=-1):
+		return self.curr_env.addvar(varname,vartype,uppertype='simple',varwidth=-1)
+
+	def lookupvar(self,varname):
+		return self.curr_env.lookupvar(varname)
+
+	def lookupvar_curr(self, varname):
+		return self.curr_env.lookupvar_curr(varname)
+
+	def gentmp(self):
+		return self.curr_env.gentmp()
+
+	def begin_scope(self, scopeName='undefined', scopeType='block', returnType=None):
+		newEnv = Env(self.curr_env, scopeName, scopeType, returnType)
+		self.curr_env.children.append(newEnv)
+		self.curr_env = newEnv
+		return self.curr_env
+
+	def getScopeName(self):
+		return self.curr_env.name
+
+	def end_scope(self):
+		self.curr_env = self.curr_env.prev_env
+		return self.curr_env
+
+	def printTable(self):
+		print baseEnv.printTable()
+
+if __name__ == '__main__':
+	main_env = SymbolTable()
+	print main_env.gentmp()
+	print main_env.gentmp()
+	print main_env.addvar('var1','int',uppertype='simple',varwidth=-1)
+	print main_env.lookupvar('var1')
+	print main_env.addbscope()
+	print main_env.getScopeName()

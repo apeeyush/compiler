@@ -8,7 +8,6 @@ from symbol_table import *
 from threeAddressCode import *
 from termcolor import colored, cprint
 
-
 ST = SymbolTable()
 TAC = ThreeAddressCode()
 
@@ -613,40 +612,67 @@ def p_variable_declarator(p):
 def p_method_declaration(p):
     ''' method-declaration :         method-header method-body
              '''
+    p[0] = {}
+    ST.end_scope()
 
 def p_method_header(p):
-    ''' method-header :         modifier type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
-             |         modifier VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
-             |         type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
-             |         VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+    ''' method-header :         modifier type IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+             |         modifier VOID IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
+    p[0] = {}
+
+def p_method_header_type(p):
+    ''' method-header :         type IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+             '''
+    ST.begin_scope(p[2],'methodType')
+    for parameter in p[4]:
+        ST.addvar(parameter['identifier_name'], p[1]['type'])
+
+def p_method_header_void(p):
+    ''' method-header :         VOID IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
+             '''
+    ST.begin_scope(p[2],'methodType')
+    for parameter in p[4]:
+        ST.addvar(parameter['identifier_name'], p[1])
 
 def p_formal_parameter_list_opt(p):
     ''' formal-parameter-list-opt :         formal-parameter-list
              |         empty
              '''
-
-def p_member_name(p):
-    ''' member-name :         IDENTIFIER
-             '''
+    p[0] = p[1]
 
 def p_formal_parameter_list(p):
     ''' formal-parameter-list :         fixed-parameters
              '''
+    p[0] = p[1]
 
 def p_fixed_parameters(p):
     ''' fixed-parameters :         fixed-parameter
              |         fixed-parameters COMMA fixed-parameter
              '''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    elif len(p) == 4:
+        p[0] = p[1] + [p[3]]
 
 def p_fixed_parameter(p):
     ''' fixed-parameter :          type IDENTIFIER
              '''
+    p[0] = {'type' : p[1], 'identifier_name' : p[2]}
 
 def p_method_body(p):
-    ''' method-body :         block
+    ''' method-body :         method-block
              |         DELIM
              '''
+    p[0] = p[1]
+
+def p_method_block(p):
+    ''' method-block : BLOCK_BEGIN statement-list-opt BLOCK_END
+             '''
+    p[0] = {}
+
+    p[0]['loopBeginList'] = p[2].get('loopBeginList', [])
+    p[0]['loopEndList'] = p[2].get('loopEndList', [])
 
 def p_block(p):
     ''' block :         BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
@@ -655,12 +681,12 @@ def p_block(p):
 
     p[0]['loopBeginList'] = p[3].get('loopBeginList', [])
     p[0]['loopEndList'] = p[3].get('loopEndList', [])
-    ST.deletebscope()
+    ST.end_scope()
 
 def p_M_bstart(p):
     ''' M_bstart : empty
              '''
-    ST.addbscope()
+    ST.begin_scope()
 
 def p_statement_list_opt(p):
     ''' statement-list-opt :         statement-list
@@ -695,6 +721,7 @@ def p_statement(p):
              |         jump-statement
              |         write-statement
              |         read-statement
+             |         method-declaration
              '''
     p[0] = {}
 
