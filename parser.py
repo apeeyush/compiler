@@ -148,6 +148,7 @@ def p_constant_declarator(p):
              '''
     p[0] = { 'identifier_name' : p[1], 'place' : p[3]['place'], 'type' : p[3]['type']}
 
+# {'type' : , 'place' : }
 def p_expression(p):
     ''' expression :         conditional-expression
              |         assignment
@@ -358,12 +359,14 @@ def p_unary_expression_op(p):
              |         MINUS unary-expression
              |         BITNOT unary-expression
              |         BITCOMP unary-expression
-             |         TIMES unary-expression
              '''
     #Modify(make the unary operation TACs more specific)
-    if p[2]['type'] in ['int', 'double'] and p[1] in ['~', '-', '+']:
+    p[0] = {}
+    p[0]['place'] = ST.gentmp()
+    p[0]['type'] = p[2]['type']
+    if p[2]['type'] in ['int', 'double'] and p[1] in ['~', '-', '+']:   # TODO
         TAC.emit('',p[0]['place'],p[2]['place'],p[1])
-    elif p[2]['type'] in ['bool'] and p[1] in ['!']:
+    elif p[2]['type'] in ['bool'] and p[1] in ['!']:                    # TODO
         TAC.emit('',p[0]['place'],p[2]['place'],p[1])
     else:
         error('typeError', 'Unary expression Type Mismatch')
@@ -432,7 +435,6 @@ def p_primary_no_array_creation_expression(p):
              |         member-access
              |         invocation-expression
              |         element-access
-             |         object-creation-expression
              '''
     p[0] = {}
     # TODO
@@ -443,31 +445,24 @@ def p_parenthesized_expression(p):
     p[0]=p[2]
 
 def p_member_access(p):
-    ''' member-access :         prim-expression DOT IDENTIFIER
+    ''' member-access :         IDENTIFIER DOT IDENTIFIER
+             |                  member-access DOT IDENTIFIER
              '''
-    p[0]=['member_access']+[p[i] for i in range(1,len(p))]
 
 def p_invocation_expression(p):
     ''' invocation-expression :         IDENTIFIER OPEN_PAREN argument-list-opt CLOSE_PAREN
              |         member-access OPEN_PAREN argument-list-opt CLOSE_PAREN
              '''
-    p[0]=['invocation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_argument_list_opt(p):
     ''' argument-list-opt :         expression-list
              |         empty
              '''
 
-def p_variable_reference(p):
-    ''' variable-reference :         expression
-             '''
-    p[0]=['variable_reference']+[p[i] for i in range(1,len(p))]
-
 def p_element_access(p):
-    ''' element-access :         IDENTIFIER OPEN_BRACKET expression-list CLOSE_BRACKET
-             |         member-access OPEN_BRACKET expression-list CLOSE_BRACKET
+    ''' element-access :         IDENTIFIER OPEN_BRACKET expression CLOSE_BRACKET
+             |         member-access OPEN_BRACKET expression CLOSE_BRACKET
              '''
-    p[0]=['element_access']+[p[i] for i in range(1,len(p))]
 
 def p_prim_expression(p):
     ''' prim-expression :         IDENTIFIER
@@ -475,11 +470,6 @@ def p_prim_expression(p):
              |         element-access
              '''
     p[0] = p[1]
-
-def p_object_creation_expression(p):
-    ''' object-creation-expression :         NEW type OPEN_PAREN argument-list-opt CLOSE_PAREN
-             '''
-    p[0]=['object_creation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_assignment(p):
     ''' assignment :         prim-expression assignment-operator expression
@@ -629,7 +619,6 @@ def p_statement(p):
              |         read-statement
              '''
     p[0] = {}
-    print p[1]
 
     p[0]['loopBeginList'] = p[1].get('loopBeginList', [])
     p[0]['loopEndList'] = p[1].get('loopEndList', [])
@@ -649,8 +638,6 @@ def p_print_list(p):
         p[0] = [ { 'place': p[1]['place'], 'type' : p[1]['type'] } ]
     elif len(p) == 4:
         p[0] = [ { 'place': p[1]['place'], 'type' : p[1]['type'] } ] + p[3]
-
-    # p[0]=['print_list']+[p[i] for i in range(1,len(p))]
 
 def p_read_statement(p):
     ''' read-statement :         CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
@@ -722,7 +709,6 @@ def p_expression_statement(p):
 
 def p_statement_expression(p):
     ''' statement-expression :         invocation-expression
-             |         object-creation-expression
              |         assignment
              '''
     p[0] = p[1]
