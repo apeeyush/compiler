@@ -773,19 +773,19 @@ def p_statement_expression(p):
     p[0] = p[1]
 
 def p_selection_statement(p):
-    ''' selection-statement :         if-statement M_quad
+    ''' selection-statement :         if-statement
              |         switch-statement
              '''
     p[0] = p[1]
-    if len(p)==3:
-        TAC.backPatch(p[0]['nextList'],p[2])
 
 def p_if_statement(p):
     ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN M_if block
              '''
     p[0] = {}
     if p[3]['type']=="bool":
-        p[0] = {'nextList' : p[5]['falseList']}
+        p[0]['nextList'] = p[5]['falseList'] + p[0].get('nextList',[])
+
+        TAC.backPatch(p[0]['nextList'],TAC.getNextQuad())
 
         p[0]['loopBeginList'] = p[6].get('loopBeginList',[])
         p[0]['loopEndList'] = p[6].get('loopEndList',[])
@@ -794,11 +794,14 @@ def p_if_statement(p):
 
 def p_if_else_statement(p):
     ''' if-statement :         IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else block
+            | IF OPEN_PAREN expression CLOSE_PAREN M_if block ELSE M_else if-statement M_quad
              '''
     p[0] = {}
     if p[3]['type']=="bool":
         TAC.backPatch(p[5]['falseList'],p[8]['start'])
-        p[0]={'nextList':p[8]['nextList']}
+        p[0]['nextList'] = p[8]['nextList'] + p[0].get('nextList',[])
+
+        TAC.backPatch(p[0]['nextList'],TAC.getNextQuad())
 
         p[0]['loopBeginList'] = p[6].get('loopBeginList',[]) + p[9].get('loopBeginList',[])
         p[0]['loopEndList'] = p[6].get('loopEndList',[]) + p[9].get('loopEndList',[])
