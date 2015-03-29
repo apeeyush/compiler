@@ -75,7 +75,6 @@ def p_class_type(p):
     ''' class-type :         IDENTIFIER
              '''
     p[0] = p[1]
-    # p[0]=['class_type']+[p[i] for i in range(1,len(p))]
 
 def p_class_body(p):
     ''' class-body :         BLOCK_BEGIN class-member-declarations-opt BLOCK_END
@@ -109,6 +108,9 @@ def p_constant_declaration(p):
              '''
     p[0]=['constant_declaration']+[p[i] for i in range(1,len(p))]
 
+# simple-type : {'type' : }
+# array-type  : {'type' : , 'array' : True, size : ''}
+# class-type  : { }
 def p_type(p):
     ''' type :         simple-type
              |         class-type
@@ -366,12 +368,6 @@ def p_unary_expression_op(p):
     else:
         error('typeError', 'Unary expression Type Mismatch')
 
-def p_unary_expression_inc(p):
-    ''' unary-expression :         pre-increment-expression
-             |          pre-decrement-expression
-             '''
-    # TODO
-
 def p_primary_expression(p):
     ''' primary-expression :         array-creation-expression
              |         primary-no-array-creation-expression
@@ -436,8 +432,6 @@ def p_primary_no_array_creation_expression(p):
              |         member-access
              |         invocation-expression
              |         element-access
-             |         post-increment-expression
-             |         post-decrement-expression
              |         object-creation-expression
              '''
     p[0] = {}
@@ -460,22 +454,9 @@ def p_invocation_expression(p):
     p[0]=['invocation_expression']+[p[i] for i in range(1,len(p))]
 
 def p_argument_list_opt(p):
-    ''' argument-list-opt :         argument-list
+    ''' argument-list-opt :         expression-list
              |         empty
              '''
-    p[0]=['argument_list_opt']+[p[i] for i in range(1,len(p))]
-
-def p_argument_list(p):
-    ''' argument-list :         argument
-             |         argument-list COMMA argument
-             '''
-    p[0]=['argument_list']+[p[i] for i in range(1,len(p))]
-
-def p_argument(p):
-    ''' argument :         expression
-             |         OUT variable-reference
-             '''
-    p[0]=['argument']+[p[i] for i in range(1,len(p))]
 
 def p_variable_reference(p):
     ''' variable-reference :         expression
@@ -495,30 +476,10 @@ def p_prim_expression(p):
              '''
     p[0] = p[1]
 
-def p_post_increment_expression(p):
-    ''' post-increment-expression :         prim-expression INCRE
-             '''
-    p[0]=['post_increment_expression']+[p[i] for i in range(1,len(p))]
-
-def p_post_decrement_expression(p):
-    ''' post-decrement-expression :         prim-expression DECRE
-             '''
-    p[0]=['post_decrement_expression']+[p[i] for i in range(1,len(p))]
-
 def p_object_creation_expression(p):
     ''' object-creation-expression :         NEW type OPEN_PAREN argument-list-opt CLOSE_PAREN
              '''
     p[0]=['object_creation_expression']+[p[i] for i in range(1,len(p))]
-
-def p_pre_increment_expression(p):
-    ''' pre-increment-expression :         INCRE prim-expression
-             '''
-    p[0]=['pre_increment_expression']+[p[i] for i in range(1,len(p))]
-
-def p_pre_decrement_expression(p):
-    ''' pre-decrement-expression :         DECRE prim-expression
-             '''
-    p[0]=['pre_decrement_expression']+[p[i] for i in range(1,len(p))]
 
 def p_assignment(p):
     ''' assignment :         prim-expression assignment-operator expression
@@ -584,7 +545,6 @@ def p_variable_declarator(p):
 def p_method_declaration(p):
     ''' method-declaration :         method-header method-body
              '''
-    p[0]=['method_declaration']+[p[i] for i in range(1,len(p))]
 
 def p_method_header(p):
     ''' method-header :         modifier type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
@@ -592,51 +552,33 @@ def p_method_header(p):
              |         type member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              |         VOID member-name OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
-    p[0]=['method_header']+[p[i] for i in range(1,len(p))]
 
 def p_formal_parameter_list_opt(p):
     ''' formal-parameter-list-opt :         formal-parameter-list
              |         empty
              '''
-    p[0]=['formal_parameter_list_opt']+[p[i] for i in range(1,len(p))]
 
 def p_member_name(p):
     ''' member-name :         IDENTIFIER
              '''
-    p[0]=['member_name']+[p[i] for i in range(1,len(p))]
 
 def p_formal_parameter_list(p):
     ''' formal-parameter-list :         fixed-parameters
              '''
-    p[0]=['formal_parameter_list']+[p[i] for i in range(1,len(p))]
 
 def p_fixed_parameters(p):
     ''' fixed-parameters :         fixed-parameter
              |         fixed-parameters COMMA fixed-parameter
              '''
-    p[0]=['fixed_parameters']+[p[i] for i in range(1,len(p))]
 
 def p_fixed_parameter(p):
-    ''' fixed-parameter :         parameter-modifier-opt type IDENTIFIER
+    ''' fixed-parameter :          type IDENTIFIER
              '''
-    p[0]=['fixed_parameter']+[p[i] for i in range(1,len(p))]
-
-def p_parameter_modifier_opt(p):
-    ''' parameter-modifier-opt :         parameter-modifier
-             |         empty
-             '''
-    p[0]=['parameter_modifier_opt']+[p[i] for i in range(1,len(p))]
-
-def p_parameter_modifier(p):
-    ''' parameter-modifier :         OUT
-             '''
-    p[0]=['parameter_modifier']+[p[i] for i in range(1,len(p))]
 
 def p_method_body(p):
     ''' method-body :         block
              |         DELIM
              '''
-    p[0]=['method_body']+[p[i] for i in range(1,len(p))]
 
 def p_block(p):
     ''' block :         BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
@@ -782,10 +724,6 @@ def p_statement_expression(p):
     ''' statement-expression :         invocation-expression
              |         object-creation-expression
              |         assignment
-             |         post-increment-expression
-             |         post-decrement-expression
-             |         pre-increment-expression
-             |         pre-decrement-expression
              '''
     p[0] = p[1]
 
@@ -1055,8 +993,10 @@ def p_literal_bool(p):
              '''
     p[0] = {}
     p[0]['type'] = 'bool'
-    p[0]['value'] = p[1]
-
+    if p[1] == 'true':
+        p[0]['value'] = 1
+    elif p[1] == 'false':
+        p[0]['value'] = 0
 
 def p_empty(p):
     'empty :'
@@ -1064,10 +1004,10 @@ def p_empty(p):
 
 def p_error(p):
     if p:
-        print "Syntax error at line " + str(p.lineno)
+        error('SyntaxError', "Syntax error at line " + str(p.lineno))
         print 'Token : {}'.format(p)
     else:
-        print("Syntax error!")
+        error('SyntaxError', "Syntax error!")
     # while True:
     #     tok = yacc.token()
     #     if not tok or tok.type == 'DELIM': break

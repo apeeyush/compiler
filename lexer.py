@@ -17,8 +17,7 @@ reserved_keywords = [
     'DEFAULT', 'DO', 'DOUBLE', 'ELSE', 
     'FALSE', 'FLOAT', 
     'FOR', 'FOREACH', 'GOTO', 'IF', 'IN', 'INT', 
-    'LONG', 'NEW', 'OUT',
-    'PRIVATE', 'PUBLIC', 'RETURN',
+    'LONG', 'NEW', 'PRIVATE', 'PUBLIC', 'RETURN',
     'SWITCH', 'THIS', 'TRUE', 
     'UINT', 'ULONG', 'VOID', 'WHILE', 'CONSOLE', 'READLINE', 'WRITELINE'
 ]
