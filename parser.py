@@ -202,35 +202,64 @@ def p_conditional_expression(p):
 
 def p_conditional_or_expression(p):
     ''' conditional-or-expression :         conditional-and-expression
-             |         conditional-or-expression LOGOR conditional-and-expression
+             |         conditional-or-expression M_or LOGOR conditional-and-expression
              '''
     if len(p) == 2:
         p[0] = p[1]
-    elif len(p) == 4:   # TODO : Implement backpatching
+    elif len(p) == 5:   # TODO : Implement backpatching
         p[0] = {}
-        if p[1]['type'] == p[3]['type'] == 'bool':
+        p[0]['place'] = ST.gentmp()
+        if p[1]['type'] == p[4]['type'] == 'bool':
             p[0]['type'] = 'bool'
+            TAC.emit(p[0]['place'],p[4]['place'],'','=')
+            plc = [TAC.getNextQuad()]
+            TAC.emit('','',-1,'goto')
+            place=ST.gentmp()
+            TAC.backPatch(p[2],TAC.getNextQuad())
+            TAC.emit(p[0]['place'],1,'','=')
+            TAC.backPatch(plc,TAC.getNextQuad())
         else:
             error('typeError', 'Incorrect type in LOGOR expression', str(p.lexer.lineno))
             p[0]['type'] = 'typeError'
-        p[0]['place'] = ST.gentmp()
-        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
+
+def p_M_or(p):
+    ''' M_or : empty
+             '''
+    place=ST.gentmp()
+    TAC.emit(place,1,'','=')
+    p[0] = [TAC.getNextQuad()]
+    TAC.emit(p[-1]['place'],place,-1,'cond_goto')
+
+
+def p_M_and(p):
+    ''' M_and : empty
+             '''
+    place=ST.gentmp()
+    TAC.emit(place,0,'','=')
+    p[0] = [TAC.getNextQuad()]
+    TAC.emit(p[-1]['place'],place,-1,'cond_goto')
 
 def p_conditional_and_expression(p):
     ''' conditional-and-expression :         inclusive-or-expression
-             |         conditional-and-expression LOGAND inclusive-or-expression
+             |         conditional-and-expression M_and LOGAND inclusive-or-expression
              '''
     if len(p) == 2:
         p[0] = p[1]
-    elif len(p) == 4:   # TODO : Implement backpatching
+    elif len(p) == 5:   # TODO : Implement backpatching
         p[0] = {}
-        if p[1]['type'] == p[3]['type'] == 'bool':
-            p[0]['type'] = 'bool'
-        else:
-            p[0]['type'] = 'typeError'
-            error('typeError', 'Incorrect type in LOGAND expression', str(p.lexer.lineno))
         p[0]['place'] = ST.gentmp()
-        TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
+        if p[1]['type'] == p[4]['type'] == 'bool':
+            p[0]['type'] = 'bool'
+            TAC.emit(p[0]['place'],p[4]['place'],'','=')
+            plc = [TAC.getNextQuad()]
+            TAC.emit('','',-1,'goto')
+            place=ST.gentmp()
+            TAC.backPatch(p[2],TAC.getNextQuad())
+            TAC.emit(p[0]['place'],0,'','=')
+            TAC.backPatch(plc,TAC.getNextQuad())
+        else:
+            error('typeError', 'Incorrect type in LOGOR expression', str(p.lexer.lineno))
+            p[0]['type'] = 'typeError'
 
 def p_inclusive_or_expression(p):
     ''' inclusive-or-expression :         exclusive-or-expression

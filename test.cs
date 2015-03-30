@@ -1,5 +1,10 @@
 // int a;
 // while( a < 2)
+bool a  = true;
+bool b = false;
+bool c = a || b;
+// f(a,b);
+// int nam(int a,int b)
 // {
 // 	if(2==3)
 // 	{
