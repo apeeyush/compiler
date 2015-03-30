@@ -1,16 +1,6 @@
-{int a = 1;
-while( a < 2)
-{
-	if(2==3)
-	{
-		int b = 2;
-	}
-	else
-	{
-		int c = 4;
-	}
-}
-}
+bool a  = true;
+bool b = false;
+bool c = a || b;
 // f(a,b);
 // int nam(int a,int b)
 // {
