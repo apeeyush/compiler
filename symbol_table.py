@@ -10,7 +10,8 @@ def genid():
 class Env:
     def __init__(self, prev=None, scopeName=None, scopeType=None, returnType=None):
         self.type = scopeType
-        self.returnType = None
+        self.returnType = returnType
+        self.argtypelist = None
         self.name = scopeName
         self.varlist = {}
         self.addrtable = {}
@@ -59,6 +60,24 @@ class Env:
             return curr_env.varlist[varname]
         return None
 
+    def addargtypelist(self, argtypelist):
+    	self.argtypelist = argtypelist
+    	return self.argtypelist
+
+    def getStartEnv(self):
+    	env = self
+    	while env.prev_env != None and env.type != 'classType':
+    		env = env.prev_env
+    	return env
+
+    def searchFunc(self, funcName):
+		start_env = self.getStartEnv()
+		func_env = None
+		for child in start_env.children:
+			if child.type == 'methodType' and child.name == funcName:
+				func_env = child
+		return func_env
+
     def printTable(self):
         print self.name
         print self.varlist
@@ -97,6 +116,12 @@ class SymbolTable:
     def getScopeName(self):
         return self.curr_env.name
 
+    def searchFunc(self, funcName):
+    	return self.curr_env.searchFunc(funcName)
+
+    def getCurrEnv(self):
+    	return self.curr_env
+
     def end_scope(self):
         currwidth=self.curr_env.width=max(self.curr_env.maxwidth,self.curr_env.width)
         addrtable=self.curr_env.addrtable
@@ -104,6 +129,9 @@ class SymbolTable:
         self.curr_env.maxwidth=max(self.curr_env.maxwidth,self.curr_env.width+currwidth)
         self.curr_env.addrtable.update(addrtable)
         return self.curr_env
+
+    def addargtypelist(self, argtypelist):
+    	return self.curr_env.addargtypelist(argtypelist)
 
     def printTable(self):
         print baseEnv.printTable()
@@ -114,5 +142,7 @@ if __name__ == '__main__':
     print main_env.gentmp()
     print main_env.addvar('var1','int',uppertype='simple',varwidth=-1)
     print main_env.lookupvar('var1')
-    print main_env.addbscope()
+    print main_env.addargtypelist(['int','float'])
     print main_env.getScopeName()
+    main_env.begin_scope('asdf','methodType')
+    print main_env.searchFunc('asdf')

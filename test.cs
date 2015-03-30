@@ -1,21 +1,19 @@
-{int a = 1;
-while( a < 2)
-{
-	if(2==3)
-	{
-		int b = 2;
-	}
-	else
-	{
-		int c = 4;
-	}
-}
-}
-// f(a,b);
-// int nam(int a,int b)
+// int a;
+// while( a < 2)
 // {
-// 	return 4;
+// 	if(2==3)
+// 	{
+// 		int b = 2;
+// 	}
+// 	else
+// 	{
+// 		int c = 4;
+// 	}
 // }
+int asdjnjnkn(int a, double b)
+{
+	return 1;
+}
 // int a;
 // if (a==1){
 // 	a = 3;

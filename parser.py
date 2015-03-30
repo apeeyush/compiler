@@ -457,7 +457,7 @@ def p_primary_no_array_creation_expression_identifier(p):
              '''
     var = ST.lookupvar(p[1])
     if not var:
-        error('undefinedVariable', 'Used before initialization', str(p.lexer.lineno))
+        error('undefinedVariable', 'Identifier Used before initialization', str(p.lexer.lineno))
     else:
         p[0] = var
 
@@ -484,8 +484,6 @@ def p_primary_no_array_creation_expression(p):
 def p_parenthesized_expression(p):
     ''' parenthesized-expression :         OPEN_PAREN expression CLOSE_PAREN
              '''
-    print 'haha'
-    print p[2]
     p[0]=p[2]
 
 def p_member_access(p):
@@ -497,15 +495,25 @@ def p_invocation_expression_1(p):
     ''' invocation-expression :         IDENTIFIER OPEN_PAREN argument-list-opt CLOSE_PAREN
              '''
     p[0] = {}
-    # Print function parameters
-    for argument in p[3]:
-        TAC.emit(argument['place'],'','','PARAM')
-    # Jump to function
-    TAC.emit('', '', p[1], 'JUMPLABEL')
+    funcEnv = ST.searchFunc(p[1])
+    if funcEnv:
+        argtypelist = []
+        for argument in p[3]:
+            argtypelist.append(argument['type'])
+        if funcEnv.argtypelist == argtypelist:
+            # Print function parameters
+            for argument in p[3]:
+                TAC.emit(argument['place'],'','','PARAM')
+            # Jump to function
+            TAC.emit('', '', p[1], 'JUMPLABEL')
 
-    p[0]['type'] = 'void'   # TODO set return type
-    p[0]['place'] = ST.gentmp()
-    TAC.emit(p[0]['place'],'','','SETRETURN')
+            p[0]['type'] = 'void'   # TODO set return type
+            p[0]['place'] = ST.gentmp()
+            TAC.emit(p[0]['place'],'','','SETRETURN')
+        else:
+            error('incorrectArgumentTypeList', 'Incorrect argument types in function call', str(p.lexer.lineno))
+    else:
+        error('undefinedFunction', 'Function not defined', str(p.lexer.lineno))
 
 def p_invocation_expression_2(p):
     ''' invocation-expression :         member-access OPEN_PAREN argument-list-opt CLOSE_PAREN
@@ -656,8 +664,11 @@ def p_method_header_type(p):
     ''' method-header :         type IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
     ST.begin_scope(p[2],'methodType',p[1]['type'])
+    argtypelist = []
     for parameter in p[4]:
         ST.addvar(parameter['identifier_name'], parameter['type'])
+        argtypelist.append(parameter['type'])
+    ST.addargtypelist(argtypelist)
 
 def p_method_header_void(p):
     ''' method-header :         VOID IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
@@ -1086,7 +1097,14 @@ def p_goto_statement(p):
 def p_return_statement(p):
     ''' return-statement :         RETURN expression-opt DELIM
              '''
-    p[0]=['return_statement']+[p[i] for i in range(1,len(p))]
+    p[0] = {}
+    if p[2]:
+        if p[2]['type'] == ST.getCurrEnv().returnType:
+            # TODO
+            print 'haha'
+        else:
+            error('incorrectReturnType', 'Incorrect return type. Shoud be ' + ST.getCurrEnv().returnType, str(p.lexer.lineno))
+
 
 def p_expression_opt(p):
     ''' expression-opt :         expression
