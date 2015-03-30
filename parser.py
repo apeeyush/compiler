@@ -208,7 +208,7 @@ def p_conditional_or_expression(p):
         p[0] = p[1]
     elif len(p) == 4:   # TODO : Implement backpatching
         p[0] = {}
-        if p[1]['type'] == p[4]['type'] == 'bool':
+        if p[1]['type'] == p[3]['type'] == 'bool':
             p[0]['type'] = 'bool'
         else:
             error('typeError', 'Incorrect type in LOGOR expression', str(p.lexer.lineno))
@@ -224,7 +224,7 @@ def p_conditional_and_expression(p):
         p[0] = p[1]
     elif len(p) == 4:   # TODO : Implement backpatching
         p[0] = {}
-        if p[1]['type'] == p[4]['type'] == 'bool':
+        if p[1]['type'] == p[3]['type'] == 'bool':
             p[0]['type'] = 'bool'
         else:
             p[0]['type'] = 'typeError'
@@ -240,7 +240,7 @@ def p_inclusive_or_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[4]['type'] == 'int':
+        if p[1]['type'] == p[3]['type'] == 'int':
             p[0]['type'] = 'int'
         else:
             p[0]['type'] = 'typeError'
@@ -256,7 +256,7 @@ def p_exclusive_or_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[4]['type'] == 'int':
+        if p[1]['type'] == p[3]['type'] == 'int':
             p[0]['type'] = 'int'
         else:
             p[0]['type'] = 'typeError'
@@ -272,7 +272,7 @@ def p_and_expression(p):
         p[0] = p[1]
     elif len(p) == 4:
         p[0] = {}
-        if p[1]['type'] == p[4]['type'] == 'int':
+        if p[1]['type'] == p[3]['type'] == 'int':
             p[0]['type'] = 'int'
         else:
             p[0]['type'] = 'typeError'
@@ -904,43 +904,66 @@ def p_M_quad(p):
     p[0] = TAC.getNextQuad()
 
 def p_switch_statement(p):
-    ''' switch-statement :         SWITCH OPEN_PAREN expression CLOSE_PAREN switch-block
+    ''' switch-statement :         SWITCH OPEN_PAREN expression M_switch CLOSE_PAREN M_quad switch-block
              '''
-    p[0]=['switch_statement']+[p[i] for i in range(1,len(p))]
+    p[0]={}
+    TAC.backPatch(p[4],TAC.getNextQuad())
+    for var in p[7]['cases']:
+        if var['value']:
+            if var['type']==p[3]['type']:
+                place=ST.gentmp()
+                TAC.emit(place,var['value'],'','=')
+                TAC.emit(p[3]['place'],place,var['addr'],'cond_goto')
+            else:
+                print "Mismatch"
+                print var['type']
+                error('Switch Error','Switch Value type mismatch with case type',p.lexer.lineno)
+        else:
+            TAC.emit('','',var['addr'],'goto')
+    TAC.backPatch(p[7]['nextList'],TAC.getNextQuad())
+    
+def p_M_switch(p):
+    ''' M_switch :        empty
+             '''
+    p[0]=[TAC.getNextQuad()]
+    TAC.emit('','',-1,'goto')
+
 
 def p_switch_block(p):
-    ''' switch-block :         BLOCK_BEGIN switch-sections-opt BLOCK_END
+    ''' switch-block :         BLOCK_BEGIN M_bstart switch-sections BLOCK_END
              '''
-    p[0]=['switch_block']+[p[i] for i in range(1,len(p))]
-
-def p_switch_sections_opt(p):
-    ''' switch-sections-opt :         switch-sections
-             |         empty
-             '''
-    p[0]=['switch_sections_opt']+[p[i] for i in range(1,len(p))]
+    p[0]=p[3]
+    ST.end_scope()
 
 def p_switch_sections(p):
     ''' switch-sections :         switch-section
              |         switch-sections switch-section
              '''
-    p[0]=['switch_sections']+[p[i] for i in range(1,len(p))]
+    if len(p)==2:
+        p[0]=p[1]
+    else:
+        p[0]={}
+        p[0]['cases']=p[1]['cases']+p[2]['cases']
+        p[0]['nextList']=p[1]['nextList']+p[2]['nextList']
 
 def p_switch_section(p):
-    ''' switch-section :         switch-labels statement-list
+    ''' switch-section :         switch-label M_quad statement-list 
              '''
-    p[0]=['switch_section']+[p[i] for i in range(1,len(p))]
-
-def p_switch_labels(p):
-    ''' switch-labels :         switch-label
-             |         switch-labels switch-label
-             '''
-    p[0]=['switch_labels']+[p[i] for i in range(1,len(p))]
+    p[0]={}
+    p[0]['cases']=[{'value':p[1]['value'],'type':p[1]['type'],'addr':p[2]}]
+    if p[3]['loopEndList']!=[]:
+        p[0]['nextList']=p[3]['loopEndList']
+    else:
+        error('Switch Error','Switch case does not have a break statement',p.lexer.lineno)
 
 def p_switch_label(p):
-    ''' switch-label :         CASE expression COLON
+    ''' switch-label :         CASE literal COLON
              |         DEFAULT COLON
              '''
-    p[0]=['switch_label']+[p[i] for i in range(1,len(p))]
+    if len(p)==4:
+        p[0]=p[2] #gives value and type
+    else:
+        p[0]={'value':None,'type':None}
 
 def p_iteration_statement(p):
     ''' iteration-statement :         while-statement M_quad
