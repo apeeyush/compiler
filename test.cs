@@ -1,24 +1,16 @@
-// int a;
-// while( a < 2)
 bool a  = true;
 bool b = false;
 bool c = a || b;
-// f(a,b);
-// int nam(int a,int b)
-// {
-// 	if(2==3)
-// 	{
-// 		int b = 2;
-// 	}
-// 	else
-// 	{
-// 		int c = 4;
-// 	}
-// }
 int asdjnjnkn(int a, double b)
 {
-	return 1;
+	int x;
+	{
+		int y;
+		int z = x+y;
+	}
+	return x;
 }
+int fck = asdjnjnkn(1,2.0);
 // int a;
 // if (a==1){
 // 	a = 3;

@@ -208,13 +208,13 @@ def p_conditional_or_expression(p):
         p[0] = p[1]
     elif len(p) == 5:   # TODO : Implement backpatching
         p[0] = {}
-        p[0]['place'] = ST.gentmp()
         if p[1]['type'] == p[4]['type'] == 'bool':
             p[0]['type'] = 'bool'
+            p[0]['place'] = ST.gentmp('bool')
             TAC.emit(p[0]['place'],p[4]['place'],'','=')
             plc = [TAC.getNextQuad()]
             TAC.emit('','',-1,'goto')
-            place=ST.gentmp()
+            #place=ST.gentmp('bool')
             TAC.backPatch(p[2],TAC.getNextQuad())
             TAC.emit(p[0]['place'],1,'','=')
             TAC.backPatch(plc,TAC.getNextQuad())
@@ -225,7 +225,7 @@ def p_conditional_or_expression(p):
 def p_M_or(p):
     ''' M_or : empty
              '''
-    place=ST.gentmp()
+    place=ST.gentmp('bool')
     TAC.emit(place,1,'','=')
     p[0] = [TAC.getNextQuad()]
     TAC.emit(p[-1]['place'],place,-1,'cond_goto')
@@ -234,7 +234,7 @@ def p_M_or(p):
 def p_M_and(p):
     ''' M_and : empty
              '''
-    place=ST.gentmp()
+    place=ST.gentmp('bool')
     TAC.emit(place,0,'','=')
     p[0] = [TAC.getNextQuad()]
     TAC.emit(p[-1]['place'],place,-1,'cond_goto')
@@ -247,13 +247,13 @@ def p_conditional_and_expression(p):
         p[0] = p[1]
     elif len(p) == 5:   # TODO : Implement backpatching
         p[0] = {}
-        p[0]['place'] = ST.gentmp()
         if p[1]['type'] == p[4]['type'] == 'bool':
             p[0]['type'] = 'bool'
+            p[0]['place'] = ST.gentmp('bool')
             TAC.emit(p[0]['place'],p[4]['place'],'','=')
             plc = [TAC.getNextQuad()]
             TAC.emit('','',-1,'goto')
-            place=ST.gentmp()
+            #place=ST.gentmp()
             TAC.backPatch(p[2],TAC.getNextQuad())
             TAC.emit(p[0]['place'],0,'','=')
             TAC.backPatch(plc,TAC.getNextQuad())
@@ -274,7 +274,7 @@ def p_inclusive_or_expression(p):
         else:
             p[0]['type'] = 'typeError'
             error('typeError', 'Incorrect type in BITOR expression', str(p.lexer.lineno))
-        p[0]['place'] = ST.gentmp()
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_exclusive_or_expression(p):
@@ -290,7 +290,7 @@ def p_exclusive_or_expression(p):
         else:
             p[0]['type'] = 'typeError'
             error('typeError', 'Incorrect type in BITXOR expression', str(p.lexer.lineno))
-        p[0]['place'] = ST.gentmp()
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_and_expression(p):
@@ -306,7 +306,7 @@ def p_and_expression(p):
         else:
             p[0]['type'] = 'typeError'
             error('typeError', 'Incorrect type in BITAND expression', str(p.lexer.lineno))
-        p[0]['place'] = ST.gentmp()
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_equality_expression(p):
@@ -323,7 +323,7 @@ def p_equality_expression(p):
         else:
             p[0]['type'] = 'typeError'
             error('typeError', 'Incorrect type in Equality expression', str(p.lexer.lineno))
-        p[0]['place'] = ST.gentmp()
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_relational_expression(p):
@@ -343,7 +343,7 @@ def p_relational_expression(p):
             p[0]['type'] = 'typeError'
             error('typeError', 'Incorrect type in Relational expression', str(p.lexer.lineno))
 
-        p[0]['place'] = ST.gentmp()
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_shift_expression(p):
@@ -361,7 +361,7 @@ def p_shift_expression(p):
             p[0]['type'] = 'typeError'
             error('typeError', 'Incorrect type in Shift expression', str(p.lexer.lineno))
 
-        p[0]['place'] = ST.gentmp()
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_additive_expression(p):
@@ -378,7 +378,7 @@ def p_additive_expression(p):
         else:
             p[0]['type'] = 'typeError'
             error('typeError', 'Incorrect type in Additive expression', str(p.lexer.lineno))
-        p[0]['place'] = ST.gentmp()
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_multiplicative_expression(p):
@@ -402,7 +402,7 @@ def p_multiplicative_expression(p):
         else:
             p[0]['type'] = 'typeError'
             error('typeError', 'Incorrect type in Multiplicative expression', str(p.lexer.lineno))
-        p[0]['place'] = ST.gentmp()
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'], p[1]['place'], p[3]['place'], p[2])
 
 def p_unary_expression_prim(p):
@@ -420,13 +420,13 @@ def p_unary_expression_op(p):
         p[0] = p[2]
     elif p[2]['type'] in ['int', 'double'] and p[1] in ['~', '-']:
         p[0] = {}
-        p[0]['place'] = ST.gentmp()
         p[0]['type'] = p[2]['type']
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'],p[2]['place'], '', p[1])
     elif p[2]['type'] in ['bool'] and p[1] in ['!']:
         p[0] = {}
-        p[0]['place'] = ST.gentmp()
         p[0]['type'] = p[2]['type']
+        p[0]['place'] = ST.gentmp(p[0]['type'])
         TAC.emit(p[0]['place'],p[2]['place'],'',p[1])
     else:
         error('typeError', 'Unary expression type mismatch', str(p.lexer.lineno))
@@ -478,7 +478,7 @@ def p_primary_no_array_creation_expression_literal(p):
     ''' primary-no-array-creation-expression :         literal
              '''
     p[0] = { 'type': p[1]['type']}
-    p[0]['place'] = ST.gentmp()
+    p[0]['place'] = ST.gentmp(p[0]['type'])
     TAC.emit(p[0]['place'], p[1]['value'], '', '=dec')
 
 def p_primary_no_array_creation_expression_identifier(p):
@@ -494,7 +494,7 @@ def p_primary_no_array_creation_expression_element(p):
     ''' primary-no-array-creation-expression :         element-access
              '''
     p[0] = {}
-    p[0]['place']=ST.gentmp()
+    p[0]['place']=ST.gentmp(p[0]['type'])
     p[0]['type']=p[1]['var']['type']
     TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr')
 
@@ -507,8 +507,8 @@ def p_primary_no_array_creation_expression(p):
     ''' primary-no-array-creation-expression :         member-access
              |         invocation-expression
              '''
-    p[0] = {}
-    # TODO
+    p[0] = p[1]
+    # TODO for member access
 
 def p_parenthesized_expression(p):
     ''' parenthesized-expression :         OPEN_PAREN expression CLOSE_PAREN
@@ -519,6 +519,7 @@ def p_member_access(p):
     ''' member-access :         IDENTIFIER DOT IDENTIFIER
              |                  member-access DOT IDENTIFIER
              '''
+    p[0] = {}
 
 def p_invocation_expression_1(p):
     ''' invocation-expression :         IDENTIFIER OPEN_PAREN argument-list-opt CLOSE_PAREN
@@ -532,13 +533,13 @@ def p_invocation_expression_1(p):
         if funcEnv.argtypelist == argtypelist:
             # Print function parameters
             for argument in p[3]:
-                TAC.emit(argument['place'],'','','PARAM')
+                TAC.emit(argument['place'],'','','param')
             # Jump to function
-            TAC.emit('', '', p[1], 'JUMPLABEL')
+            TAC.emit('', '', p[1], 'jumplabel')
 
-            p[0]['type'] = 'void'   # TODO set return type
-            p[0]['place'] = ST.gentmp()
-            TAC.emit(p[0]['place'],'','','SETRETURN')
+            p[0]['type'] = funcEnv.returnType
+            p[0]['place'] = ST.gentmp(p[0]['type'])
+            TAC.emit(p[0]['place'],'','','getreturn')
         else:
             error('incorrectArgumentTypeList', 'Incorrect argument types in function call', str(p.lexer.lineno))
     else:
@@ -602,8 +603,8 @@ def p_assignment_element(p):
             error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
         else:
             TAC.emit(var['place']+'['+p[1]['exp']['place']+']', p[3]['place'], '', p[2]+'arr')
-            p[0]['place']=ST.gentmp()
             p[0]['type']=var['type']
+            p[0]['place']=ST.gentmp(p[0]['type'])
             TAC.emit( p[0]['place'], var['place']+'['+p[1]['exp']['place']+']','', p[2]+'arr')
             
     else:
@@ -680,7 +681,7 @@ def p_variable_declarator(p):
 def p_method_declaration(p):
     ''' method-declaration :         method-header method-body
              '''
-    p[0] = {}
+    p[0] = {} 
     ST.end_scope()
 
 def p_method_header(p):
@@ -692,6 +693,7 @@ def p_method_header(p):
 def p_method_header_type(p):
     ''' method-header :         type IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
+    TAC.emit('','',p[2],'Label')
     ST.begin_scope(p[2],'methodType',p[1]['type'])
     argtypelist = []
     for parameter in p[4]:
@@ -702,9 +704,13 @@ def p_method_header_type(p):
 def p_method_header_void(p):
     ''' method-header :         VOID IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
+    TAC.emit('','',p[2],'Label')
     ST.begin_scope(p[2],'methodType','void')
+    argtypelist = []
     for parameter in p[4]:
-        ST.addvar(parameter['identifier_name'], p[1])
+        ST.addvar(parameter['identifier_name'], parameter['type'])
+        argtypelist.append(parameter['type'])
+    ST.addargtypelist(argtypelist)
 
 def p_formal_parameter_list_opt(p):
     ''' formal-parameter-list-opt :         formal-parameter-list
@@ -733,7 +739,6 @@ def p_fixed_parameter(p):
 
 def p_method_body(p):
     ''' method-body :         method-block
-             |         DELIM
              '''
     p[0] = p[1]
 
@@ -742,8 +747,10 @@ def p_method_block(p):
              '''
     p[0] = {}
 
+    TAC.emit('','','','jumpback')
     p[0]['loopBeginList'] = p[2].get('loopBeginList', [])
     p[0]['loopEndList'] = p[2].get('loopEndList', [])
+
 
 def p_block(p):
     ''' block :         BLOCK_BEGIN M_bstart statement-list-opt BLOCK_END
@@ -929,7 +936,7 @@ def p_M_if(p):
     ''' M_if : empty
              '''
     p[0] = {'falseList' : [TAC.getNextQuad()]}
-    TAC.emit(p[-2]['place'],'',-1,'cond_goto')
+    TAC.emit(p[-2]['place'],0,-1,'cond_goto')
 
 def p_M_else(p):
     ''' M_else : empty
@@ -951,7 +958,7 @@ def p_switch_statement(p):
     for var in p[7]['cases']:
         if var['value']:
             if var['type']==p[3]['type']:
-                place=ST.gentmp()
+                place=ST.gentmp(var['type'])
                 TAC.emit(place,var['value'],'','=')
                 TAC.emit(p[3]['place'],place,var['addr'],'cond_goto')
             else:
@@ -1029,7 +1036,7 @@ def p_M_while(p):
     ''' M_while : empty
              '''
     p[0] = {'falseList' : [TAC.getNextQuad()]}
-    TAC.emit(p[-2]['place'],'',-1,'cond_goto')
+    TAC.emit(p[-2]['place'],0,-1,'cond_goto')
 
 def p_do_statement(p):
     ''' do-statement :         DO M_quad block WHILE OPEN_PAREN M_quad expression CLOSE_PAREN DELIM
@@ -1038,7 +1045,7 @@ def p_do_statement(p):
     if p[7]['type'] == 'bool':
         TAC.backPatch(p[3]['loopBeginList'],p[6])
         p[0]['nextList']=[TAC.getNextQuad()]+p[3]['loopEndList']
-        TAC.emit(p[7]['place'], '', -1, 'cond_goto')
+        TAC.emit(p[7]['place'], 0, -1, 'cond_goto')
         TAC.emit('','',p[2], 'goto')
     else:
         error('typeError','Do-While expression not bool', str(p.lexer.lineno))
@@ -1073,7 +1080,7 @@ def p_for_condition(p):
              '''
     p[0] = p[1]
     p[0]['falseList'] = [TAC.getNextQuad()]
-    TAC.emit(p[1]['place'],'',-1,'cond_goto')
+    TAC.emit(p[1]['place'],0,-1,'cond_goto')
     p[0]['trueList'] = [TAC.getNextQuad()]
     TAC.emit('','',-1,'goto')
 
@@ -1129,8 +1136,8 @@ def p_return_statement(p):
     p[0] = {}
     if p[2]:
         if p[2]['type'] == ST.getCurrEnv().returnType:
-            # TODO
-            print 'haha'
+            TAC.emit('','',p[2]['place'],'setreturn')
+            TAC.emit('','','','jumpback')
         else:
             error('incorrectReturnType', 'Incorrect return type. Shoud be ' + ST.getCurrEnv().returnType, str(p.lexer.lineno))
 

@@ -1,11 +1,17 @@
 from pprint import pprint
 baseEnv = None
 idnum=-1
-
+tempnum=-1
+        
 def genid():
     global idnum
     idnum+=1
     return "i"+str(idnum)
+
+def generatetmp():
+    global tempnum
+    tempnum+=1
+    return "t"+str(tempnum)
 
 class Env:
     def __init__(self, prev=None, scopeName=None, scopeType=None, returnType=None):
@@ -17,15 +23,22 @@ class Env:
         self.addrtable = {}
         self.children = []
         self.prev_env=prev
-        self.tempnum=-1
         self.offset = 0
         self.width=0
         self.maxwidth=0
     
-    def gentmp(self):
-        self.tempnum+=1
-        #self.tempnum%=2
-        return "t"+str(self.tempnum)
+    def gentmp(self,vartype,uppertype='simple',varwidth=-1):
+        varwidth = self.getwidth(vartype,uppertype,int(varwidth))
+        place = generatetmp()
+        offset = self.offset
+        self.addrtable[place] = {'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype}
+        self.offset += varwidth
+        self.width+=varwidth
+        return place
+
+        # self.tempnum+=1
+        # #self.tempnum%=2
+        # return "t"+str(self.tempnum)
 
     def getwidth(self,vartype,uppertype='simple',width=-1):
         dic = {"int":4,"double":8,"bool":1,"char":1}
@@ -101,8 +114,8 @@ class SymbolTable:
     def lookupvar_curr(self, varname):
         return self.curr_env.lookupvar_curr(varname)
 
-    def gentmp(self):
-        return self.curr_env.gentmp()
+    def gentmp(self,vartype):
+        return self.curr_env.gentmp(vartype)
 
     def begin_scope(self, scopeName='undefined', scopeType='block', returnType=None):
         offset=self.curr_env.offset
