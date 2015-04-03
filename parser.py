@@ -24,7 +24,6 @@ precedence = (
 ('right', 'ELSE'),
 )
 
-
 def error(errorType, errorMessage, errorLine=None):
     global errorFlag
     errorFlag = True
@@ -576,16 +575,18 @@ def p_assignment_identifier(p):
              '''
     p[0]={}
     var = ST.lookupvar(p[1])
-    if var:
-        if var['type']!=p[3]['type']:
-            error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
+    if not var.get('isConstant',False):
+        if var:
+            if var['type']!=p[3]['type']:
+                error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
+            else:
+                TAC.emit(var['place'], p[3]['place'], '', p[2])
+                p[0]['place']=var['place']
+                p[0]['type']=var['type']
         else:
-            TAC.emit(var['place'], p[3]['place'], '', p[2])
-            p[0]['place']=var['place']
-            p[0]['type']=var['type']
+            error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
     else:
-        error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
-
+        error('constantAssignment','Cannont assign constant', str(p.lexer.lineno))
 
 def p_assignment_member(p):
     ''' assignment :         member-access assignment-operator expression
@@ -876,6 +877,7 @@ def p_local_constant_declaration(p):
         else:
             if identifier['type']==p[2]['type']:
                 newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
+                newVar['isConstant'] = True
                 TAC.emit(newVar['place'], identifier['place'], '', '=')
             else:
                 error('typeError','Type mismatch in constant declaration', str(p.lexer.lineno))

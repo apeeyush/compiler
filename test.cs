@@ -1,16 +1,18 @@
-bool a  = true;
-bool b = false;
-bool c = a || b;
-int asdjnjnkn(int a, double b)
-{
-	int x;
-	{
-		int y;
-		int z = x+y;
-	}
-	return x;
-}
-int fck = asdjnjnkn(1,2.0);
+const int a = 6;
+a = 7;
+// bool a  = true;
+// bool b = false;
+// bool c = a || b;
+// int asdjnjnkn(int a, double b)
+// {
+// 	int x;
+// 	{
+// 		int y;
+// 		int z = x+y;
+// 	}
+// 	return x;
+// }
+// int fck = asdjnjnkn(1,2.0);
 // int a;
 // if (a==1){
 // 	a = 3;
