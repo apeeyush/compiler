@@ -686,11 +686,13 @@ def p_element_access(p):
     p[0]={}
     var = ST.lookupvar(p[1])
     if var:
-        if p[3]['type']=='int':
+        if var.get('uppertype','simple')!='array':
+            error("Array error","Array access through non array element",str(p.lexer.lineno))
+        elif p[3]['type']!='int':
+            error('Non integer index','Array indice not an integer',p.lexer.lineno())
+        else:
             p[0]['var']=var
             p[0]['exp']=p[3]
-        else:
-            error('Non integer index','Array indice not an integer',p.lexer.lineno())
     else:
         var=ST.lookupvar_Class(p[1])
         if var:
@@ -704,7 +706,19 @@ def p_element_access(p):
 def p_element_access_member(p):
     ''' element-access :         member-access OPEN_BRACKET expression CLOSE_BRACKET
              '''
-    #TODO
+    p[0]={}
+    var=p[1]['var']
+    member=p[1]['member']
+    if member.get('uppertype','simple')!='array':
+        error("Array error","Array access through non array element",str(p.lexer.lineno))
+    else:
+        if p[3]['type']=="int":
+            p[0]['var']={}
+            p[0]['var']['type']=member['type']
+            p[0]['var']['place']=var['place']+"@"+member['place']
+            p[0]['exp']=p[3]
+        else:
+            error('Non integer index','Array indice not an integer',p.lexer.lineno())
 
 def p_assignment_identifier(p):
     ''' assignment :         IDENTIFIER assignment-operator expression
@@ -873,12 +887,6 @@ def p_method_declaration(p):
     p[0] = {} 
     ST.end_scope()
 
-def p_method_header(p):
-    ''' method-header :         modifier type IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
-             |         modifier VOID IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
-             '''
-    p[0] = {}
-
 def p_method_header_type(p):
     ''' method-header :         type IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
@@ -900,7 +908,7 @@ def p_method_header_void(p):
     classname=None
     if ST.curr_env:
         classname=ST.curr_env.name
-    TAC.emit('','',p[2],'Label')
+    TAC.emit('','',classname+'_'+p[2],'Label')
     ST.begin_scope(p[2],'methodType','void',Class=classname)
     argtypelist = []
     ST.addvar("@self","int")

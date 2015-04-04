@@ -1,8 +1,7 @@
 class A{
-	public const int a=6;
 	int fun1(int b)
 	{
-		return a+b;
+		return b;
 	}
 	int fun3(int b)
 	{
@@ -14,7 +13,8 @@ class B:A{
 	int fun2(int c)
 	{
 		A a = new A();
-		int x_new = a.a;
+		int x;
+		int x_new = x[0];
 		int adss = 4 < 2 ? 1 : 2;
 		x_new = a.fun1(4)+fun1(324)+fun3(34);
 		return x_new;
