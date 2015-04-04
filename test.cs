@@ -1,5 +1,5 @@
 class A{
-	public int a;
+	public const int a=6;
 	int fun1(int b)
 	{
 		return a+b;
@@ -15,6 +15,7 @@ class B:A{
 	{
 		A a = new A();
 		int x_new = a.a;
+		a.a = 4;
 		x_new = a.fun1(4)+fun1(324)+fun3(34);
 		return x_new;
 	}
@@ -34,6 +35,19 @@ int asdjnjnkn(int a, double b)
 	return x;
 }
 int fck = asdjnjnkn(1,2.0);*/
+// bool a  = true;
+// bool b = false;
+// bool c = a || b;
+// int asdjnjnkn(int a, double b)
+// {
+// 	int x;
+// 	{
+// 		int y;
+// 		int z = x+y;
+// 	}
+// 	return x;
+// }
+// int fck = asdjnjnkn(1,2.0);
 // int a;
 // if (a==1){
 // 	a = 3;

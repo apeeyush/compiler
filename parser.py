@@ -24,7 +24,6 @@ precedence = (
 ('right', 'ELSE'),
 )
 
-
 def error(errorType, errorMessage, errorLine=None):
     global errorFlag
     errorFlag = True
@@ -713,18 +712,24 @@ def p_assignment_identifier(p):
     p[0]={}
     var = ST.lookupvar(p[1])
     if var:
-        if var['type']!=p[3]['type']:
-            error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
+        if not var.get('isConstant',False):
+            if var['type']!=p[3]['type']:
+                error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
+            else:
+                TAC.emit(var['place'], p[3]['place'], '', p[2])
+                p[0]['place']=var['place']
+                p[0]['type']=var['type']
         else:
-            TAC.emit(var['place'], p[3]['place'], '', p[2])
-            p[0]['place']=var['place']
-            p[0]['type']=var['type']
+            error('constantAssignment','Cannont assign constant', str(p.lexer.lineno))
     else:
         var=ST.lookupvar_Class(p[1])
         if var:
-            TAC.emit(var['place'],p[3]['place'],'',p[2]+'_derefstore')
-            p[0]['place']=var['place']
-            p[0]['type']=var['type']
+            if not var.get('isConstant', False):
+                TAC.emit(var['place'],p[3]['place'],'',p[2]+'_derefstore')
+                p[0]['place']=var['place']
+                p[0]['type']=var['type']
+            else:
+                error('constantAssignment','Cannont assign constant', str(p.lexer.lineno))
         else:
             error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
 
@@ -738,6 +743,8 @@ def p_assignment_member(p):
     member = p[1]['member']
     if member['type']!=p[3]['type']:
         error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
+    elif member.get('isConstant',False):
+        error('constantError',"Cannot assign value to constant",str(p.lexer.lineno))
     else:
         TAC.emit(var['place']+"@"+member['place'], p[3]['place'], '', p[2]+'_obj')
         p[0]['place']=ST.gentmp(member['type'])
@@ -1083,6 +1090,7 @@ def p_local_constant_declaration(p):
                 error('type Error','Constants have to be simple type',str(p.lexer.lineno))
             elif identifier['type']==p[2]['type']:
                 newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
+                newVar['isConstant'] = True
                 TAC.emit(newVar['place'], identifier['place'], '', '=')
             else:
                 error('typeError','Type mismatch in constant declaration', str(p.lexer.lineno))
