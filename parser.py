@@ -1192,7 +1192,11 @@ def p_switch_statement(p):
         else:
             TAC.emit('','',var['addr'],'goto')
     TAC.backPatch(p[7]['nextList'],TAC.getNextQuad())
-    
+
+    p[0]['loopBeginList'] = p[7].get('loopBeginList', [])
+    p[0]['loopEndList'] = p[7].get('loopEndList', [])
+
+
 def p_M_switch(p):
     ''' M_switch :        empty
              '''

@@ -52,7 +52,7 @@ class Env:
         # return "t"+str(self.tempnum)
 
     def getwidth(self,vartype,uppertype='simple',width=-1):
-        dic = {"int":4,"double":8,"bool":1,"char":1}
+        dic = {"int":4,"double":8,"bool":1,"char":1, "void":0}
         if uppertype=='simple':
             return dic[vartype]
         elif uppertype=='array':
