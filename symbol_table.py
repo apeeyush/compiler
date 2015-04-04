@@ -29,7 +29,15 @@ class Env:
         self.offset = 0
         self.width=0
         self.maxwidth=0
-    
+
+    def lookupFuncType(self):
+        curr_env = self
+        while curr_env != None:
+            if curr_env.type == 'methodType':
+                return curr_env.returnType
+            curr_env = curr_env.prev_env
+        return None
+
     def gentmp(self,vartype,uppertype='simple',varwidth=-1):
         varwidth = self.getwidth(vartype,uppertype,int(varwidth))
         place = generatetmp()
@@ -159,6 +167,9 @@ class SymbolTable:
 
     def addvar(self,varname,vartype,uppertype='simple',varwidth=-1):
         return self.curr_env.addvar(varname,vartype,uppertype,varwidth)
+
+    def lookupFuncType(self):
+        return self.curr_env.lookupFuncType()
 
     def lookupvar(self,varname):
         return self.curr_env.lookupvar(varname)

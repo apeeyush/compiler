@@ -1359,11 +1359,11 @@ def p_return_statement(p):
              '''
     p[0] = {}
     if p[2]:
-        if p[2]['type'] == ST.getCurrEnv().returnType:
+        if p[2]['type'] == ST.lookupFuncType():
             TAC.emit('','',p[2]['place'],'setreturn')
             TAC.emit('','','','jumpback')
         else:
-            error('incorrectReturnType', 'Incorrect return type. Shoud be ' + ST.getCurrEnv().returnType, str(p.lexer.lineno))
+            error('incorrectReturnType', 'Incorrect return type. Shoud be ' + ST.lookupFuncType(), str(p.lexer.lineno))
 
 
 def p_expression_opt(p):
@@ -1387,17 +1387,6 @@ def p_constructor_body(p):
              |         DELIM
              '''
     p[0]=['constructor_body']+[p[i] for i in range(1,len(p))]
-
-def p_destructor_declaration(p):
-    ''' destructor-declaration :         BITCOMP IDENTIFIER OPEN_PAREN CLOSE_PAREN destructor-body
-             '''
-    p[0]=['destructor_declaration']+[p[i] for i in range(1,len(p))]
-
-def p_destructor_body(p):
-    ''' destructor-body :         block
-             |         DELIM
-             '''
-    p[0]=['destructor_body']+[p[i] for i in range(1,len(p))]
 
 def p_literal_int(p):
     ''' literal :     ICONST
