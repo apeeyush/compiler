@@ -1,34 +1,21 @@
+//This is to check do-while and conditional constructs within loops
 class A
 {
-    int helloworld(int a)
+    void Main(int a)
     {
-        if(a==2)
+        int i=0,j=1;
+        do
         {
-            return 1;
-            helloworld(3);
-        }
-        else
-        {
-            return 2;
-        }
-    }
-    int Main(int a)
-    {
-        int i,j=1;
-        int [5]arr = {1,53,5,3,1};
-        for(i=0;i<20;i+=1)
-        {
-            continue;
             switch(j)
             {
                 case 1:
                     if(j<0)
                     {
                         console.writeline(-j);
-                        helloworld(2);
                     }
                     else
                     {
+                        continue;
                         console.writeline(j);
                     }
                     break;
@@ -40,9 +27,12 @@ class A
                     else
                     {
                         console.writeline(j*2);
+                        
                     }
                     break;
             }
-        }
+            continue;
+            i+=1;
+        }while(i<20);
     }
 }

@@ -1,5 +1,0 @@
-3.) Type-Checking : check type as well as uppertype
-4.) Array index checking
-7.) Improve TAC
-8.) Array initialization : Check no. of arguments
-9.) No readline on constant

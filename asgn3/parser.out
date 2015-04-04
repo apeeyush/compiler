@@ -1,10 +1,5 @@
 Created by PLY version 3.4 (http://www.dabeaz.com/ply)
 
-Unused terminals:
-
-    SCONST
-    FLOAT
-
 Grammar
 
 Rule 0     S' -> compilation-unit
@@ -260,7 +255,6 @@ DOUBLE               : 31
 ELSE                 : 165 166
 EQ                   : 53
 FALSE                : 211
-FLOAT                : 
 FOR                  : 184
 GE                   : 59
 GOTO                 : 200
@@ -291,7 +285,6 @@ READLINE             : 152
 RETURN               : 201
 RSHIFT               : 62
 RSHIFTEQUAL          : 112
-SCONST               : 
 SWITCH               : 170
 TIMES                : 67
 TIMESEQUAL           : 105

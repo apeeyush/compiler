@@ -15,7 +15,7 @@ reserved_keywords = [
     'BOOL', 'BREAK',
     'CASE', 'CHAR', 'CLASS', 'CONST', 'CONTINUE',
     'DEFAULT', 'DO', 'DOUBLE', 'ELSE',
-    'FALSE', 'FLOAT', 'FOR', 'GOTO', 'IF', 'INT',
+    'FALSE', 'FOR', 'GOTO', 'IF', 'INT',
     'NEW', 'PRIVATE', 'PUBLIC', 'RETURN',
     'SWITCH', 'TRUE',
     'UINT', 'VOID', 'WHILE', 'CONSOLE', 'READLINE', 'WRITELINE'
@@ -72,7 +72,7 @@ constants = [
     'CCONST',
     # String Literals
     # https://msdn.microsoft.com/en-us/library/aa691090(v=vs.71).aspx
-    'SCONST',    # regular string
+    # 'SCONST',    # regular string
     # 'VSCONST'   # varbatim string
     # NULL literal
     # https://msdn.microsoft.com/en-us/library/aa691092(v=vs.71).aspx
@@ -252,11 +252,11 @@ regular_string_literal = r'\"' + scconsts + '\"'
 vconsts = r'([^\"]|[\"][\"])*'
 verbatim_string_literal = r'@\"' + vconsts + '\"'
 #sconst = regular_string_literal + r'|' + verbatim_string_literal
-@TOKEN(regular_string_literal)
-def t_SCONST(t):
-    t.type = 'SCONST'
-    t.lexer.lineno += t.value.count('\n')
-    return t
+# @TOKEN(regular_string_literal)
+# def t_SCONST(t):
+#     t.type = 'SCONST'
+#     t.lexer.lineno += t.value.count('\n')
+#     return t
 # @TOKEN(verbatim_string_literal)
 # def t_VSCONST(t):
 #     t.type = 'VSCONST'

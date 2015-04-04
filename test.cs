@@ -20,9 +20,7 @@
 // 		return x_new;
 // 	}
 // }
-const char a = 'd';
-int b = 6;
-/*bool a  = true;
+bool a  = true;
 bool b = false;
 bool c = a || b;
 int asdjnjnkn(int a, double b)
@@ -34,7 +32,7 @@ int asdjnjnkn(int a, double b)
 	}
 	return x;
 }
-int fck = asdjnjnkn(1,2.0);*/
+int fck = asdjnjnkn(1,2.0);
 // bool a  = true;
 // bool b = false;
 // bool c = a || b;
