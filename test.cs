@@ -20,9 +20,8 @@
 // 		return x_new;
 // 	}
 // }
-char a = 'd';
+const char a = 'd';
 int b = 6;
-
 /*bool a  = true;
 bool b = false;
 bool c = a || b;

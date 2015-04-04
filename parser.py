@@ -1030,16 +1030,22 @@ def p_print_list(p):
 def p_read_statement(p):
     ''' read-statement :         CONSOLE DOT READLINE OPEN_PAREN IDENTIFIER CLOSE_PAREN DELIM
              '''
+    p[0] = {}
     var = ST.lookupvar(p[5])    #Modify(managing read address)
     if var:
-        TAC.emit('',var['place'],var['width'],'Read')
+        if not var.get('isConstant',False):
+            TAC.emit('',var['place'],var['width'],'Read')
+        else:
+            error('constantAssignment','Cannont read constant', str(p.lexer.lineno))
     else:
         var=ST.lookupvar_Class(p[5])
         if var:
-            TAC.emit('',var['place'],var['width'],'Read_deref')
+            if not var.get('isConstant', False):
+                TAC.emit('',var['place'],var['width'],'Read_deref')
+            else:
+                error('constantAssignment','Cannont read constant', str(p.lexer.lineno))
         else:
             error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
-    p[0] = {}
 
 def p_labeled_statement(p):
     ''' labeled-statement :         IDENTIFIER COLON statement
