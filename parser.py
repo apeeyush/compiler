@@ -228,10 +228,10 @@ def p_conditional_expression(p):
             error('typeError', 'condop should have same type in both expressions', str(p.lexer.lineno))
         else:
             p[0]={}
-            p[0]['place']=ST.gentmp()
+            p[0]['place']=ST.gentmp(p[3]['type'])
             p[0]['type']=p[3]['type']
             nextquad=TAC.getNextQuad()
-            TAC.emit(p[1]['place'],'',nextquad+3,'cond_goto')
+            TAC.emit(p[1]['place'],0,nextquad+3,'cond_goto')
             TAC.emit(p[0]['place'],p[3]['place'],'','=')
             nextquad=TAC.getNextQuad()
             TAC.emit('','',nextquad+2,'goto')
