@@ -1,19 +1,39 @@
-using System;
-namespace Program
+//This is to check while and conditional constructs within loops
+class A
 {
-	class Checkcomments
+	void Main(int a)
 	{
-		static void Main(string[] args)
-		{
-			/*my first program in C#*/
-			//This is the second comment
-			int a = 10;
-			Console.WriteLine("a: {0}", a);
-			/*Third comment
-			This goes multiline*/
-			int b = 30;
-			//Last comment
-    }
-
+	    int i=0,j=1;
+	    while(i<20)
+	    {
+	        switch(j)
+	        {
+	            case 1:
+	                if(j<0)
+	                {
+	                    console.writeline(-j);
+	                }
+	                else
+	                {
+	                    continue;
+	                    console.writeline(j);
+	                    Main(j);
+	                }
+	                break;
+	            case 2:
+	                if(j<0)
+	                {
+	                    console.writeline(-j*2);
+	                }
+	                else
+	                {
+	                    console.writeline(j*2);
+	                	
+	                }
+	                break;
+	        }
+	        continue;
+	        i+=1;
+	    }
 	}
 }

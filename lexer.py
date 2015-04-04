@@ -12,11 +12,11 @@ from sys import argv
 # Contextual keywords not included in this list as they are used to provide a specific meaning in the code, but are not a reserved word in C#.
 # sizeof, TYPEOF, enum, STRUCT TBD
 reserved_keywords = [
-    'BASE', 'BOOL', 'BREAK',
+    'BOOL', 'BREAK',
     'CASE', 'CHAR', 'CLASS', 'CONST', 'CONTINUE', 
     'DEFAULT', 'DO', 'DOUBLE', 'ELSE', 
     'FALSE', 'FLOAT', 
-    'FOR', 'FOREACH', 'GOTO', 'IF', 'IN', 'INT', 
+    'FOR', 'GOTO', 'IF', 'INT', 
     'LONG', 'NEW', 'PRIVATE', 'PUBLIC', 'RETURN',
     'SWITCH', 'THIS', 'TRUE', 
     'UINT', 'ULONG', 'VOID', 'WHILE', 'CONSOLE', 'READLINE', 'WRITELINE'
@@ -41,8 +41,8 @@ operators_or_punctuators = [
     'ASSIGN', 'PLUSEQUAL', 'MINUSEQUAL', 'TIMESEQUAL', 'DIVEQUAL', 'MODEQUAL',
     'BITANDEQUAL', 'LSHIFTEQUAL', 'RSHIFTEQUAL', 'BITXOREQUAL', 'BITOREQUAL',
 
-    # ++,--
-    'INCRE', 'DECRE',
+    # # ++,--
+    # 'INCRE', 'DECRE',
 
     # ->,=>
     #'ARROW','LAMBDA_ARROW',
@@ -60,21 +60,21 @@ constants = [
     # Integer literals
     # https://msdn.microsoft.com/en-us/library/aa664674(v=vs.71).aspx
     'ICONST',   # signed integer
-    'UICONST',  # unsigned integer
-    'LICONST',  # long integer
-    'ULICONST', # unsigned long integer
+    # 'UICONST',  # unsigned integer
+    # 'LICONST',  # long integer
+    # 'ULICONST', # unsigned long integer
     # Real literals
     # https://msdn.microsoft.com/en-us/library/aa691085(v=vs.71).aspx
     'FCONST',   # float
     'DCONST',   # double 
-    'MCONST',   # decimal
+    # 'MCONST',   # decimal
     # Character literals
     # https://msdn.microsoft.com/en-us/library/aa691087(v=vs.71).aspx
     'CCONST',
     # String Literals
     # https://msdn.microsoft.com/en-us/library/aa691090(v=vs.71).aspx
     'SCONST',    # regular string
-    'VSCONST'   # varbatim string
+    # 'VSCONST'   # varbatim string
     # NULL literal
     # https://msdn.microsoft.com/en-us/library/aa691092(v=vs.71).aspx
     # null ; Already in keyword
@@ -144,9 +144,9 @@ t_RSHIFTEQUAL      = r'>>='
 t_BITXOREQUAL      = r'^='
 t_BITOREQUAL       = r'\|='
 
-# Increment/decrement
-t_INCRE         = r'\+\+'
-t_DECRE       = r'--'
+# # Increment/decrement
+# t_INCRE         = r'\+\+'
+# t_DECRE       = r'--'
 
 # ->,=>
 #t_ARROW            = r'->'
@@ -190,9 +190,9 @@ def t_FCONST(t):
     if t.value[-1].lower() == 'd':
         t.type = 'DCONST'
         #t.value = float(t.value[:-1])
-    elif t.value[-1].lower() == 'm':
-        t.type = 'MCONST'
-        #t.value = float(t.value[:-1])
+    # elif t.value[-1].lower() == 'm':
+    #     t.type = 'MCONST'
+    #     #t.value = float(t.value[:-1])
     elif t.value[-1].lower() == 'f':
         t.type = 'FCONST'
         #t.value = float(t.value[:-1])
@@ -204,25 +204,25 @@ def t_FCONST(t):
 # Integer Literals
 decimal_integer_literal = r'\d+'
 hexadecimal_integer_literal = r'0[Xx][0-9a-fA-F]+'
-uliconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[uU][lL]|[lL][uU]'
-uiconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[Uu]' 
-liconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[Ll]'
+# uliconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[uU][lL]|[lL][uU]'
+# uiconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[Uu]' 
+# liconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal + r'[Ll]'
 iconst = hexadecimal_integer_literal + r'|' + decimal_integer_literal
-@TOKEN(uliconst)
-def t_ULICONST(t):
-    t.type = 'ULICONST'
-    #t.value = int(t.value[:-2], 0)
-    return t
-@TOKEN(liconst)
-def t_LICONST(t):
-    t.type = 'LICONST'
-    #t.value = int(t.value[:-1], 0)
-    return t
-@TOKEN(uiconst)
-def t_UICONST(t):
-    t.type = 'UICONST'
-    #t.value = int(t.value[:-1], 0)
-    return t
+# @TOKEN(uliconst)
+# def t_ULICONST(t):
+#     t.type = 'ULICONST'
+#     #t.value = int(t.value[:-2], 0)
+#     return t
+# @TOKEN(liconst)
+# def t_LICONST(t):
+#     t.type = 'LICONST'
+#     #t.value = int(t.value[:-1], 0)
+#     return t
+# @TOKEN(uiconst)
+# def t_UICONST(t):
+#     t.type = 'UICONST'
+#     #t.value = int(t.value[:-1], 0)
+#     return t
 @TOKEN(iconst)
 def t_ICONST(t):
     t.type = 'ICONST'
@@ -258,11 +258,11 @@ def t_SCONST(t):
     t.type = 'SCONST'
     t.lexer.lineno += t.value.count('\n')
     return t
-@TOKEN(verbatim_string_literal)
-def t_VSCONST(t):
-    t.type = 'VSCONST'
-    t.lexer.lineno += t.value.count('\n')
-    return t
+# @TOKEN(verbatim_string_literal)
+# def t_VSCONST(t):
+#     t.type = 'VSCONST'
+#     t.lexer.lineno += t.value.count('\n')
+#     return t
 
 
 # Comments

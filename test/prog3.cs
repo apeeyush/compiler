@@ -1,25 +1,49 @@
-using System;
-
-namespace DecisionMaking
+//This program is to test functio call within function, switch case,continue statements.
+class A
 {
-    
-    class Program
+    int helloworld(int a)
     {
-        static void Main(string[] args)
+        if(a==2)
         {
-
-            int a = 100;
-
-            if (a < 20)
+            return 1;
+            helloworld(3);
+        }
+        else
+        {
+            return 2;
+        }
+    }
+    int Main(int a)
+    {
+        int i,j=1;
+        int [20]arr = {1,53,5,3,1};
+        for(i=0;i<20;i+=1)
+        {
+            continue;
+            switch(j)
             {
-                Console.WriteLine("a is less than 20");
+                case 1:
+                    if(j<0)
+                    {
+                        console.writeline(-j);
+                        helloworld(2);
+                    }
+                    else
+                    {
+                        console.writeline(j);
+                    }
+                    break;
+                case 2:
+                    if(j<0)
+                    {
+                        console.writeline(-j*2);
+                    }
+                    else
+                    {
+                        console.writeline(j*2);
+                    }
+                    break;
             }
-            else
-            {
-                Console.WriteLine("a is not less than 20");
-            }
-            Console.WriteLine("value of a is : {0}", a);
-            Console.ReadLine();
         }
     }
 }

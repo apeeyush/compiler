@@ -1,20 +1,28 @@
-using System;
-namespace VariableDefinition
+//Bubble Sort
+class Program
 {
-    class Program
+    int Main(int a)
     {
-        static void Main(string[] args)
+        int i,j;
+        int [5]arr = {1,53,5,3,1,1,3,35,4,4,4,4,4}; //This should give an array since arg-list > array size
+        for(i=0;i<20;i+=1)
         {
-            short a;
-            int b ;
-            double c;
-
-            /* actual initialization */
-            a = 10;
-            b = 20;
-            c = a + b;
-            Console.WriteLine("a = {0}, b = {1}, c = {2}", a, b, c);
-            Console.ReadLine();
+            for(j=i+1;j<20;j+=1)
+            {
+                if(arr[i]>arr[j])
+                {
+                    int temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+                else
+                {
+                    if(1==1)
+                    {
+                        continue;
+                    }
+                }
+            }
         }
     }
 }

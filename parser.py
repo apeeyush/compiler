@@ -1427,6 +1427,13 @@ def p_literal_bool(p):
     elif p[1] == 'false':
         p[0]['value'] = 0
 
+def p_literal_char(p):
+    ''' literal :    CCONST
+             '''
+    p[0] = {}
+    p[0]['type'] = 'char'
+    p[0]['value'] = p[1]
+
 def p_empty(p):
     'empty :'
     p[0] = {}
@@ -1477,9 +1484,9 @@ if __name__ == "__main__":
     parse = runParser(inputFile)
     showCompilationStatus()
 
-    filename = inputFile.split('.')[0] + '.dot'
-    png_filename = inputFile.split('.')[0] + '.png'
-    createdot.createFile(parse, filename)
+    # filename = inputFile.split('.')[0] + '.dot'
+    # png_filename = inputFile.split('.')[0] + '.png'
+    # createdot.createFile(parse, filename)
 
     ST.printTable()
     TAC.printCode()

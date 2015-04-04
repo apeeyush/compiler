@@ -1,36 +1,38 @@
-using System;
-namespace RectangleApplication
+//This is to check do-while and conditional constructs within loops
+class A
 {
-    class Rectangle
+    void Main(int a)
     {
-        // member variables
-        double length;
-        double width;
-        public void Acceptdetails()
+        int i=0,j=1;
+        do
         {
-            length = 4.5;    
-            width = 3.5;
-        }
-        public double GetArea()
-        {
-            return length * width;
-        }
-        public void Display()
-        {
-            Console.WriteLine("Length: {0}", length);
-            Console.WriteLine("Width: {0}", width);
-            Console.WriteLine("Area: {0}", GetArea());
-        }
-    }
-    
-    class ExecuteRectangle
-    {
-        static void Main(string[] args)
-        {
-            Rectangle r = new Rectangle();
-            r.Acceptdetails();
-            r.Display();
-            Console.ReadLine();
-        }
+            switch(j)
+            {
+                case 1:
+                    if(j<0)
+                    {
+                        console.writeline(-j);
+                    }
+                    else
+                    {
+                        continue;
+                        console.writeline(j);
+                    }
+                    break;
+                case 2:
+                    if(j<0)
+                    {
+                        console.writeline(-j*2);
+                    }
+                    else
+                    {
+                        console.writeline(j*2);
+                        
+                    }
+                    break;
+            }
+            continue;
+            i+=1;
+        }while(i<20);
     }
 }
