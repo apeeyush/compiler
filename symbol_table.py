@@ -80,7 +80,12 @@ class Env:
                 return curr_env.varlist[varname]
         return None
 
-
+    def isvarinClass(self,varname,Classname):
+        Class=self.searchClass(Classname)
+        if varname in Class.varlist:
+            return Class.varlist[varname]
+        return None
+    
     def lookupvar_curr(self, varname):
         curr_env = self
         if varname in curr_env.varlist:
@@ -116,6 +121,20 @@ class Env:
             else:
                 return None
 
+    def searchFuncinClass(self,funcName,className):
+        func_class=self.searchClass(className)
+        func_env=None
+        for child in func_class.children:
+            if child.type == 'methodType' and child.name == funcName:
+                func_env = child
+        if not func_env:
+            if func_class.parentClass:
+                parent_class = self.searchClass(func_class.parentClass)
+                for child in parent_class.children:
+                    if child.type == 'methodType' and child.name == funcName:
+                        func_env = child
+        return func_env
+            
     def searchClass(self,className):
         start_env=baseEnv
         for child in start_env.children:
@@ -174,8 +193,14 @@ class SymbolTable:
     def searchFunc(self, funcName):
         return self.curr_env.searchFunc(funcName)
 
+    def searchFuncinClass(self,funcName,className):
+        return self.curr_env.searchFuncinClass(funcName,className)
+
     def searchClass(self,className):
         return self.curr_env.searchClass(className)
+
+    def isvarinClass(self,varname,className):
+        return self.curr_env.isvarinClass(varname,className)
 
     def getCurrEnv(self):
         return self.curr_env

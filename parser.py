@@ -552,12 +552,22 @@ def p_primary_no_array_creation_expression_parenthesized(p):
              '''
     p[0] = p[1]
 
-def p_primary_no_array_creation_expression(p):
+def p_primary_no_array_creation_expression_member(p):
     ''' primary-no-array-creation-expression :         member-access
-             |         invocation-expression
+             '''
+    p[0]={}
+    var = p[1]['var']
+    member = p[1]['member']
+    p[0]['place']=ST.gentmp(member['type'])
+    p[0]['type']=member['type']
+    TAC.emit(p[0]['place'],var['place']+"@"+member['place'], '', '=_obj')# TODO for member access
+
+def p_primary_no_array_creation_expression_invocation(p):
+    ''' primary-no-array-creation-expression :         invocation-expression
              '''
     p[0] = p[1]
-    # TODO for member access
+
+
 def p_primary_no_array_creation_expression_object(p):
     ''' primary-no-array-creation-expression :        object-creation-expression
              '''
@@ -585,9 +595,27 @@ def p_parenthesized_expression(p):
 
 def p_member_access(p):
     ''' member-access :         IDENTIFIER DOT IDENTIFIER
-             |                  member-access DOT IDENTIFIER
              '''
+    print "haha"
     p[0] = {}
+    var=ST.lookupvar(p[1])
+    if var:
+        if var['uppertype']=='class':
+            member = ST.isvarinClass(p[3],var['type'])
+            if member:
+                if member.get('modifier','public')=="public":
+                    p[0]['var']=var
+                    p[0]['member']=member
+                else:
+                    error("access error","variable access not permitted",str(p.lexer.lineno))                
+            else:
+                error('access error', 'Class member not defined', str(p.lexer.lineno))
+        else:
+            error("access error",p[1]+" not an object type",str(p.lexer.lineno))
+    else:
+        error("access error",p[1]+" object not found",str(p.lexer.lineno))
+        
+
 
 def p_invocation_expression_1(p):
     ''' invocation-expression :         IDENTIFIER OPEN_PAREN argument-list-opt CLOSE_PAREN
@@ -600,6 +628,7 @@ def p_invocation_expression_1(p):
             argtypelist.append(argument['type'])
         if funcEnv.argtypelist == argtypelist:
             # Print function parameters
+            TAC.emit("@self",'','','param')
             for argument in p[3]:
                 TAC.emit(argument['place'],'','','param')
             # Jump to function
@@ -614,9 +643,37 @@ def p_invocation_expression_1(p):
         error('undefinedFunction', 'Function not defined', str(p.lexer.lineno))
 
 def p_invocation_expression_2(p):
-    ''' invocation-expression :         member-access OPEN_PAREN argument-list-opt CLOSE_PAREN
+    ''' invocation-expression :         IDENTIFIER DOT IDENTIFIER OPEN_PAREN argument-list-opt CLOSE_PAREN
              '''
-    # TODO
+    print "INVOCATION"
+    p[0] = {}
+    var=ST.lookupvar(p[1])
+    if var:
+        if var['uppertype']=='class':
+            funcEnv = ST.searchFuncinClass(p[3],var['type'])
+            if funcEnv:
+                argtypelist = []
+                for argument in p[5]:
+                    argtypelist.append(argument['type'])
+                if funcEnv.argtypelist == argtypelist:
+                    # Print function parameters
+                    TAC.emit("@object",var['place'],'','param')
+                    for argument in p[5]:
+                        TAC.emit(argument['place'],'','','param')
+                    # Jump to function
+                    TAC.emit('', '', funcEnv.Class+'_'+p[3], 'jumplabel')
+                    p[0]['type'] = funcEnv.returnType
+                    p[0]['place'] = ST.gentmp(p[0]['type'])
+                    TAC.emit(p[0]['place'],'','','getreturn')
+                else:
+                    error('incorrectArgumentTypeList', 'Incorrect argument types in function call', str(p.lexer.lineno))
+            else:
+                error('undefinedFunction', 'Function not defined', str(p.lexer.lineno))
+        else:
+            error("Function error",p[1]+" not an object type",str(p.lexer.lineno))
+    else:
+        error("Function error",p[1]+" object not found",str(p.lexer.lineno))
+        
 
 def p_argument_list_opt(p):
     ''' argument-list-opt :         expression-list
@@ -626,7 +683,6 @@ def p_argument_list_opt(p):
 
 def p_element_access(p):
     ''' element-access :         IDENTIFIER OPEN_BRACKET expression CLOSE_BRACKET
-             |         member-access OPEN_BRACKET expression CLOSE_BRACKET
              '''
     p[0]={}
     var = ST.lookupvar(p[1])
@@ -645,6 +701,11 @@ def p_element_access(p):
                 p[0]['fromclass']=True
         else:
             error('undefinedVariable','Array not defined',p.lexer.lineno())
+
+def p_element_access_member(p):
+    ''' element-access :         member-access OPEN_BRACKET expression CLOSE_BRACKET
+             '''
+    #TODO
 
 def p_assignment_identifier(p):
     ''' assignment :         IDENTIFIER assignment-operator expression
@@ -672,7 +733,17 @@ def p_assignment_member(p):
     ''' assignment :         member-access assignment-operator expression
              '''
     # TODO
-
+    p[0]={}
+    var = p[1]['var']
+    member = p[1]['member']
+    if member['type']!=p[3]['type']:
+        error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
+    else:
+        TAC.emit(var['place']+"@"+member['place'], p[3]['place'], '', p[2]+'_obj')
+        p[0]['place']=ST.gentmp(member['type'])
+        p[0]['type']=member['type']
+        TAC.emit(p[0]['place'],var['place']+"@"+member['place'], '', p[2]+'_obj')
+        
 def p_assignment_element(p):
     ''' assignment :         element-access assignment-operator expression
              '''

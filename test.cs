@@ -1,20 +1,23 @@
 class A{
-	int x;
-	int fun1(int a)
+	public int a;
+	int fun1(int b)
 	{
-		if(x<4)
-		{
-			while(x<4)
-			{
-				x=x+1;
-			}
-		}
-		else
-		{
-			console.writeline(x);
-		}
+		return a+b;
 	}
-	
+	int fun3(int b)
+	{
+		return b;
+	}
+}
+class B:A{
+	int b;
+	int fun2(int c)
+	{
+		A a = new A();
+		int x_new = a.a;
+		x_new = a.fun1(4)+fun1(324)+fun3(34);
+		return x_new;
+	}
 }
 
 
