@@ -49,8 +49,9 @@ def showCompilationStatus():
 def p_compilation_unit(p):
     ''' compilation-unit :         class-declarations-opt
              |         statement-list
-             '''
+             ''' #remove method declaration from statement-list at the end
     p[0]=['compilation_unit']+[p[i] for i in range(1,len(p))]
+    TAC.emit('','','','exit')
 
 def p_semi_opt(p):
     ''' semi-opt :         DELIM
@@ -68,10 +69,7 @@ def p_class_declarations(p):
     ''' class-declarations :         class-declaration
              |         class-declarations class-declaration
              '''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    elif len(p) == 3:
-        p[0] = p[1] + [p[2]]
+    p[0]=p[1]
 
 def p_class_declaration(p):
     ''' class-declaration :          class-header class-body semi-opt
@@ -79,58 +77,98 @@ def p_class_declaration(p):
     ST.end_scope()
 
 def p_class_header(p):
-    ''' class-header : CLASS IDENTIFIER class-base-opt
+    ''' class-header : CLASS IDENTIFIER COLON class-type
+             |         CLASS IDENTIFIER
              '''
-    ST.begin_scope(p[2],'classType')
+    dic = {"int":4,"double":8,"bool":1,"char":1}
+    if ST.searchClass(p[2]):
+        error('Class error','Class already declared',str(p.lexer.lineno))
+    else:
+        if len(p) == 5:
+            if ST.searchClass(p[4]['type']):
+                ST.begin_scope(p[2],'classType',parentClass=p[4]['type'])
+                parentclass=ST.searchClass(p[4]['type'])
+                for varname in parentclass.varlist:
+                    width=parentclass.varlist[varname]['width']
+                    if parentclass.varlist[varname]['uppertype'] == 'array':
+                        width=width/dic[parentclass.varlist[varname]['type']]
+                    ST.addvar(varname, parentclass.varlist[varname]['type'],parentclass.varlist[varname]['uppertype'],width)
+            else:
+                error('Class error','Base class not declared',str(p.lexer.lineno)) 
+        else:
+            ST.begin_scope(p[2],'classType')
 
-def p_class_base_opt(p):
-    ''' class-base-opt :         class-base
-             |         empty
-             '''
-    p[0] = p[1]
-
-def p_class_base(p):
-    ''' class-base :         COLON class-type
-             '''
-    p[0] = p[2]
 
 def p_class_type(p):
     ''' class-type :         IDENTIFIER
              '''
-    p[0] = p[1]
+    p[0] = {}
+    p[0]['type']=p[1]
+    p[0]['uppertype']='class'
 
 def p_class_body(p):
     ''' class-body :         BLOCK_BEGIN class-member-declarations-opt BLOCK_END
              '''
-    p[0]=['class_body']+[p[i] for i in range(1,len(p))]
+    p[0]={}
 
 def p_class_member_declarations_opt(p):
     ''' class-member-declarations-opt :         class-member-declarations
              |         empty
              '''
-    p[0]=['class_member_declarations_opt']+[p[i] for i in range(1,len(p))]
+    p[0]={}
 
 def p_class_member_declarations(p):
     ''' class-member-declarations :         class-member-declaration
              |         class-member-declarations class-member-declaration
              '''
-    p[0]=['class_member_declarations']+[p[i] for i in range(1,len(p))]
+    p[0]={}
 
 def p_class_member_declaration(p):
     ''' class-member-declaration :         constant-declaration
              |         field-declaration
              |         method-declaration
              |         constructor-declaration
-             |         destructor-declaration
              '''
-    p[0]=['class_member_declaration']+[p[i] for i in range(1,len(p))]
+    p[0]=p[1]
 
 def p_constant_declaration(p):
-    ''' constant-declaration :         modifier CONST simple-type constant-declarators DELIM
-             |         CONST simple-type constant-declarators DELIM
+    ''' constant-declaration :         CONST simple-type constant-declarators DELIM
              '''
-    p[0]=['constant_declaration']+[p[i] for i in range(1,len(p))]
+    for identifier in p[3]:
+        if ST.lookupvar_curr(identifier['identifier_name']):
+            error('alreadyDeclared','Constant already declared', str(p.lexer.lineno))
+        elif ST.searchFunc(identifier['identifier_name']):
+            error('alreadyDeclared','A function of the same name exists',str(p.lexer.lineno))
+        else:
+            if identifier.get('uppertype','simple') != 'simple':
+                error('type Error','Constants have to be simple type',str(p.lexer.lineno))
+            elif identifier['type']==p[2]['type']:
+                newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
+                newVar['isConstant']=True
+                TAC.emit(newVar['place'], identifier['place'],'', '=')
+            else:
+                error('typeError','Type mismatch in constant declaration', str(p.lexer.lineno))
+    
 
+def p_constant_declaration_mod(p):
+    ''' constant-declaration :         modifier CONST simple-type constant-declarators DELIM
+             '''
+    for identifier in p[4]:
+        if ST.lookupvar_curr(identifier['identifier_name']):
+            error('alreadyDeclared','Constant already declared', str(p.lexer.lineno))
+        elif ST.searchFunc(identifier['identifier_name']):
+            error('alreadyDeclared','A function of the same name exists',str(p.lexer.lineno))
+        else:
+            if identifier.get('uppertype','simple') != 'simple':
+                error('type Error','Constants have to be simple type',str(p.lexer.lineno))
+            elif identifier['type']==p[3]['type']:
+                newVar = ST.addvar(identifier['identifier_name'], p[3]['type'])
+                newVar['isConstant']=True
+                newVar['modifier']=p[1]
+                TAC.emit(newVar['place'], identifier['place'], '', '=')
+            else:
+                error('typeError','Type mismatch in constant declaration', str(p.lexer.lineno))
+    
 # simple-type : {'type' : }
 # array-type  : {'type' : , 'array' : True, size : ''}
 # class-type  : { }
@@ -486,7 +524,14 @@ def p_primary_no_array_creation_expression_identifier(p):
              '''
     var = ST.lookupvar(p[1])
     if not var:
-        error('undefinedVariable', 'Identifier Used before initialization', str(p.lexer.lineno))
+        var=ST.lookupvar_Class(p[1])
+        if not var:
+            error('undefinedVariable', 'Identifier Used before initialization', str(p.lexer.lineno))
+        else:
+            p[0]={}
+            p[0]['place']=ST.gentmp(var['type'])
+            p[0]['type']=var['type']
+            TAC.emit(p[0]['place'],var['place'],'','=_derefload')
     else:
         p[0] = var
 
@@ -494,9 +539,13 @@ def p_primary_no_array_creation_expression_element(p):
     ''' primary-no-array-creation-expression :         element-access
              '''
     p[0] = {}
-    p[0]['place']=ST.gentmp(p[0]['type'])
     p[0]['type']=p[1]['var']['type']
-    TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr')
+    p[0]['place']=ST.gentmp(p[0]['type'])
+    if p[1].get('fromclass',False):
+        TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr_derefload')
+    else:
+        TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr')
+        print "1"
 
 def p_primary_no_array_creation_expression_parenthesized(p):
     ''' primary-no-array-creation-expression :         parenthesized-expression
@@ -509,6 +558,25 @@ def p_primary_no_array_creation_expression(p):
              '''
     p[0] = p[1]
     # TODO for member access
+def p_primary_no_array_creation_expression_object(p):
+    ''' primary-no-array-creation-expression :        object-creation-expression
+             '''
+    p[0] = p[1]
+
+
+def p_object_creation_expression(p):
+    ''' object-creation-expression : NEW class-type OPEN_PAREN argument-list-opt CLOSE_PAREN
+    '''
+    p[0]={}
+    classname=ST.searchClass(p[2]['type'])
+    if classname:
+        place=ST.gentmp('int')
+        TAC.emit(place,'',classname.width,'=alloc')
+        p[0]['place']=place
+        p[0]['type']=classname.name
+        p[0]['uppertype']='class'
+    else:
+        error("Class error","Class not declared",str(p.lexer.lineno))
 
 def p_parenthesized_expression(p):
     ''' parenthesized-expression :         OPEN_PAREN expression CLOSE_PAREN
@@ -535,7 +603,7 @@ def p_invocation_expression_1(p):
             for argument in p[3]:
                 TAC.emit(argument['place'],'','','param')
             # Jump to function
-            TAC.emit('', '', p[1], 'jumplabel')
+            TAC.emit('', '', funcEnv.Class+'_'+p[1], 'jumplabel')
 
             p[0]['type'] = funcEnv.returnType
             p[0]['place'] = ST.gentmp(p[0]['type'])
@@ -569,7 +637,14 @@ def p_element_access(p):
         else:
             error('Non integer index','Array indice not an integer',p.lexer.lineno())
     else:
-        error('undefinedVariable','Array not defined',p.lexer.lineno())
+        var=ST.lookupvar_Class(p[1])
+        if var:
+            if p[3]['type']=='int':
+                p[0]['var']=var
+                p[0]['exp']=p[3]
+                p[0]['fromclass']=True
+        else:
+            error('undefinedVariable','Array not defined',p.lexer.lineno())
 
 def p_assignment_identifier(p):
     ''' assignment :         IDENTIFIER assignment-operator expression
@@ -584,7 +659,13 @@ def p_assignment_identifier(p):
             p[0]['place']=var['place']
             p[0]['type']=var['type']
     else:
-        error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
+        var=ST.lookupvar_Class(p[1])
+        if var:
+            TAC.emit(var['place'],p[3]['place'],'',p[2]+'_derefstore')
+            p[0]['place']=var['place']
+            p[0]['type']=var['type']
+        else:
+            error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
 
 
 def p_assignment_member(p):
@@ -602,11 +683,14 @@ def p_assignment_element(p):
         if var['type']!=p[3]['type']:
             error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
         else:
-            TAC.emit(var['place']+'['+p[1]['exp']['place']+']', p[3]['place'], '', p[2]+'arr')
             p[0]['type']=var['type']
             p[0]['place']=ST.gentmp(p[0]['type'])
-            TAC.emit( p[0]['place'], var['place']+'['+p[1]['exp']['place']+']','', p[2]+'arr')
-            
+            if p[1].get('fromclass',False):
+                TAC.emit(var['place']+'['+p[1]['exp']['place']+']', p[3]['place'], '', p[2]+'arr+_derefstore')
+                TAC.emit( p[0]['place'], var['place']+'['+p[1]['exp']['place']+']','', p[2]+'arr+_derefload')
+            else:
+                TAC.emit(var['place']+'['+p[1]['exp']['place']+']', p[3]['place'], '', p[2]+'arr')
+                TAC.emit( p[0]['place'], var['place']+'['+p[1]['exp']['place']+']','', p[2]+'arr')
     else:
         error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
 
@@ -625,17 +709,43 @@ def p_assignment_operator(p):
              '''
     p[0]=p[1]
 
-def p_field_declaration(p):
+def p_field_declaration_mod(p):
     ''' field-declaration :         modifier type variable-declarators DELIM
              '''
     # TODO
-
+    for identifier in p[3]:
+        if ST.lookupvar_curr(identifier['identifier_name']):
+            error('alreadyDeclared','Class field already declared', str(p.lexer.lineno))
+        elif ST.searchFunc(identifier['identifier_name']):
+            error('alreadyDeclared','A function of the same name exists',str(p.lexer.lineno))
+        else:
+            if not identifier.get('initializer'):     # If not initialized
+                if p[2].get('array', False):
+                    newVar = ST.addvar(identifier['identifier_name'], p[2]['type'], 'array', p[2]['size'])
+                else:
+                    newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
+            else:       # Variable initialized
+                if p[2].get('array', False):
+                    newVar = ST.addvar(identifier['identifier_name'], p[2]['type'], 'array', p[2]['size'])
+                    for index, initializer in enumerate(identifier['initializer']):
+                        TAC.emit(newVar['place'] + '[' + str(index) + ']', initializer['place'], '','=arr')
+                        print "2"
+                else:
+                    if identifier['initializer']['type']==p[2]['type']:
+                        newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
+                        TAC.emit(newVar['place'], identifier['initializer']['place'], '', '=')
+                    else:
+                        error('typeError','Type mismatch in declaration', str(p.lexer.lineno))
+            newVar['modifier']=p[1]
+                        
 def p_field_declaration(p):
     ''' field-declaration :         type variable-declarators DELIM
              '''
     for identifier in p[2]:
         if ST.lookupvar_curr(identifier['identifier_name']):
             error('alreadyDeclared','Class field already declared', str(p.lexer.lineno))
+        elif ST.searchFunc(identifier['identifier_name']):
+            error('alreadyDeclared','A function of the same name exists',str(p.lexer.lineno))
         else:
             if not identifier.get('initializer'):     # If not initialized
                 if p[1].get('array', False):
@@ -647,6 +757,7 @@ def p_field_declaration(p):
                     newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
                     for index, initializer in enumerate(identifier['initializer']):
                         TAC.emit(newVar['place'] + '[' + str(index) + ']', initializer['place'], '','=arr')
+                        print "3"
                 else:
                     if identifier['initializer']['type']==p[1]['type']:
                         newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
@@ -693,9 +804,13 @@ def p_method_header(p):
 def p_method_header_type(p):
     ''' method-header :         type IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
-    TAC.emit('','',p[2],'Label')
-    ST.begin_scope(p[2],'methodType',p[1]['type'])
+    classname=None
+    if ST.curr_env:
+        classname=ST.curr_env.name
+    ST.begin_scope(p[2],'methodType',p[1]['type'],Class=classname)
+    TAC.emit('','',classname+'_'+p[2],'Label')
     argtypelist = []
+    ST.addvar("@self","int")
     for parameter in p[4]:
         ST.addvar(parameter['identifier_name'], parameter['type'])
         argtypelist.append(parameter['type'])
@@ -704,9 +819,13 @@ def p_method_header_type(p):
 def p_method_header_void(p):
     ''' method-header :         VOID IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
              '''
+    classname=None
+    if ST.curr_env:
+        classname=ST.curr_env.name
     TAC.emit('','',p[2],'Label')
-    ST.begin_scope(p[2],'methodType','void')
+    ST.begin_scope(p[2],'methodType','void',Class=classname)
     argtypelist = []
+    ST.addvar("@self","int")
     for parameter in p[4]:
         ST.addvar(parameter['identifier_name'], parameter['type'])
         argtypelist.append(parameter['type'])
@@ -829,7 +948,11 @@ def p_read_statement(p):
     if var:
         TAC.emit('',var['place'],var['width'],'Read')
     else:
-        error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
+        var=ST.lookupvar_Class(p[5])
+        if var:
+            TAC.emit('',var['place'],var['width'],'Read_deref')
+        else:
+            error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
     p[0] = {}
 
 def p_labeled_statement(p):
@@ -849,8 +972,16 @@ def p_local_variable_declaration(p):
     for identifier in p[2]:     #Implemented type checking in declaration
         if ST.lookupvar_curr(identifier['identifier_name']):
             error('alreadyDeclared','Variable already declared', str(p.lexer.lineno))
+        elif ST.searchFunc(identifier['identifier_name']):
+            error('alreadyDeclared','A function of the same name exists',str(p.lexer.lineno))
         else:
-            if not identifier.get('initializer'):     # If not initialized
+            if p[1].get('uppertype',None)=='class':
+                if p[2][0]['initializer']['type']==p[1]['type']:
+                    newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'class', 4)
+                    TAC.emit(newVar['place'],p[2][0]['initializer']['place'],'','=')
+                else:
+                    error("Class error","Class doesn't match",str(p.lexer.lineno))
+            elif not identifier.get('initializer'):     # If not initialized
                 if p[1].get('array', False):
                     newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
                 else:
@@ -860,6 +991,7 @@ def p_local_variable_declaration(p):
                     newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
                     for index, initializer in enumerate(identifier['initializer']):
                         TAC.emit(newVar['place'] + '[' + str(index) + ']', initializer['place'], '','=arr')
+                        print "4"
                 else:
                     if identifier['initializer']['type']==p[1]['type']:
                         newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
@@ -868,17 +1000,22 @@ def p_local_variable_declaration(p):
                         error('typeError','Type mismatch in declaration', str(p.lexer.lineno))
 
 def p_local_constant_declaration(p):
-    ''' local-constant-declaration :         CONST type constant-declarators
+    ''' local-constant-declaration :         CONST simple-type constant-declarators
              '''
     for identifier in p[3]:
         if ST.lookupvar_curr(identifier['identifier_name']):
             error('alreadyDeclared','Constant already declared', str(p.lexer.lineno))
+        elif ST.searchFunc(identifier['identifier_name']):
+            error('alreadyDeclared','A function of the same name exists',str(p.lexer.lineno))
         else:
-            if identifier['type']==p[2]['type']:
+            if identifier.get('uppertype','simple') != 'simple':
+                error('type Error','Constants have to be simple type',str(p.lexer.lineno))
+            elif identifier['type']==p[2]['type']:
                 newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
                 TAC.emit(newVar['place'], identifier['place'], '', '=')
             else:
                 error('typeError','Type mismatch in constant declaration', str(p.lexer.lineno))
+
 
 def p_empty_statement(p):
     ''' empty-statement :         DELIM

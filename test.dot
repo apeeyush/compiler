@@ -1,5 +1,5 @@
 digraph G{
 id0[label="compilation_unit"];
-id1[label="{'loopEndList': [], 'loopBeginList': []}"];
+id1[label="None"];
 id0->id1;
 }

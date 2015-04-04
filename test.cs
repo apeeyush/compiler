@@ -1,4 +1,24 @@
-bool a  = true;
+class A{
+	int x;
+	int fun1(int a)
+	{
+		if(x<4)
+		{
+			while(x<4)
+			{
+				x=x+1;
+			}
+		}
+		else
+		{
+			console.writeline(x);
+		}
+	}
+	
+}
+
+
+/*bool a  = true;
 bool b = false;
 bool c = a || b;
 int asdjnjnkn(int a, double b)
@@ -10,7 +30,7 @@ int asdjnjnkn(int a, double b)
 	}
 	return x;
 }
-int fck = asdjnjnkn(1,2.0);
+int fck = asdjnjnkn(1,2.0);*/
 // int a;
 // if (a==1){
 // 	a = 3;
