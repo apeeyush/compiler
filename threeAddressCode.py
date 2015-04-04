@@ -15,22 +15,13 @@ class ThreeAddressCode:
     def getNextQuad(self):
         return self.nextQuad
 
-    def getCodeLength(self, functionName):
-        return self.quad
-
     def emit(self, regDest, regSrc1, regSrc2, op):
         self.incrementQuad()
         self.code.append([regDest, regSrc1, regSrc2, op])
 
     def printCode(self, fileName=''):
-        #print self.code
         for i in range(len(self.code)):
-            print i,self.code[i]
-
-    def merge(self, list1, list2):
-        list3 = list(list1)
-        list3.extend(list2)
-        return list3
+            print i, self.code[i]
 
     def backPatch(self, locationList, location):
         for position in locationList:

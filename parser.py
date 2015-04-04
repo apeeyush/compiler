@@ -1205,6 +1205,8 @@ def p_switch_block(p):
              '''
     p[0]=p[3]
     ST.end_scope()
+    p[0]['loopBeginList'] = p[3].get('loopBeginList', [])
+    p[0]['loopEndList'] = p[3].get('loopEndList', [])
 
 def p_switch_sections(p):
     ''' switch-sections :         switch-section
@@ -1212,10 +1214,15 @@ def p_switch_sections(p):
              '''
     if len(p)==2:
         p[0]=p[1]
+        p[0]['loopBeginList'] = p[1].get('loopBeginList', [])
+        p[0]['loopEndList'] = p[1].get('loopEndList', [])
     else:
         p[0]={}
         p[0]['cases']=p[1]['cases']+p[2]['cases']
         p[0]['nextList']=p[1]['nextList']+p[2]['nextList']
+
+        p[0]['loopBeginList'] = p[1].get('loopBeginList', []) + p[2].get('loopBeginList', [])
+        p[0]['loopEndList'] = p[1].get('loopEndList', []) + p[2].get('loopEndList', [])
 
 def p_switch_section(p):
     ''' switch-section :         switch-label M_quad statement-list 
@@ -1226,6 +1233,9 @@ def p_switch_section(p):
         p[0]['nextList']=p[3]['loopEndList']
     else:
         error('Switch Error','Switch case does not have a break statement',p.lexer.lineno)
+
+    p[0]['loopBeginList'] = p[3].get('loopBeginList', [])
+    p[0]['loopEndList'] = p[3].get('loopEndList', [])
 
 def p_switch_label(p):
     ''' switch-label :         CASE literal COLON
