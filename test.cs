@@ -1,3 +1,27 @@
+class A
+{
+    int Main()
+    {
+        Main();
+        return 0;
+    }
+}
+/*
+bool a  = true;
+bool b = false;
+bool c = a || b;
+void asdjnjnkn(int a, double b)
+{
+	int x;
+	{
+		int y;
+		int z = x+y;
+		return;
+	}
+	return;
+}
+int fck = asdjnjnkn(1,2.0);
+*/
 // class A{
 // 	int fun1(int b)
 // 	{
@@ -20,20 +44,6 @@
 // 		return x_new;
 // 	}
 // }
-bool a  = true;
-bool b = false;
-bool c = a || b;
-void asdjnjnkn(int a, double b)
-{
-	int x;
-	{
-		int y;
-		int z = x+y;
-		return;
-	}
-	return;
-}
-// int fck = asdjnjnkn(1,2.0);
 // bool a  = true;
 // bool b = false;
 // bool c = a || b;
