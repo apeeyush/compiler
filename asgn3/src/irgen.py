@@ -1481,6 +1481,6 @@ if __name__ == "__main__":
     # # createdot.createFile(parse, filename)
     # # from subprocess import call
     # # call(["dot ", "-Tpng", filename, "-o", png_filename])
-    # ST.printTable()
+    ST.printTable()
     TAC.printCode()
     showCompilationStatus()

@@ -8,7 +8,7 @@ Sanil Jain					12616
 ## How to build and run?
 cd asgn3
 make
-bin/parser test/prog1.cs
+bin/irgen test/prog1.cs
 
 ## How many test files are available?
 We have tested our code extensively using test programs numbered from prog1 to prog9.
