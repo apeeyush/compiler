@@ -1,3 +1,11 @@
+class A
+{
+    int Main()
+    {
+        Main();
+        return 0;
+    }
+}
 // class A{
 // 	int fun1(int b)
 // 	{
@@ -20,6 +28,7 @@
 // 		return x_new;
 // 	}
 // }
+/*
 bool a  = true;
 bool b = false;
 bool c = a || b;
@@ -33,6 +42,7 @@ int asdjnjnkn(int a, double b)
 	return x;
 }
 int fck = asdjnjnkn(1,2.0);
+*/
 // bool a  = true;
 // bool b = false;
 // bool c = a || b;

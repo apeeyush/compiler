@@ -1,0 +1,95 @@
+1.) exit
+
+2.) jumplabel main_class_Main()
+
+3.) register = register
+
+4.) cond_jump(p[3]) to 'line'(p[2]) on register(p[0]) == 0(p[1])
+
+5.) go_to(p[0]) line(p[2])
+
+6.) register = 1/0
+
+7.) register = register bit_or register (only for int)
+
+8.) register = register bit_xor register (only for int)
+
+9.) register = register bit_and register (only for int)
+
+10.) register = register equal register
+
+11.) register = register not_equal register
+
+12.) register = register less_than register
+
+13.) register = register greater_than register
+
+14.) register = register less_than_equal register
+
+15.) register = register greater_than_equal register 
+
+16.) register = register lshift register (only for int)
+
+17.) register = register rshift register (only for int)
+
+18.) register = register add register
+
+19.) register = register sub register
+
+20.) register = register mult register
+
+21.) register = register div register
+
+22.) register = register mod register (only for int)
+
+23.) register = bit_complement register (int and double)
+
+24.) register = negative register (int and double)
+
+25.) register = bit_not register (only bool)
+
+26.) new temporary (declare and assign) register
+
+27.) register =_derefload register ??
+
+28.) register =arr_derefload array_element ??
+
+29.) register = array_element
+
+30.) temporary = obj_member
+
+31.) classType_temporary(p[0]) allocated(p[3]) width(p[2])
+
+32.) param register(p[0])
+
+33.) param @self ??
+
+34.) jump to label(p[2])
+
+35.) jump_back
+
+36.) getreturn register(p[0])
+
+37.) register assign_ops register
+
+38.) register assign_derefstore register ??
+
+39.) temporary assign_object object_member
+    object_member assign_object temporary
+
+40.) temporary assign_arrayElement array_element
+     array_element assign_arrayElement temporary
+     array_element arr+_derefstore register ??
+     temporary_register arr+_derefstore array_element ?? 
+
+41.) label name
+
+42.) print char/int/double/bool
+
+43.) read address, width
+
+44.) read_deref address,width
+
+45.) new_identifier assign register(simple-type)
+
+46.) setreturn register/void
