@@ -2,53 +2,83 @@
 
 2.) jumplabel main_class_Main()
 
-3.) register = register
+3.) register1 = register2
+        - move $register1, $register2
 
 4.) cond_jump(p[3]) to 'line'(p[2]) on register(p[0]) == 0(p[1])
+        - li t,0
+        - beq p[0],t,p[2]
 
 5.) go_to(p[0]) line(p[2])
+        - b p[2]
 
 6.) register = 1/0
+        - li $register, 1/0
 
-7.) register = register bit_or register (only for int)
+7.) register0 = register1 bit_or register2 (only for int)
+        - or register0,register1,register2
 
 8.) register = register bit_xor register (only for int)
+        - xor register0,register1,register2
 
 9.) register = register bit_and register (only for int)
+        - and register0,register1,register2
 
 10.) register = register equal register
+        - seq register0,register1,register2
 
 11.) register = register not_equal register
+        - sne register0,register1,register2
 
-12.) register = register less_than register
+12.) register0 = register1 less_than register2
+        - slt register0,register1,register2
 
 13.) register = register greater_than register
+        - sgt register0,register1,register2
 
 14.) register = register less_than_equal register
+        - sle register0,register1,register2
 
 15.) register = register greater_than_equal register 
+        - sge register0,register1,register2
 
 16.) register = register lshift register (only for int)
+        - sllv register0,register1,register2
 
 17.) register = register rshift register (only for int)
+        - srlv register0,register1,register2
 
-18.) register = register add register
+18.) register0 = register1 add register2
+        - add register0,register1,register2
+        
+19.) register0 = register1 sub register2
+        - sub register0,register1,register2
 
-19.) register = register sub register
-
-20.) register = register mult register
+20.) register0 = register1 mult register2
+        - mult register1,register2
+        - mflo register0 
 
 21.) register = register div register
-
+        - div register1,register2
+        - mflo register0
+    
 22.) register = register mod register (only for int)
+        - mult register1,register2
+        - mfhi register0
 
 23.) register = bit_complement register (int and double)
+        - addi temp,-1
+        - xor register0,register1,temp
 
-24.) register = negative register (int and double)
+24.) register1 = negative register2 (int and double)
+        - neg $register1,$register2
 
 25.) register = bit_not register (only bool)
+        - addi temp,1
+        - xor register0,register1,temp
 
 26.) new temporary (declare and assign) register
+        - lw temporary,register
 
 27.) register =_derefload register ??
 
@@ -61,16 +91,32 @@
 31.) classType_temporary(p[0]) allocated(p[3]) width(p[2])
 
 32.) param register(p[0])
+        - move a_i register
 
 33.) param @self ??
 
 34.) jump to label(p[2])
+        - jal label
 
 35.) jump_back
-
+        - jr $31
 36.) getreturn register(p[0])
+        - move register,$v0
 
 37.) register assign_ops register
+        - add register0,register0,register1
+        - sub register0,register0,register1
+        - mult register0,register1
+        - mflo register0
+        - div register0,register1
+        - mflo register0
+        - div register0, register1
+        - mfhi register0
+        - xor register0,register0,register1
+        - or register0,register0,register1
+        - and register0,register0,register1
+        - srlv register0,register0,register1
+        - sllv register0,register0,register1
 
 38.) register assign_derefstore register ??
 
@@ -78,18 +124,54 @@
     object_member assign_object temporary
 
 40.) temporary assign_arrayElement array_element
+        - lw $t, i($s)
      array_element assign_arrayElement temporary
+     
      array_element arr+_derefstore register ??
+     
      temporary_register arr+_derefstore array_element ?? 
 
 41.) label name
 
-42.) print char/int/double/bool
+42.) print (char/int/double/bool)register
+        - int/bool:
+        li $v0,1
+        move $a0,register
+        syscall
+        - double:
+        li $v0,3
+        move $a0,register
+        syscall
+        - char:
+        li $v0,11
+        move $a0,read
+        syscall
 
 43.) read address, width
+        - int:
+        li $v0,5
+        syscall
+        sw $v0,address
 
+        - double:
+        li $v0,7
+        syscall
+        sw $v0,address
+
+        - char:
+        li $v0,12
+        syscall
+        move $address,$v0
+
+        - stringL
+        li $v0,0
+        la $a0,address
+        li $a1,width
+        syscall
+        
 44.) read_deref address,width
-
+    
 45.) new_identifier assign register(simple-type)
-
+        - lw t, register //TODO
 46.) setreturn register/void
+        - move $v0,register
