@@ -23,16 +23,17 @@
 bool a  = true;
 bool b = false;
 bool c = a || b;
-int asdjnjnkn(int a, double b)
+void asdjnjnkn(int a, double b)
 {
 	int x;
 	{
 		int y;
 		int z = x+y;
+		return;
 	}
-	return x;
+	return;
 }
-int fck = asdjnjnkn(1,2.0);
+// int fck = asdjnjnkn(1,2.0);
 // bool a  = true;
 // bool b = false;
 // bool c = a || b;

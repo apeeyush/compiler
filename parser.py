@@ -1363,22 +1363,22 @@ def p_goto_statement(p):
     p[0]=['goto_statement']+[p[i] for i in range(1,len(p))]
 
 def p_return_statement(p):
-    ''' return-statement :         RETURN expression-opt DELIM
+    ''' return-statement :         RETURN expression DELIM
+             |                      RETURN DELIM
              '''
     p[0] = {}
-    if p[2]:
-        if p[2]['type'] == ST.lookupFuncType():
-            TAC.emit('','',p[2]['place'],'setreturn')
+    if len(p) == 4:
+        if p[2]:
+            if p[2]['type'] == ST.lookupFuncType():
+                TAC.emit('','',p[2]['place'],'setreturn')
+                TAC.emit('','','','jumpback')
+            else:
+                error('incorrectReturnType', 'Incorrect return type. Shoud be ' + ST.lookupFuncType(), str(p.lexer.lineno))
+    elif len(p) == 3:
+        if 'void' == ST.lookupFuncType():
             TAC.emit('','','','jumpback')
         else:
-            error('incorrectReturnType', 'Incorrect return type. Shoud be ' + ST.lookupFuncType(), str(p.lexer.lineno))
-
-
-def p_expression_opt(p):
-    ''' expression-opt :         expression
-             |         empty
-             '''
-    p[0] = p[1]
+            error('incorrectReturnType', 'Incorrect return type. Shoud be void', str(p.lexer.lineno))
 
 def p_constructor_declaration(p):
     ''' constructor-declaration :         constructor-declarator constructor-body
