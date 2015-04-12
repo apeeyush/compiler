@@ -42,7 +42,7 @@ class Env:
         varwidth = self.getwidth(vartype,uppertype,int(varwidth))
         place = generatetmp()
         offset = self.offset
-        self.addrtable[place] = {'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype}
+        self.addrtable[place] = {'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype,'register': None}
         self.offset += varwidth
         self.width+=varwidth
         return place
@@ -65,7 +65,7 @@ class Env:
         place = genid()
         offset = self.offset
         self.varlist[varname] = {"type":vartype,'uppertype':uppertype,"address":offset,"width":varwidth,"place":place}
-        self.addrtable[place] = {'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype}
+        self.addrtable[place] = {'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype,'register': None}
         self.offset += varwidth
         self.width+=varwidth
         return self.varlist[varname]
@@ -164,6 +164,7 @@ class SymbolTable:
         self.curr_env = Env(None)
         global baseEnv
         baseEnv = self.curr_env
+        self.baseEnv = baseEnv
 
     def mainClass(self):
         searchedNode = None
