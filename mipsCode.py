@@ -28,11 +28,15 @@ class mipsCode:
     def getReg(self, var):
         # Check if variable is already in a register (Don't need to load from memory in this case)
         if var in self.regInfo.values():
+            # Load memory location in register
+            reg = self.ST.baseEnv.addrtable[var]['register']
+            stackLocation = self.ST.baseEnv.addrtable[var]['address']
+            self.addLine('lw '+reg+', '+str(stackLocation)+'($sp)')
             return self.ST.baseEnv.addrtable[var]['register']
         if len(self.freeRegs)>0:                    # Free registers are available
             reg = self.freeRegs.pop()
 
-            # TODO : Load memory location in register
+            # Load memory location in register
             stackLocation = self.ST.baseEnv.addrtable[var]['address']
             self.addLine('lw '+reg+', '+str(stackLocation)+'($sp)')
 
@@ -45,7 +49,7 @@ class mipsCode:
                 prev_memory_loc = self.ST.baseEnv.addrtable[prev_var]['address']
                 self.addLine('sw '+reg+', '+str(prev_memory_loc)+'($sp)')
 
-            # TODO : Load memory location in register
+            # Load memory location in register
             stackLocation = self.ST.baseEnv.addrtable[var]['address']
             self.addLine('lw '+reg+', '+str(stackLocation)+'($sp)')
 
@@ -59,6 +63,9 @@ class mipsCode:
     def flushVar(self, var):
         reg = self.ST.baseEnv.addrtable[var]['register']
         memory_loc = self.ST.baseEnv.addrtable[var]['address']
+        print 'flushing', var
+        print memory_loc, reg
+
         self.addLine('sw '+reg+', '+str(memory_loc)+'($sp)')
 
         self.ST.baseEnv.addrtable[var]['register'] = None
