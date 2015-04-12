@@ -172,13 +172,20 @@
 28.) TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr_derefload') -> loading from array element of class
 	lw $regfree1, 0($sp)
 	lw $regfree2, p1_exp_offset($sp)
-	li $regfree2, p1_offset+p1_exp*width
-	add $regfree3, $regfree1, $regfree2
-	lw $regfree4, ($regfree3)
-	sw $regfree4, p0_offset($sp)
+	li $regfree3, width
+	mult $regfree2, $regfree3
+	mflo $regfree2
+	addi $regfree2, $regfree2, p1_offset
+	addi $regfree1, $regfree1, $regfree2
+	lw $regfree3, ($regfree2)
+	sw $regfree3, p0_offset($sp)
 
 29.) TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr') -> register = array_element
-	li $regfree1, p1_offset+p1_exp*width
+	lw $regfree1, p1_exp_offset($sp)
+	li $regfree2, width
+	mult $regfree1, $regfree2
+	mflo $regfree1
+	addi $regfree1, $regfree1, $p1_offset
 	add $regfree2, $sp, $regfree1
 	lw $regfree3, ($regfree2)
 	sw $regfree3, p0_offset($sp)
