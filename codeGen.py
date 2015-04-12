@@ -161,10 +161,67 @@ def genCode(inputFile):
             code.addLine('li '+reg1+', 1')
             code.addLine('xor '+reg3+', '+ reg2+', '+reg1)
             code.flushVar(irline[0])
+        if irline[3] == '+=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('add '+reg2+', '+reg2+', '+reg1)
+            code.flushVar(irline[0])
+        if irline[3] == '-=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('sub '+reg2+', '+reg2+', '+reg1)
+            code.flushVar(irline[0])
+        if irline[3] == '*=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('mult '+reg2+', '+reg1)
+            code.addLine('mflo '+reg2)
+            code.flushVar(irline[0])
+        if irline[3] == '/=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('div '+reg2+', '+reg1)
+            code.addLine('mflo '+reg2)
+            code.flushVar(irline[0])
+        if irline[3] == '%=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('div '+reg2+', '+reg1)
+            code.addLine('mfhi '+reg2)
+        if irline[3] == '^=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('xor '+reg2+', '+reg1+', '+reg2)
+            code.flushVar(irline[0])
+        if irline[3] == '|=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('or '+reg2+', '+reg1+', '+reg2)
+            code.flushVar(irline[0])
+        if irline[3] == '&=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('and '+reg2+', '+reg1+', '+reg2)
+            code.flushVar(irline[0])
+        if irline[3] == '<<=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('sllv '+reg2+', '+reg2+', '+reg1)
+            code.flushVar(irline[0])
+        if irline[3] == '>>=':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getReg(irline[0])
+            code.addLine('srlv '+reg2+', '+reg2+', '+reg1)
+            code.flushVar(irline[0])
         if irline[3] == 'PrintInt':
             reg1 = code.getReg(irline[2])
             code.addLine('move $a0, '+ reg1)
             code.addLine('li $v0, 1')
+            code.addLine('syscall')
+        if irline[3] == 'PrintChar':
+            reg1 = code.getReg(irline[2])
+            code.addLine('move $a0, '+ reg1)
+            code.addLine('li $v0, 11')
             code.addLine('syscall')
         # TODO : Complete this list
     code.printCode()
