@@ -44,7 +44,6 @@ class mipsCode:
                 self.ST.baseEnv.addrtable[prev_var]['register'] = None
                 prev_memory_loc = self.ST.baseEnv.addrtable[prev_var]['address']
                 self.addLine('sw '+reg+', '+str(prev_memory_loc)+'($sp)')
-
             # TODO : Load memory location in register
             stackLocation = self.ST.baseEnv.addrtable[var]['address']
             self.addLine('lw '+reg+', '+str(stackLocation)+'($sp)')

@@ -1005,6 +1005,9 @@ def p_write_statement(p):
             TAC.emit('','',dic['place'],'PrintInt')
         elif dic['type'] == 'double':
             TAC.emit('','',dic['place'],'PrintDouble')
+        elif dic['type'] == 'char':
+            TAC.emit('','',dic['place'],'PrintChar')
+            print "hihihihihihihihihihihihihihihihihihihihihihihihihihi"
         else:
             TAC.emit('','',dic['place'],'Print')
     p[0] = {}
