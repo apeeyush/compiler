@@ -202,6 +202,16 @@ class SymbolTable:
         self.curr_env = newEnv
         return self.curr_env
 
+    def getClassFunWidth(self, class_fun):
+        className, funName = class_fun.split('_')
+        classNode = self.searchClass(className)
+        if classNode == None:
+            return None
+        for child in classNode.children:
+            if child.type == 'methodType' and child.name == funName:
+                return child.width
+        return None
+
     def getScopeName(self):
         return self.curr_env.name
 

@@ -12,7 +12,7 @@ class mipsCode:
     def getFreeReg(self):
         if len(self.freeRegs)>0:                    # Free registers are available
             reg = self.freeRegs.pop()
-        elif len(freeRegs) == 0:                    # No free registers are available
+        elif len(self.freeRegs) == 0:                    # No free registers are available
             reg = self.usedRegs.pop()
             # Flush the old register
             prev_var = self.regInfo[reg]
@@ -40,7 +40,7 @@ class mipsCode:
             stackLocation = self.ST.baseEnv.addrtable[var]['address']
             self.addLine('lw '+reg+', '+str(stackLocation)+'($sp)')
 
-        elif len(freeRegs) == 0:                    # No free registers are available
+        elif len(self.freeRegs) == 0:                    # No free registers are available
             reg = self.usedRegs.pop()
             # Flush the old register
             prev_var = self.regInfo[reg]

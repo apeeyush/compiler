@@ -1,5 +1,13 @@
 class A
 {
+	int newFun(int a, int b){
+		console.writeline(a);
+		console.writeline(b);
+		int t = 9;
+		console.writeline(t);
+		return 1;
+	}
+
     int Main()
     {
     	int i;
@@ -7,6 +15,8 @@ class A
         for(i=0;i<5;i=i+1){
 	        console.writeline(b);
         }
+        int newvar = newFun(b, i);
+        console.writeline(newvar);
         return 0;
     }
 }

@@ -223,6 +223,38 @@ def genCode(inputFile):
             code.addLine('move $a0, '+ reg1)
             code.addLine('li $v0, 11')
             code.addLine('syscall')
+        if irline[3] == 'Label':
+            code.addLine(irline[2]+':')
+        if irline[3] == 'storereturn':
+            code.addLine('sw $ra, 0($sp)')
+        if irline[3] == 'jumpback':
+            code.addLine('lw $ra, 0($sp)')
+            code.addLine('jr $ra')
+        if irline[3] == 'setreturn':
+            reg1 = code.getReg(irline[2])
+            code.addLine('move $v0, '+reg1)
+        if irline[3] == 'getreturn':
+            reg1 = code.getReg(irline[2])
+            code.addLine('move '+reg1+', $v0')
+            code.flushVar(irline[2])
+        if irline[3] == 'param':
+            width = ST.getClassFunWidth(irline[2])
+            if irline[0] == '@self':
+                offset = -width+4
+                reg1 = code.getFreeReg()
+                code.addLine('lw '+reg1+', 4($sp)')
+                code.addLine('sw '+reg1+ str(offset)+'($sp)')
+            elif irline[0] == '@object':
+                pass
+            else:
+                reg = code.getReg(irline[0])
+                offset = -width+8+irline[1]
+                code.addLine('sw '+reg+', '+str(offset)+'($sp)')
+        if irline[3] == 'jumplabel':
+            width = ST.getClassFunWidth(irline[2])
+            code.addLine('sub $sp, $sp, '+str(width))
+            code.addLine('jal '+irline[2])
+            code.addLine('add $sp, $sp, '+str(width))
         # TODO : Complete this list
     code.printCode()
     return code
