@@ -1,59 +1,124 @@
 1.) exit
+	li $v0, 10
+	syscall
 
 2.) jumplabel main_class_Main()
+	#This has to be done at the end and separately from other jumplabels.
 
-3.) register1 = register2
-        - move $register1, $register2
+3.) TAC.emit(p0['place'], p1['place'],'', '=') -> register1 = register2
+	lw $regfree1, p1_offset($sp)          
+	move $regfree2, $regfree1
+	sw $regfree2, p0_offset($sp)
 
-4.) cond_jump(p[3]) to 'line'(p[2]) on register(p[0]) == 0(p[1])
-        - li t,0
-        - beq p[0],t,p[2]
+3.1) TAC.emit(p0['place'],0,'', '=') -> register1 = register2
+	li $regfree1, 0          
+	sw $regfree1, p0_offset($sp)
 
-5.) go_to(p[0]) line(p[2])
-        - b p[2]
+3.2) TAC.emit(p0['place'],1,'', '=') -> register1 = register2
+	li $regfree1, 1          
+	sw $regfree1, p0_offset($sp)
+
+4.) TAC.emit(p1['place'],0,lineno,'cond_goto')  -> cond_jump(p[3]) to 'line'(p[2]) on register(p[0]) == 0(p[1])
+        li $regfree1, 0
+	lw $regfree2, p1_offset($sp)
+	beq $regfree1,$regfree2,L_lineno
+
+4.1) TAC.emit(p1['place'],1,lineno,'cond_goto')  -> cond_jump(p[3]) to 'line'(p[2]) on register(p[0]) == 0(p[1])
+        li $regfree1, 1
+	lw $regfree2, p1_offset($sp)
+	beq $regfree1,$regfree2,L_lineno
+
+4.2) TAC.emit(p1['place'],p2['place'],lineno,'cond_goto')  -> cond_jump(p[3]) to 'line'(p[2]) on register(p[0]) == 0(p[1])
+	lw $regfree1, p1_offset($sp)
+	lw $regfree2, p2_offset($sp)
+	beq $regfree1,$regfree2,L_lineno
+
+
+5.) TAC.emit('','',lineno,'goto') -> go_to(p[0]) line(p[2])
+        b L_lineno
 
 6.) register = 1/0
-        - li $register, 1/0
+	Done in 4.1 and 4.2
 
-7.) register0 = register1 bit_or register2 (only for int)
-        - or register0,register1,register2
+7.) TAC.emit(p0['place'], p1['place'], p3['place'], '|') -> register0 = register1 bit_or register2 (only for int)
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	or $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)
+	
 
-8.) register = register bit_xor register (only for int)
-        - xor register0,register1,register2
+8.) TAC.emit(p0['place'], p1['place'], p3['place'], '^') -> register = register bit_xor register (only for int)
+        lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	xor $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)
 
-9.) register = register bit_and register (only for int)
-        - and register0,register1,register2
-
-10.) register = register equal register
-        - seq register0,register1,register2
-
-11.) register = register not_equal register
-        - sne register0,register1,register2
-
-12.) register0 = register1 less_than register2
-        - slt register0,register1,register2
-
-13.) register = register greater_than register
-        - sgt register0,register1,register2
-
-14.) register = register less_than_equal register
-        - sle register0,register1,register2
-
-15.) register = register greater_than_equal register 
-        - sge register0,register1,register2
-
-16.) register = register lshift register (only for int)
-        - sllv register0,register1,register2
-
-17.) register = register rshift register (only for int)
-        - srlv register0,register1,register2
-
-18.) register0 = register1 add register2
-        - add register0,register1,register2
+9.) TAC.emit(p0['place'], p1['place'], p3['place'], '^') -> register = register bit_and register (only for int)
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	and $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)	
         
-19.) register0 = register1 sub register2
-        - sub register0,register1,register2
+10.) TAC.emit(p0['place'], p1['place'], p3['place'], '==') -> register = register equal register
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	seq $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)	        
+	
+11.) TAC.emit(p0['place'], p1['place'], p3['place'], '!=') -> register = register not_equal register
+        lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	sne $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)	
 
+12.) TAC.emit(p0['place'], p1['place'], p3['place'], '<') -> register0 = register1 less_than register2
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	slt $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)        
+	
+13.) TAC.emit(p0['place'], p1['place'], p3['place'], '>') -> register = register greater_than register
+        lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	sgt $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)      
+
+14.) TAC.emit(p0['place'], p1['place'], p3['place'], '<=') -> register = register less_than_equal register
+        lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	sle $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)
+
+15.) TAC.emit(p0['place'], p1['place'], p3['place'], '>=') -> register = register greater_than_equal register
+        lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	sge $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)
+
+16.) TAC.emit(p0['place'], p1['place'], p3['place'], '<<') ->register = register lshift register (only for int)
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	sllv $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)
+        
+17.) TAC.emit(p0['place'], p1['place'], p3['place'], '>>') ->register = register rshift register (only for int)
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	srlv $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)
+
+18.) TAC.emit(p0['place'], p1['place'], p3['place'], '+') ->register = register add register
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	add $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)
+   
+19.) TAC.emit(p0['place'], p1['place'], p3['place'], '-') ->register = register1 sub register2
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	sub $regfree3, $regfree1, $regfree2
+	sw $regfree3, p0_offset($sp)
+   
 20.) register0 = register1 mult register2
         - mult register1,register2
         - mflo register0 
