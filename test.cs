@@ -2,8 +2,12 @@ class A
 {
     int Main()
     {
-        int a=6, b=7;
-        a=b;
+    	int i;
+        int a=6, b=5;
+        for(i=0;i<5 && b>4;i=i+1){
+	        console.writeline(i);
+	        b=b-1;
+        }
         return 0;
     }
 }

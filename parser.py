@@ -82,7 +82,7 @@ def p_class_header(p):
     ''' class-header : CLASS IDENTIFIER COLON class-type
              |         CLASS IDENTIFIER
              '''
-    dic = {"int":4,"double":8,"bool":1,"char":1}
+    dic = {"int":4,"double":8,"bool":4,"char":4}
     if ST.searchClass(p[2]):
         error('Class error','Class already declared',str(p.lexer.lineno))
     else:
@@ -257,7 +257,7 @@ def p_conditional_or_expression(p):
             TAC.emit('','',-1,'goto')
             #place=ST.gentmp('bool')
             TAC.backpatch(p[2],TAC.getNextQuad())
-            TAC.emit(p[0]['place'],1,'','=')
+            TAC.emit(p[0]['place'],1,'','=dec')
             TAC.backpatch(plc,TAC.getNextQuad())
         else:
             error('typeError', 'Incorrect type in LOGOR expression', str(p.lexer.lineno))
@@ -267,7 +267,7 @@ def p_M_or(p):
     ''' M_or : empty
              '''
     place=ST.gentmp('bool')
-    TAC.emit(place,1,'','=')
+    TAC.emit(place,1,'','=dec')
     p[0] = [TAC.getNextQuad()]
     TAC.emit(p[-1]['place'],place,-1,'cond_goto')
 
@@ -276,7 +276,7 @@ def p_M_and(p):
     ''' M_and : empty
              '''
     place=ST.gentmp('bool')
-    TAC.emit(place,0,'','=')
+    TAC.emit(place,0,'','=dec')
     p[0] = [TAC.getNextQuad()]
     TAC.emit(p[-1]['place'],place,-1,'cond_goto')
 
@@ -296,7 +296,7 @@ def p_conditional_and_expression(p):
             TAC.emit('','',-1,'goto')
             #place=ST.gentmp()
             TAC.backpatch(p[2],TAC.getNextQuad())
-            TAC.emit(p[0]['place'],0,'','=')
+            TAC.emit(p[0]['place'],0,'','=dec')
             TAC.backpatch(plc,TAC.getNextQuad())
         else:
             error('typeError', 'Incorrect type in LOGOR expression', str(p.lexer.lineno))
@@ -459,7 +459,10 @@ def p_unary_expression_op(p):
         p[0] = {}
         p[0]['type'] = p[2]['type']
         p[0]['place'] = ST.gentmp(p[0]['type'])
-        TAC.emit(p[0]['place'],p[2]['place'], '', p[1])
+        if p[1] == '~':
+            TAC.emit(p[0]['place'],p[2]['place'], '', p[1])
+        else:
+            TAC.emit(p[0]['place'],p[2]['place'], '', p[1]+'unary')
     elif p[2]['type'] in ['bool'] and p[1] in ['!']:
         p[0] = {}
         p[0]['type'] = p[2]['type']
@@ -998,7 +1001,12 @@ def p_write_statement(p):
     ''' write-statement :         CONSOLE DOT WRITELINE OPEN_PAREN print-list CLOSE_PAREN DELIM
              '''
     for dic in p[5]:
-        TAC.emit('','',dic['place'],'Print') #Modify(check for type)
+        if dic['type'] == 'int':
+            TAC.emit('','',dic['place'],'PrintInt')
+        elif dic['type'] == 'double':
+            TAC.emit('','',dic['place'],'PrintDouble')
+        else:
+            TAC.emit('','',dic['place'],'Print')
     p[0] = {}
 
 def p_print_list(p):
