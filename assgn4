@@ -119,37 +119,69 @@
 	sub $regfree3, $regfree1, $regfree2
 	sw $regfree3, p0_offset($sp)
    
-20.) register0 = register1 mult register2
-        - mult register1,register2
-        - mflo register0 
+20.) TAC.emit(p0['place'], p1['place'], p3['place'], '*') -> register0 = register1 mult register2
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	mult $regfree1, $regfree2
+	mflo $regfree3	
+	sw $regfree3, p0_offset($sp)        
+	
+21.) TAC.emit(p0['place'], p1['place'], p3['place'], '/') -> register0 = register1 div register2
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	div $regfree1, $regfree2
+	mflo $regfree3	
+	sw $regfree3, p0_offset($sp)        
 
-21.) register = register div register
-        - div register1,register2
-        - mflo register0
-    
-22.) register = register mod register (only for int)
-        - mult register1,register2
-        - mfhi register0
+22.) TAC.emit(p0['place'], p1['place'], p3['place'], '%') -> register = register mod register (only for int)
+	lw $regfree1, p1_offset($sp)        
+	lw $regfree2, p3_offset($sp)        
+	div $regfree1, $regfree2
+	mfhi $regfree3	
+	sw $regfree3, p0_offset($sp)        
+        
+23.) TAC.emit(p0['place'], p1['place'],'', '~') -> register = bit_complement register (int and double)
+	li $regfree1, -1        
+	lw $regfree2, p1_offset($sp)
+	xor $regfree3, $regfree2, $regfree1
+	sw $regfree3, p0_offset($sp)	
+	
+24.) TAC.emit(p0['place'], p1['place'],'', '-') -> register1 = negative register2 (int and double)
+	lw $regfree1, p1_offset($sp)        
+	neg $regfree2,$regfree1
+	sw $regfree2, p0_offset($sp)
 
-23.) register = bit_complement register (int and double)
-        - addi temp,-1
-        - xor register0,register1,temp
+25.) TAC.emit(p0['place'], p1['place'],'', '!') -> register = bit_not register (only bool)
+        li $regfree1, 1
+	lw $regfree2, p1_offset($sp)
+	xor $regfree3, $regfree2, $regfree1
+	sw $regfree3, p0_offset($sp)	
+	
+26.) TAC.emit(p0['place'],num,'','=dec') -> register = value
+	li $regfree1, num
+	sw $regree1, p0_offset($sp)
 
-24.) register1 = negative register2 (int and double)
-        - neg $register1,$register2
+27.) TAC.emit(p[0]['place'],var['place'],'','=_derefload') -> p0 takes value from var from self object
+	lw $regfree1, 0($sp)
+	lw $regfree2, var_offset($regfree1)
+	sw $regfree2, p0_offset($sp)
+	
+	var_offset is determined from class layout of self object
+	We assume object is at 0($sp), it will actually be at 4($sp), return address will be at 0($sp)
 
-25.) register = bit_not register (only bool)
-        - addi temp,1
-        - xor register0,register1,temp
+28.) TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr_derefload') -> loading from array element of class
+	lw $regfree1, 0($sp)
+	lw $regfree2, p1_exp_offset($sp)
+	li $regfree2, p1_offset+p1_exp*width
+	add $regfree3, $regfree1, $regfree2
+	lw $regfree4, ($regfree3)
+	sw $regfree4, p0_offset($sp)
 
-26.) new temporary (declare and assign) register
-        - lw temporary,register
-
-27.) register =_derefload register ??
-
-28.) register =arr_derefload array_element ??
-
-29.) register = array_element
+29.) TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr') -> register = array_element
+	li $regfree1, p1_offset+p1_exp*width
+	add $regfree2, $sp, $regfree1
+	lw $regfree3, ($regfree2)
+	sw $regfree3, p0_offset($sp)
 
 30.) temporary = obj_member
 
@@ -240,3 +272,5 @@
         - lw t, register //TODO
 46.) setreturn register/void
         - move $v0,register
+
+
