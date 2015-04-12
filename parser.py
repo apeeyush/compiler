@@ -1472,6 +1472,11 @@ def runParser(inputFile):
     result = parser.parse(program,lexer=lexer, debug=False, tracking=True)
     return result
 
+def getIR(filename):
+    inputFile = filename
+    parse = runParser(inputFile)
+    return ST, TAC
+
 if __name__ == "__main__":
     # lex.runmain(lexer)
     inputFile = argv[1]
