@@ -1,40 +1,10 @@
-class A
-{
-    int fact(int a)
-    {
-        if(a==1)
-        {
-            return 1;
-        }
-        return fact(a-1)*a;
-    }
-
-    int Main()
-    {
-        int [3]na={1,1,1};
-        int a=0, i=0;
-        for(i=0;i<3;i=i+1){
-            a = a + na[i];
-            console.writeline(na[i]);
-        }
-        return 0;
-    }
-}
-/*
 class B{
-    int c;
-    int fact(int a){
-        if (a==0){
-            return 1;
-        }
-        else{
-            return a*fact(a-1);
-        }
-    }
+    int [6] a;
 
-    void printc(int a)
+    void printc(int index)
     {
-        c = fact(a)
+        a[1]=5;
+        console.writeline(a[index]);
         return;
     }
 }
@@ -42,12 +12,9 @@ class A
 {
     int Main()
     {
-        int a=10, i=0;
+        int a=1;
         B b = new B();
         b.printc(a);
-        a = b.c;
-        console.writeline(a);
         return 0;
     }
 }
-*/
