@@ -793,8 +793,8 @@ def p_assignment_element(p):
             p[0]['type']=var['type']
             p[0]['place']=ST.gentmp(p[0]['type'])
             if p[1].get('fromclass',False):
-                TAC.emit(var['place']+'|'+p[1]['exp']['place'], p[3]['place'], '', p[2]+'arr+_derefstore')
-                TAC.emit( p[0]['place'], var['place']+'|'+p[1]['exp']['place'],'', p[2]+'arr+_derefload')
+                TAC.emit(var['place']+'|'+p[1]['exp']['place'], p[3]['place'], '', p[2]+'arr_derefstore')
+                TAC.emit( p[0]['place'], var['place']+'|'+p[1]['exp']['place'],'', p[2]+'arr_derefload')
             else:
                 TAC.emit(var['place']+'|'+p[1]['exp']['place'], p[3]['place'], '', p[2]+'arr')
                 TAC.emit( p[0]['place'], var['place']+'|'+p[1]['exp']['place'],'', p[2]+'arr')

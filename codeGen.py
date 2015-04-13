@@ -353,6 +353,45 @@ def genCode(inputFile):
                 addr = ST.baseEnv.addrtable[member]['address']
                 code.addLine('lw '+reg1+', '+str(addr)+'('+reg2+')')
                 code.flushVar(irline[0])
+        if irline[3] == '=arr_derefload':
+            var,offset=irline[1].split('|')
+            if offset.isdigit():
+                reg1 = code.getFreeReg()
+                code.addLine('li '+reg1+', '+offset)
+            else:
+                reg1 = code.getReg(offset)
+            reg2 = code.getReg(irline[0])
+            free_reg = code.getFreeReg()
+            width = getwidth(ST.baseEnv.addrtable[var]['type'])
+            code.addLine('li '+free_reg+', '+str(width))
+            code.addLine('mult '+reg1+', '+free_reg)
+            code.addLine('mflo '+free_reg)
+            addr = ST.baseEnv.addrtable[var]['address']
+            code.addLine('addi '+free_reg+', '+free_reg+', '+str(addr))
+            reg3 = code.getFreeReg()
+            code.addLine('lw '+reg3 + ', 4($sp)')
+            code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
+            code.addLine('lw '+ reg2 + ', ('+free_reg+')')
+            code.flushVar(irline[0])
+        if irline[3] == '=arr_derefstore':
+            var,offset=irline[0].split('|')
+            if offset.isdigit():
+                reg1 = code.getFreeReg()
+                code.addLine('li '+reg1+', '+offset)
+            else:
+                reg1 = code.getReg(offset)
+            reg2 = code.getReg(irline[1])
+            free_reg = code.getFreeReg()
+            width = getwidth(ST.baseEnv.addrtable[var]['type'])
+            code.addLine('li '+free_reg+', '+str(width))
+            code.addLine('mult '+reg1+', '+free_reg)
+            code.addLine('mflo '+free_reg)
+            addr = ST.baseEnv.addrtable[var]['address']
+            code.addLine('addi '+free_reg+', '+free_reg+', '+str(addr))
+            reg3 = code.getFreeReg()
+            code.addLine('lw '+reg3 + ', 4($sp)')
+            code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
+            code.addLine('sw '+ reg2 + ', ('+free_reg+')')
         # TODO : Complete this list
     code.printCode()
     return code

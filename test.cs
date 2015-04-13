@@ -1,3 +1,4 @@
+
 class A
 {
     int fact(int a)
@@ -23,20 +24,15 @@ class A
     }
 }
 /*
+=======
+>>>>>>> 73cd5c9dbdde694b6e9cc58cd3a0a462b0410f5d
 class B{
-    int c;
-    int fact(int a){
-        if (a==0){
-            return 1;
-        }
-        else{
-            return a*fact(a-1);
-        }
-    }
+    int [6] a;
 
-    void printc(int a)
+    void printc(int index)
     {
-        c = fact(a)
+        a[1]=5;
+        console.writeline(a[index]);
         return;
     }
 }
@@ -44,12 +40,9 @@ class A
 {
     int Main()
     {
-        int a=10, i=0;
+        int a=1;
         B b = new B();
         b.printc(a);
-        a = b.c;
-        console.writeline(a);
         return 0;
     }
 }
-*/
