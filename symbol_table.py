@@ -2,7 +2,8 @@ from pprint import pprint
 baseEnv = None
 idnum=-1
 tempnum=-1
-        
+stringnum=-1
+
 def genid():
     global idnum
     idnum+=1
@@ -12,6 +13,11 @@ def generatetmp():
     global tempnum
     tempnum+=1
     return "t"+str(tempnum)
+
+def generatestring():
+    global stringnum
+    stringnum+=1
+    return "s"+str(stringnum)
 
 class Env:
     def __init__(self, prev=None, scopeName=None, scopeType=None, returnType=None, Class=None, parentClass=None):
@@ -47,9 +53,11 @@ class Env:
         self.width+=varwidth
         return place
 
-        # self.tempnum+=1
-        # #self.tempnum%=2
-        # return "t"+str(self.tempnum)
+    def genstring(self):
+        varwidth = 200
+        place = generatestring()
+        self.addrtable[place] = {'address':None,'width':varwidth,'type':'string','uppertype':'simple','register': None}
+        return place
 
     def getwidth(self,vartype,uppertype='simple',width=-1):
         dic = {"int":4,"double":8,"bool":4,"char":4, "void":0}
@@ -61,15 +69,20 @@ class Env:
             return width
 
     def addvar(self,varname,vartype,uppertype='simple',varwidth=-1):
-        varwidth = self.getwidth(vartype,uppertype,int(varwidth))
-        place = genid()
-        offset = self.offset
-        self.varlist[varname] = {"type":vartype,'uppertype':uppertype,"address":offset,"width":varwidth,"place":place}
-        self.addrtable[place] = {'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype,'register': None}
-        self.offset += varwidth
-        self.width+=varwidth
-        return self.varlist[varname]
-
+        if vartype != 'string':
+            varwidth = self.getwidth(vartype,uppertype,int(varwidth))
+            place = genid()
+            offset = self.offset
+            self.varlist[varname] = {"type":vartype,'uppertype':uppertype,"address":offset,"width":varwidth,"place":place}
+            self.addrtable[place] = {'address':offset,'width':varwidth,'type':vartype,'uppertype':uppertype,'register': None}
+            self.offset += varwidth
+            self.width+=varwidth
+            return self.varlist[varname]
+        else:
+            place = generatestring()
+            self.varlist[varname] = {"type":'string','uppertype':'simple','address':None,"width":200,"place":place}
+            self.addrtable[place] = {'address':None,'width':200,'type':'string','uppertype':'simple','register': None}
+            return self.varlist[varname]
 
     def lookupvar(self, varname):
         curr_env = self
@@ -165,6 +178,7 @@ class SymbolTable:
         global baseEnv
         baseEnv = self.curr_env
         self.baseEnv = baseEnv
+        self.stringInit = {}
 
     def mainClass(self):
         searchedNode = None
@@ -192,6 +206,9 @@ class SymbolTable:
 
     def gentmp(self,vartype):
         return self.curr_env.gentmp(vartype)
+
+    def genstring(self):
+        return self.curr_env.genstring()
 
     def begin_scope(self, scopeName='undefined', scopeType='block',returnType=None,Class=None,parentClass = None):
         offset=self.curr_env.offset
@@ -251,6 +268,9 @@ class SymbolTable:
 
     def addargtypelist(self, argtypelist):
         return self.curr_env.addargtypelist(argtypelist)
+
+    def addString(self, place, value):
+        self.stringInit[place] = value
 
     def printTable(self):
         print baseEnv.printTable()

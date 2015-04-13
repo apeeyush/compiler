@@ -2,6 +2,7 @@ class A
 {
     int Main()
     {
+        string test_string;
     	int i;
         int a=4,b=5,c=3;
         int max;
@@ -27,7 +28,8 @@ class A
                 max = b*b;
             }
         }
-        console.writeline(max);
+        console.readline(test_string);
+        console.writeline("asdfghjklqwertyuiop",max);
         return 0;
     }
 }

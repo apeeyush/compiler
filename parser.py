@@ -195,6 +195,7 @@ def p_simple_type(p):
              |         UINT
              |         CHAR
              |         DOUBLE
+             |         STRING
              '''
     p[0] = {'type' : p[1]}
 
@@ -514,9 +515,14 @@ def p_variable_initializer(p):
 def p_primary_no_array_creation_expression_literal(p):
     ''' primary-no-array-creation-expression :         literal
              '''
-    p[0] = { 'type': p[1]['type']}
-    p[0]['place'] = ST.gentmp(p[0]['type'])
-    TAC.emit(p[0]['place'], p[1]['value'], '', '=dec')
+    if p[1]['type'] != 'string':
+        p[0] = { 'type': p[1]['type']}
+        p[0]['place'] = ST.gentmp(p[0]['type'])
+        TAC.emit(p[0]['place'], p[1]['value'], '', '=dec')
+    else:
+        p[0] = { 'type': p[1]['type']}
+        p[0]['place'] = ST.genstring()
+        ST.addString(p[0]['place'], p[1]['value'])
 
 def p_primary_no_array_creation_expression_identifier(p):
     ''' primary-no-array-creation-expression :         IDENTIFIER
@@ -733,9 +739,15 @@ def p_assignment_identifier(p):
             if var['type']!=p[3]['type']:
                 error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
             else:
-                TAC.emit(var['place'], p[3]['place'], '', p[2])
-                p[0]['place']=var['place']
-                p[0]['type']=var['type']
+                if var['type'] == 'string':
+                    if p[2] == '=':
+                        ST.addString(p[0]['place'], p[1]['value'])
+                    else:
+                        error('unsupportedOperation', 'Operation not supported on string datatype', str(p.lexer.lineno))
+                else:
+                    TAC.emit(var['place'], p[3]['place'], '', p[2])
+                    p[0]['place']=var['place']
+                    p[0]['type']=var['type']
         else:
             error('constantAssignment','Cannont assign constant', str(p.lexer.lineno))
     else:
@@ -1026,7 +1038,8 @@ def p_write_statement(p):
             TAC.emit('','',dic['place'],'PrintDouble')
         elif dic['type'] == 'char':
             TAC.emit('','',dic['place'],'PrintChar')
-            print "hihihihihihihihihihihihihihihihihihihihihihihihihihi"
+        elif dic['type'] == 'string':
+            TAC.emit('','',dic['place'],'PrintString')
         else:
             TAC.emit('','',dic['place'],'Print')
     p[0] = {}
@@ -1047,7 +1060,16 @@ def p_read_statement(p):
     var = ST.lookupvar(p[5])    #Modify(managing read address)
     if var:
         if not var.get('isConstant',False):
-            TAC.emit('',var['place'],var['width'],'Read')
+            if var['type'] == 'int':
+                TAC.emit('',var['place'],var['width'],'ReadInt')
+            elif var['type'] == 'double':
+                TAC.emit('',var['place'],var['width'],'ReadDouble')
+            elif var['type'] == 'char':
+                TAC.emit('',var['place'],var['width'],'ReadChar')
+            elif var['type'] == 'string':
+                TAC.emit('',var['place'],var['width'],'ReadString')
+            else:
+                TAC.emit('',var['place'],var['width'],'Read')
         else:
             error('constantAssignment','Cannont read constant', str(p.lexer.lineno))
     else:
@@ -1456,6 +1478,13 @@ def p_literal_char(p):
              '''
     p[0] = {}
     p[0]['type'] = 'char'
+    p[0]['value'] = p[1]
+
+def p_literal_string(p):
+    ''' literal :    SCONST
+             '''
+    p[0] = {}
+    p[0]['type'] = 'string'
     p[0]['value'] = p[1]
 
 def p_empty(p):

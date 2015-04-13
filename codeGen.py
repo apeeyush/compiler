@@ -223,6 +223,10 @@ def genCode(inputFile):
             code.addLine('move $a0, '+ reg1)
             code.addLine('li $v0, 11')
             code.addLine('syscall')
+        if irline[3] == 'PrintString':
+            code.addLine('la $a0, '+ irline[2])
+            code.addLine('li $v0, 4')
+            code.addLine('syscall')
         if irline[3] == 'Label':
             code.addLine(irline[2]+':')
         if irline[3] == 'storereturn':
@@ -266,6 +270,11 @@ if __name__ == '__main__':
     filename = inputFile.split('.')[0] + '.asm'
     with open(filename, 'w') as f:
         f.write('.data\n')
+        for key, value in code.ST.stringInit.iteritems():
+            f.write(key+':\t.asciiz\t')
+            f.write(value)
+            f.write('\n')
+        f.write('\n')
         f.write('.text\n')
         f.write('main:\n')
         for line in code.code:
