@@ -547,9 +547,9 @@ def p_primary_no_array_creation_expression_element(p):
     p[0]['type']=p[1]['var']['type']
     p[0]['place']=ST.gentmp(p[0]['type'])
     if p[1].get('fromclass',False):
-        TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr_derefload')
+        TAC.emit(p[0]['place'],p[1]['var']['place']+'|'+p[1]['exp']['place'],'','=arr_derefload')
     else:
-        TAC.emit(p[0]['place'],p[1]['var']['place']+'['+p[1]['exp']['place']+']','','=arr')
+        TAC.emit(p[0]['place'],p[1]['var']['place']+'|'+p[1]['exp']['place'],'','=arr')
 
 def p_primary_no_array_creation_expression_parenthesized(p):
     ''' primary-no-array-creation-expression :         parenthesized-expression
@@ -793,11 +793,11 @@ def p_assignment_element(p):
             p[0]['type']=var['type']
             p[0]['place']=ST.gentmp(p[0]['type'])
             if p[1].get('fromclass',False):
-                TAC.emit(var['place']+'['+p[1]['exp']['place']+']', p[3]['place'], '', p[2]+'arr+_derefstore')
-                TAC.emit( p[0]['place'], var['place']+'['+p[1]['exp']['place']+']','', p[2]+'arr+_derefload')
+                TAC.emit(var['place']+'|'+p[1]['exp']['place'], p[3]['place'], '', p[2]+'arr+_derefstore')
+                TAC.emit( p[0]['place'], var['place']+'|'+p[1]['exp']['place'],'', p[2]+'arr+_derefload')
             else:
-                TAC.emit(var['place']+'['+p[1]['exp']['place']+']', p[3]['place'], '', p[2]+'arr')
-                TAC.emit( p[0]['place'], var['place']+'['+p[1]['exp']['place']+']','', p[2]+'arr')
+                TAC.emit(var['place']+'|'+p[1]['exp']['place'], p[3]['place'], '', p[2]+'arr')
+                TAC.emit( p[0]['place'], var['place']+'|'+p[1]['exp']['place'],'', p[2]+'arr')
     else:
         error('undefinedVariable','Variable not declared', str(p.lexer.lineno))
 
@@ -835,7 +835,7 @@ def p_field_declaration_mod(p):
                 if p[2].get('array', False):
                     newVar = ST.addvar(identifier['identifier_name'], p[2]['type'], 'array', p[2]['size'])
                     for index, initializer in enumerate(identifier['initializer']):
-                        TAC.emit(newVar['place'] + '[' + str(index) + ']', initializer['place'], '','=arr')
+                        TAC.emit(newVar['place'] + '|' + str(index), initializer['place'], '','=arr')
                 else:
                     if identifier['initializer']['type']==p[2]['type']:
                         newVar = ST.addvar(identifier['identifier_name'], p[2]['type'])
@@ -862,7 +862,7 @@ def p_field_declaration(p):
                 if p[1].get('array', False):
                     newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
                     for index, initializer in enumerate(identifier['initializer']):
-                        TAC.emit(newVar['place'] + '[' + str(index) + ']', initializer['place'], '','=arr')
+                        TAC.emit(newVar['place'] + '|' + str(index), initializer['place'], '','=arr')
                 else:
                     if identifier['initializer']['type']==p[1]['type']:
                         newVar = ST.addvar(identifier['identifier_name'], p[1]['type'])
@@ -1122,7 +1122,7 @@ def p_local_variable_declaration(p):
                     newVar = ST.addvar(identifier['identifier_name'], p[1]['type'], 'array', p[1]['size'])
                     if int(p[1]['size']) == len(identifier['initializer']):
                         for index, initializer in enumerate(identifier['initializer']):
-                            TAC.emit(newVar['place'] + '[' + str(index) + ']', initializer['place'], '','=arr')
+                            TAC.emit(newVar['place'] + '|' + str(index), initializer['place'], '','=arr')
                     else:
                         error('badInitialization','Array not fully initialized',str(p.lexer.lineno))
                 # If not array

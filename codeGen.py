@@ -8,6 +8,10 @@ from threeAddressCode import *
 import parser
 import mipsCode
 
+def getwidth(vartype):
+    dic = {"int":4,"double":8,"bool":4,"char":4, "void":0}
+    return dic[vartype]
+
 def genCode(inputFile):
     ST, TAC = parser.getIR(inputFile)
     code = mipsCode.mipsCode(ST)
@@ -259,6 +263,44 @@ def genCode(inputFile):
             code.addLine('sub $sp, $sp, '+str(width))
             code.addLine('jal '+irline[2])
             code.addLine('add $sp, $sp, '+str(width))
+        if irline[3] == '=arr':
+            if irline[1].find('|')>=0:
+                var,offset=irline[1].split('|')
+                if offset.isdigit():
+                    reg1 = code.getFreeReg()
+                    code.addLine('li '+reg1+', '+offset)
+                else:
+                    reg1 = code.getReg(offset)
+                reg2 = code.getReg(irline[0])
+                free_reg = code.getFreeReg()
+                width = getwidth(ST.baseEnv.addrtable[var]['type'])
+                code.addLine('li '+free_reg+', '+str(width))
+                code.addLine('mult '+reg1+', '+free_reg)
+                code.addLine('mflo '+free_reg)
+                addr = ST.baseEnv.addrtable[var]['address']
+                code.addLine('addi '+free_reg+', '+free_reg+', '+str(addr))
+                code.addLine('add '+free_reg+', $sp, '+free_reg)
+                code.addLine('lw '+ reg2 + ', ('+free_reg+')')
+                code.flushVar(irline[0])
+            elif irline[0].find('|')>=0:
+                var,offset=irline[0].split('|')
+                if offset.isdigit():
+                    reg1 = code.getFreeReg()
+                    code.addLine('li '+reg1+', '+offset)
+                else:
+                    reg1 = code.getReg(offset)
+                reg2 = code.getReg(irline[1])
+                free_reg = code.getFreeReg()
+                width = getwidth(ST.baseEnv.addrtable[var]['type'])
+                code.addLine('li '+free_reg+', '+str(width))
+                code.addLine('mult '+reg1+', '+free_reg)
+                code.addLine('mflo '+free_reg)
+                addr = ST.baseEnv.addrtable[var]['address']
+                code.addLine('addi '+free_reg+', '+free_reg+', '+str(addr))
+                code.addLine('add '+free_reg+', $sp, '+free_reg)
+                code.addLine('sw '+ reg2 + ', ('+free_reg+')')
+                # code.flushVar(irline[0])
+
         # TODO : Complete this list
     code.printCode()
     return code
