@@ -44,6 +44,15 @@ def showCompilationStatus():
     else:
         cprint('Compilation Successful', 'green')
 
+def getWidthForArgtypelist(argtypelist):
+    dic = {"int":4,"double":8,"bool":4,"char":4}
+    widthlist = []
+    width = 0
+    for item in argtypelist:
+        widthlist.append(width)
+        width+=dic[item]
+    return widthlist
+
 def p_compilation_unit(p):
     ''' compilation-unit :         class-declarations-opt
              |         statement-list
@@ -616,15 +625,17 @@ def p_invocation_expression_1(p):
             argtypelist.append(argument['type'])
         if funcEnv.argtypelist == argtypelist:
             # Print function parameters
-            TAC.emit("@self",'','','param')
-            for argument in p[3]:
-                TAC.emit(argument['place'],'','','param')
+            TAC.emit("@self",'',str(funcEnv.Class)+'_'+p[1],'param')
+            widthlist = getWidthForArgtypelist(argtypelist)
+            for i in range(len(p[3])):
+                argument = p[3][i]
+                TAC.emit(argument['place'],widthlist[i],str(funcEnv.Class)+'_'+p[1],'param')
             # Jump to function
             TAC.emit('', '', str(funcEnv.Class)+'_'+p[1], 'jumplabel')
-
             p[0]['type'] = funcEnv.returnType
-            p[0]['place'] = ST.gentmp(p[0]['type'])
-            TAC.emit(p[0]['place'],'','','getreturn')
+            if (funcEnv.returnType != 'void'):
+                p[0]['place'] = ST.gentmp(p[0]['type'])
+                TAC.emit('','',p[0]['place'],'getreturn')
         else:
             error('incorrectArgumentTypeList', 'Incorrect argument types in function call', str(p.lexer.lineno))
     else:
@@ -643,15 +654,19 @@ def p_invocation_expression_2(p):
                 for argument in p[5]:
                     argtypelist.append(argument['type'])
                 if funcEnv.argtypelist == argtypelist:
+
                     # Print function parameters
-                    TAC.emit("@object",var['place'],'','param')
-                    for argument in p[5]:
-                        TAC.emit(argument['place'],'','','param')
+                    TAC.emit("@object",var['place'],str(funcEnv.Class)+'_'+p[3],'param')
+                    widthlist = getWidthForArgtypelist(argtypelist)
+                    for i in range(len(p[5])):
+                        argument = p[5][i]
+                        TAC.emit(argument['place'],widthlist[i],str(funcEnv.Class)+'_'+p[3],'param')
                     # Jump to function
                     TAC.emit('', '', str(funcEnv.Class)+'_'+p[3], 'jumplabel')
                     p[0]['type'] = funcEnv.returnType
-                    p[0]['place'] = ST.gentmp(p[0]['type'])
-                    TAC.emit(p[0]['place'],'','','getreturn')
+                    if (funcEnv.returnType != 'void'):
+                        p[0]['place'] = ST.gentmp(p[0]['type'])
+                        TAC.emit('','',p[0]['place'],'getreturn')
                 else:
                     error('incorrectArgumentTypeList', 'Incorrect argument types in function call', str(p.lexer.lineno))
             else:
@@ -881,7 +896,9 @@ def p_method_header_type(p):
         classname=ST.curr_env.name
     ST.begin_scope(p[2],'methodType',p[1]['type'],Class=classname)
     TAC.emit('','',str(classname)+'_'+p[2],'Label')
+    TAC.emit('','','','storereturn')
     argtypelist = []
+    ST.addvar("@returnVar","int")
     ST.addvar("@self","int")
     for parameter in p[4]:
         ST.addvar(parameter['identifier_name'], parameter['type'])
@@ -895,8 +912,10 @@ def p_method_header_void(p):
     if ST.curr_env:
         classname=ST.curr_env.name
     TAC.emit('','',str(classname)+'_'+p[2],'Label')
+    TAC.emit('','','','storereturn')
     ST.begin_scope(p[2],'methodType','void',Class=classname)
     argtypelist = []
+    ST.addvar("@returnVar","int")
     ST.addvar("@self","int")
     for parameter in p[4]:
         ST.addvar(parameter['identifier_name'], parameter['type'])

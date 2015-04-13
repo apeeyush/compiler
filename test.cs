@@ -4,6 +4,7 @@ class A
     {
     	int i;
         int a=4,b=5,c=3;
+
         
         console.readline(a);
         console.readline(b);
@@ -32,7 +33,6 @@ class A
                 max = b*b;
             }
         }
-        /*
         else
         {
             if(a<b)
@@ -43,13 +43,36 @@ class A
             {
                 max = c*c;
             }
-            max = c;
         }
-        */
         console.writeline(max);
         return 0;
     }
 }
+/*
+class A
+{
+	int newFun(int a, int b){
+		console.writeline(a);
+		console.writeline(b);
+		int t = 9;
+		console.writeline(t);
+		return 1;
+	}
+
+    int Main()
+    {
+    	int i;
+        int b=3;
+        for(i=0;i<5;i=i+1){
+	        console.writeline(b);
+        }
+        int newvar = newFun(b, i);
+        console.writeline(newvar);
+>>>>>>> a180f94aad34667c64793936659e48229b38efab
+        return 0;
+    }
+}
+*/
 /*
 bool a  = true;
 bool b = false;
