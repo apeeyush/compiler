@@ -1,10 +1,10 @@
 //Binary-search
-class A
+class Binary
 {
     int [10]arr = {1,2,3,4,5,6,7,8,9,10};
-    int binary_search(int l,int r,int key)
+    int b;
+    int binary(int l,int r,int key)
     {
-        
         if(l>r)
         {
             return -1;
@@ -28,18 +28,26 @@ class A
         }
         else if(arr[m]>key)
         {
-            return binary_search(l,m-1,key);
+            return binary(l,m-1,key);
         }
         else
         {
-            return binary_search(m+1,r,key);   
+            return binary(m+1,r,key);   
         }
-    }
-
+    }    
+}
+class A
+{
     int Main(int a)
     {
-        a = binary_search(0,9,8);
-        console.writeline(a);
+        Binary temp = new Binary();
+        int i;
+        for(i=0;i<10;i=i+1)
+        {
+            console.writeline(temp.arr[i],"\n");
+        }
+        //a = temp.binary(0,9,8);
+        console.writeline(a,"\n");
     }   
 }
 

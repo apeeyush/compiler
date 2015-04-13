@@ -1,10 +1,10 @@
-//Class inheritence, also checks for two functions with same name in different classes
+//Class objects
 class B
 {
     int b;
-    int fun1(int b)
+    int fun1()
     {
-        return b;
+        return b*b;
     }
     int fun2(int c)
     {
@@ -20,19 +20,16 @@ class Program
     {
         return b;
     }
-    int fun3(int b)
-    {
-        return b;
-    }
-    void Main(int args)
+    void Main()
     {
         /* local variable definition */
         int a = 10;
-
+        B temp = new B();
         /* while loop execution */
         while (a < 20)
         {
-            console.writeline(a," ");
+            temp.b = a;
+            console.writeline(temp.fun1()," ");
             a+=1;
         }
         char x;

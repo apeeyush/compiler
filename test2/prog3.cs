@@ -1,18 +1,6 @@
+//Switch case - issue here
 class A
 {
-   /* int helloworld(int a)
-    {
-        if(a==2)
-        {
-            return 1;
-            helloworld(3);
-        }
-        else
-        {
-            return 2;
-        }
-    }
-    */
     int Main(int a)
     {
         int i,j=1;

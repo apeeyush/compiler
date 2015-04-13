@@ -29,17 +29,17 @@ def genCode(inputFile):
         if irline[3] == '=dec':
             reg = code.getReg(irline[0])
             code.addLine('li '+reg+','+str(irline[1]))
-            print irline[3]
+            # print irline[3]
             code.flushVar(irline[0])
         if irline[3] == '=':
             reg1 = code.getReg(irline[0])
             reg2 = code.getReg(irline[1])
             code.addLine('move ' + reg1 + ', '+reg2)
-            print irline[3]
-            print reg1,reg2
+            # print irline[3]
+            # print reg1,reg2
             code.flushVar(irline[0])
         if irline[3] == 'cond_goto':
-            print irline[3]
+            # print irline[3]
             reg1 = code.getReg(irline[0])
             if irline[1] == 0:
                 code.addLine('beqz '+reg1+', L_'+str(irline[2]))
@@ -393,7 +393,7 @@ def genCode(inputFile):
             code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
             code.addLine('sw '+ reg2 + ', ('+free_reg+')')
         # TODO : Complete this list
-    code.printCode()
+    # code.printCode()
     return code
 
 if __name__ == '__main__':

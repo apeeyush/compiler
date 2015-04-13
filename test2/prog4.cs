@@ -1,4 +1,4 @@
-//This is to check while and conditional constructs within loops
+//Power and GCD functions and recursive calls
 class A
 {
 	int power(int a,int b,int mod)
