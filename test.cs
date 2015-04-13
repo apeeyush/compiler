@@ -3,10 +3,50 @@ class A
     int Main()
     {
     	int i;
-        int b=3;
-        for(i=0;i<5;i=i+1){
-	        console.writeline(b);
+        int a=4,b=5,c=3;
+        
+        console.readline(a);
+        console.readline(b);
+        console.readline(c);
+        int max;
+        if(a>=b && a>=c)
+        {
+            if(b<c)
+            {
+                max = a+a;
+            }
+            else
+            {
+                max = a*a;
+            }
         }
+        
+        else if(b>=a && b>=c)
+        {
+            if(c<a)
+            {
+                max = b+b;
+            }
+            else
+            {
+                max = b*b;
+            }
+        }
+        /*
+        else
+        {
+            if(a<b)
+            {
+                max = c+c;
+            }
+            else
+            {
+                max = c*c;
+            }
+            max = c;
+        }
+        */
+        console.writeline(max);
         return 0;
     }
 }

@@ -25,14 +25,17 @@ def genCode(inputFile):
         if irline[3] == '=dec':
             reg = code.getReg(irline[0])
             code.addLine('li '+reg+','+str(irline[1]))
+            print irline[3]
             code.flushVar(irline[0])
         if irline[3] == '=':
-            print irline[1]
             reg1 = code.getReg(irline[0])
             reg2 = code.getReg(irline[1])
             code.addLine('move ' + reg1 + ', '+reg2)
+            print irline[3]
+            print reg1,reg2
             code.flushVar(irline[0])
         if irline[3] == 'cond_goto':
+            print irline[3]
             reg1 = code.getReg(irline[0])
             if irline[1] == 0:
                 code.addLine('beqz '+reg1+', L_'+str(irline[2]))
@@ -191,7 +194,7 @@ def genCode(inputFile):
         if irline[3] == '^=':
             reg1 = code.getReg(irline[1])
             reg2 = code.getReg(irline[0])
-            code.addLine('xor '+reg2+', '+reg1+', '+reg2)
+            code.addLine('xor '+reg2+', '+reg2+', '+reg1)
             code.flushVar(irline[0])
         if irline[3] == '|=':
             reg1 = code.getReg(irline[1])
@@ -223,6 +226,18 @@ def genCode(inputFile):
             code.addLine('move $a0, '+ reg1)
             code.addLine('li $v0, 11')
             code.addLine('syscall')
+        if irline[3] == 'ReadInt':
+            reg1 = code.getReg(irline[1])
+            code.addLine('li $v0, 5')
+            code.addLine('syscall')
+            code.addLine('move '+reg1+', $v0')
+            code.flushVar(irline[1])
+        if irline[3] == 'ReadChar':
+            reg1 = code.getReg(irline[1])
+            code.addLine('li $v0, 12')
+            code.addLine('syscall')
+            code.addLine('move '+reg1+', $v0')
+            code.flushVar(irline[1])
         # TODO : Complete this list
     code.printCode()
     return code

@@ -1007,7 +1007,6 @@ def p_write_statement(p):
             TAC.emit('','',dic['place'],'PrintDouble')
         elif dic['type'] == 'char':
             TAC.emit('','',dic['place'],'PrintChar')
-            print "hihihihihihihihihihihihihihihihihihihihihihihihihihi"
         else:
             TAC.emit('','',dic['place'],'Print')
     p[0] = {}
@@ -1028,7 +1027,15 @@ def p_read_statement(p):
     var = ST.lookupvar(p[5])    #Modify(managing read address)
     if var:
         if not var.get('isConstant',False):
-            TAC.emit('',var['place'],var['width'],'Read')
+            if var['type'] == 'int':
+                TAC.emit('',var['place'],var['width'],'ReadInt')
+            elif var['type'] == 'double':
+                TAC.emit('',var['place'],var['width'],'ReadDouble')
+            elif var['type'] == 'char':
+                TAC.emit('',var['place'],var['width'],'ReadChar')
+            else:
+                TAC.emit('',var['place'],var['width'],'Read')    
+            # TAC.emit('',var['place'],var['width'],'Read')
         else:
             error('constantAssignment','Cannont read constant', str(p.lexer.lineno))
     else:
