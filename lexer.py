@@ -140,7 +140,7 @@ t_MODEQUAL         = r'%='
 t_BITANDEQUAL         = r'&='
 t_LSHIFTEQUAL      = r'<<='
 t_RSHIFTEQUAL      = r'>>='
-t_BITXOREQUAL      = r'^='
+t_BITXOREQUAL      = r'\^='
 t_BITOREQUAL       = r'\|='
 
 # # Increment/decrement

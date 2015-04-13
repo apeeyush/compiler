@@ -1,5 +1,39 @@
 class A
 {
+    int Main()
+    {
+    	int i;
+        int a=4,b=5,c=3;
+        int max;
+        if(a>=b && a>=c)
+        {
+            if(b<c)
+            {
+                max = a+a;
+            }
+            else
+            {
+                max = a*a;
+            }
+        }
+        else if(b>=a && b>=c)
+        {
+            if(c<a)
+            {
+                max = b+b;
+            }
+            else
+            {
+                max = b*b;
+            }
+        }
+        console.writeline(max);
+        return 0;
+    }
+}
+/*
+class A
+{
 	int newFun(int a, int b){
 		console.writeline(a);
 		console.writeline(b);
@@ -20,6 +54,7 @@ class A
         return 0;
     }
 }
+*/
 /*
 bool a  = true;
 bool b = false;
