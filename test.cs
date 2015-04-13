@@ -11,12 +11,14 @@ class A
 
     int Main()
     {
-        int [3]na={1,1,1};
+        int [3]na={8,9,10};
         int a=0, i=0;
         for(i=0;i<3;i=i+1){
             a = a + na[i];
-            console.writeline(na[i]);
+            console.writeline(fact(na[i]));
+            console.writeline("\n");
         }
+        console.writeline(a);
         return 0;
     }
 }

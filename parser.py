@@ -1231,7 +1231,7 @@ def p_switch_statement(p):
         if var['value']:
             if var['type']==p[3]['type']:
                 place=ST.gentmp(var['type'])
-                TAC.emit(place,var['value'],'','=')
+                TAC.emit(place,var['value'],'','=dec')
                 TAC.emit(p[3]['place'],place,var['addr'],'cond_goto')
             else:
                 error('Switch Error','Switch Value type mismatch with case type',p.lexer.lineno)

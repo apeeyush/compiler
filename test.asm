@@ -1,4 +1,5 @@
 .data
+s0:	.asciiz	"\n"
 
 .text
 main:
@@ -76,15 +77,15 @@ L_19:
 sw $ra, 0($sp)
 L_20:
 lw $t6, 8($sp)
-li $t6,1
+li $t6,8
 sw $t6, 8($sp)
 L_21:
 lw $t6, 12($sp)
-li $t6,1
+li $t6,9
 sw $t6, 12($sp)
 L_22:
 lw $t6, 16($sp)
-li $t6,1
+li $t6,10
 sw $t6, 16($sp)
 L_23:
 li $t6, 0
@@ -152,7 +153,7 @@ slt $s0, $s5, $s1
 sw $s0, 56($sp)
 L_34:
 lw $s0, 56($sp)
-beqz $s0, L_46
+beqz $s0, L_51
 L_35:
 b L_40
 L_36:
@@ -204,29 +205,52 @@ add $t1, $sp, $t1
 lw $t5, ($t1)
 sw $t5, 76($sp)
 L_44:
-lw $t5, 76($sp)
-move $a0, $t5
+lw $t5, 4($sp)
+sw $t5, -32($sp)
+L_45:
+lw $t0, 76($sp)
+sw $t0, -28($sp)
+L_46:
+sub $sp, $sp, 36
+jal A_fact
+add $sp, $sp, 36
+L_47:
+lw $s7, 80($sp)
+move $s7, $v0
+sw $s7, 80($sp)
+L_48:
+lw $s7, 80($sp)
+move $a0, $s7
 li $v0, 1
 syscall
-L_45:
-b L_36
-L_46:
-lw $t0, 68($sp)
-li $t0,0
-sw $t0, 68($sp)
-L_47:
-lw $t0, 68($sp)
-move $v0, $t0
-L_48:
-lw $ra, 0($sp)
-jr $ra
 L_49:
+la $a0, s0
+li $v0, 4
+syscall
+L_50:
+b L_36
+L_51:
+lw $s6, 40($sp)
+move $a0, $s6
+li $v0, 1
+syscall
+L_52:
+lw $s4, 68($sp)
+li $s4,0
+sw $s4, 68($sp)
+L_53:
+lw $s4, 68($sp)
+move $v0, $s4
+L_54:
 lw $ra, 0($sp)
 jr $ra
-L_50:
-sub $sp, $sp, 80
+L_55:
+lw $ra, 0($sp)
+jr $ra
+L_56:
+sub $sp, $sp, 84
 jal A_Main
-add $sp, $sp, 80
-L_51:
+add $sp, $sp, 84
+L_57:
 li $v0, 10
 syscall
