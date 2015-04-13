@@ -2,198 +2,182 @@
 
 .text
 main:
+b A_Main
 L_0:
-A_Main:
+B_fact:
 L_1:
 sw $ra, 0($sp)
 L_2:
-lw $s7, 8($sp)
-li $s7,0
-sw $s7, 8($sp)
-L_3:
 lw $s7, 12($sp)
 li $s7,0
 sw $s7, 12($sp)
+L_3:
+lw $s7, 8($sp)
+lw $s6, 12($sp)
+lw $s5, 16($sp)
+seq $s5, $s7, $s6
+sw $s5, 16($sp)
 L_4:
-lw $s7, 16($sp)
-lw $s6, 8($sp)
-move $s7, $s6
-sw $s7, 16($sp)
+lw $s5, 16($sp)
+beqz $s5, L_9
 L_5:
-lw $s7, 20($sp)
-lw $s5, 12($sp)
-move $s7, $s5
-sw $s7, 20($sp)
+lw $s4, 20($sp)
+li $s4,1
+sw $s4, 20($sp)
 L_6:
-lw $s7, 24($sp)
-li $s7,1
-sw $s7, 24($sp)
+lw $s4, 20($sp)
+move $v0, $s4
 L_7:
-lw $s7, 28($sp)
-li $s7,2
-sw $s7, 28($sp)
+lw $ra, 0($sp)
+jr $ra
 L_8:
-lw $s7, 32($sp)
-li $s7,3
-sw $s7, 32($sp)
+b L_18
 L_9:
-lw $s7, 36($sp)
-li $s7,4
-sw $s7, 36($sp)
+lw $s3, 20($sp)
+li $s3,1
+sw $s3, 20($sp)
 L_10:
-lw $s7, 40($sp)
-li $s7,5
-sw $s7, 40($sp)
+lw $s7, 8($sp)
+lw $s3, 20($sp)
+lw $s2, 24($sp)
+sub $s2, $s7, $s3
+sw $s2, 24($sp)
 L_11:
-lw $s7, 44($sp)
-li $s7,6
-sw $s7, 44($sp)
+lw $s2, 4($sp)
+sw $s2, -32($sp)
 L_12:
-li $s7, 0
-lw $s4, 24($sp)
-li $s3, 4
-mult $s7, $s3
-mflo $s3
-addi $s3, $s3, 48
-add $s3, $sp, $s3
-sw $s4, ($s3)
+lw $s1, 24($sp)
+sw $s1, -28($sp)
 L_13:
-li $s2, 1
-lw $s1, 28($sp)
-li $s0, 4
-mult $s2, $s0
-mflo $s0
-addi $s0, $s0, 48
-add $s0, $sp, $s0
-sw $s1, ($s0)
+sub $sp, $sp, 36
+jal B_fact
+add $sp, $sp, 36
 L_14:
-li $t7, 2
-lw $t6, 32($sp)
-li $t5, 4
-mult $t7, $t5
-mflo $t5
-addi $t5, $t5, 48
-add $t5, $sp, $t5
-sw $t6, ($t5)
+lw $s0, 28($sp)
+move $s0, $v0
+sw $s0, 28($sp)
 L_15:
-li $t4, 3
-lw $t3, 36($sp)
-li $t2, 4
-mult $t4, $t2
-mflo $t2
-addi $t2, $t2, 48
-add $t2, $sp, $t2
-sw $t3, ($t2)
+lw $s7, 8($sp)
+lw $s0, 28($sp)
+lw $t7, 32($sp)
+mult $s7, $s0
+mflo $t7
+sw $t7, 32($sp)
 L_16:
-li $t1, 4
-lw $t0, 40($sp)
-sw $s6, 8($sp)
-li $s6, 4
-mult $t1, $s6
-mflo $s6
-addi $s6, $s6, 48
-add $s6, $sp, $s6
-sw $t0, ($s6)
+lw $t7, 32($sp)
+move $v0, $t7
 L_17:
-sw $s5, 12($sp)
-li $s5, 5
-lw $s7, 44($sp)
-sw $s4, 24($sp)
-li $s4, 4
-mult $s5, $s4
-mflo $s4
-addi $s4, $s4, 48
-add $s4, $sp, $s4
-sw $s7, ($s4)
+lw $ra, 0($sp)
+jr $ra
 L_18:
-lw $s3, 72($sp)
-li $s3,0
-sw $s3, 72($sp)
+lw $ra, 0($sp)
+jr $ra
 L_19:
-lw $s3, 20($sp)
-lw $s2, 72($sp)
-move $s3, $s2
-sw $s3, 20($sp)
+B_printc:
 L_20:
-lw $s3, 76($sp)
-li $s3,6
-sw $s3, 76($sp)
+sw $ra, 0($sp)
 L_21:
-lw $s3, 20($sp)
-sw $s1, 28($sp)
-lw $s1, 76($sp)
-lw $s0, 80($sp)
-slt $s0, $s3, $s1
-sw $s0, 80($sp)
+lw $t6, 4($sp)
+sw $t6, -32($sp)
 L_22:
-lw $s0, 80($sp)
-beqz $s0, L_32
+lw $t5, 8($sp)
+sw $t5, -28($sp)
 L_23:
-b L_28
+sub $sp, $sp, 36
+jal B_fact
+add $sp, $sp, 36
 L_24:
-lw $t7, 84($sp)
-li $t7,1
-sw $t7, 84($sp)
+lw $t4, 12($sp)
+move $t4, $v0
+sw $t4, 12($sp)
 L_25:
-lw $s3, 20($sp)
-lw $t7, 84($sp)
-sw $t6, 32($sp)
-lw $t6, 88($sp)
-add $t6, $s3, $t7
-sw $t6, 88($sp)
+lw $t4, 12($sp)
+lw $t3, 4($sp)
+sw $t4, 0($t3)
 L_26:
-lw $s3, 20($sp)
-lw $t6, 88($sp)
-move $s3, $t6
-sw $s3, 20($sp)
+lw $ra, 0($sp)
+jr $ra
 L_27:
-b L_20
+A_Main:
 L_28:
-lw $s3, 20($sp)
-lw $t5, 92($sp)
-li $t4, 4
-mult $s3, $t4
-mflo $t4
-addi $t4, $t4, 48
-add $t4, $sp, $t4
-lw $t5, ($t4)
-sw $t5, 92($sp)
+sw $ra, 0($sp)
 L_29:
-lw $t5, 16($sp)
-sw $t3, 36($sp)
-lw $t3, 92($sp)
-lw $t2, 96($sp)
-add $t2, $t5, $t3
-sw $t2, 96($sp)
+lw $t2, 8($sp)
+li $t2,10
+sw $t2, 8($sp)
 L_30:
-lw $t5, 16($sp)
-lw $t2, 96($sp)
-move $t5, $t2
-sw $t5, 16($sp)
+lw $t2, 12($sp)
+li $t2,0
+sw $t2, 12($sp)
 L_31:
-b L_24
+lw $t2, 16($sp)
+lw $t1, 8($sp)
+move $t2, $t1
+sw $t2, 16($sp)
 L_32:
-lw $t5, 16($sp)
-move $a0, $t5
+lw $t2, 20($sp)
+lw $t0, 12($sp)
+move $t2, $t0
+sw $t2, 20($sp)
+L_33:
+li $a0, 4
+li $v0, 9
+syscall
+lw $t2, 24($sp)
+move $t2, $v0
+sw $t2, 24($sp)
+L_34:
+lw $t2, 28($sp)
+sw $s7, 8($sp)
+lw $s7, 24($sp)
+move $t2, $s7
+sw $t2, 28($sp)
+L_35:
+lw $t2, 28($sp)
+sw $t2, -12($sp)
+L_36:
+sw $s6, 12($sp)
+lw $s6, 16($sp)
+sw $s6, -8($sp)
+L_37:
+sub $sp, $sp, 16
+jal B_printc
+add $sp, $sp, 16
+L_38:
+sw $s5, 16($sp)
+lw $s5, 32($sp)
+sw $s4, 20($sp)
+lw $s4, 28($sp)
+lw $s5, 0($s4)
+sw $s5, 32($sp)
+L_39:
+lw $s6, 16($sp)
+lw $s5, 32($sp)
+move $s6, $s5
+sw $s6, 16($sp)
+L_40:
+lw $s6, 16($sp)
+move $a0, $s6
 li $v0, 1
 syscall
-L_33:
-lw $t1, 92($sp)
-li $t1,0
-sw $t1, 92($sp)
-L_34:
-lw $t1, 92($sp)
-move $v0, $t1
-L_35:
+L_41:
+sw $s3, 20($sp)
+lw $s3, 36($sp)
+li $s3,0
+sw $s3, 36($sp)
+L_42:
+lw $s3, 36($sp)
+move $v0, $s3
+L_43:
 lw $ra, 0($sp)
 jr $ra
-L_36:
+L_44:
 lw $ra, 0($sp)
 jr $ra
-L_37:
-sub $sp, $sp, 100
+L_45:
+sub $sp, $sp, 40
 jal A_Main
-add $sp, $sp, 100
-L_38:
+add $sp, $sp, 40
+L_46:
 li $v0, 10
 syscall

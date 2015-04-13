@@ -1,12 +1,28 @@
+class B{
+    int c;
+    int fact(int a){
+        if (a==0){
+            return 1;
+        }
+        else{
+            return a*fact(a-1);
+        }
+    }
+
+    void printc(int a)
+    {
+        c = fact(a)
+        return;
+    }
+}
 class A
 {
     int Main()
     {
-        int a=0, i=0;
-        int [6]na={1,2,3,4,5,6};
-        for(i=0;i<6;i=i+1){
-            a = a + na[i];
-        }
+        int a=10, i=0;
+        B b = new B();
+        b.printc(a);
+        a = b.c;
         console.writeline(a);
         return 0;
     }

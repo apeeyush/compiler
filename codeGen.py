@@ -266,9 +266,13 @@ def genCode(inputFile):
                 offset = -width+4
                 reg1 = code.getFreeReg()
                 code.addLine('lw '+reg1+', 4($sp)')
-                code.addLine('sw '+reg1+ str(offset)+'($sp)')
+                code.addLine('sw '+reg1+ ', '+str(offset)+'($sp)')
             elif irline[0] == '@object':
-                pass
+                offset = -width+4
+                reg1 = code.getFreeReg()
+                addr=ST.baseEnv.addrtable[irline[1]]['address']
+                code.addLine('lw '+reg1+', '+str(addr)+'($sp)')
+                code.addLine('sw '+reg1+ ', '+str(offset)+'($sp)')
             else:
                 reg = code.getReg(irline[0])
                 offset = -width+8+irline[1]
@@ -315,7 +319,40 @@ def genCode(inputFile):
                 code.addLine('add '+free_reg+', $sp, '+free_reg)
                 code.addLine('sw '+ reg2 + ', ('+free_reg+')')
                 # code.flushVar(irline[0])
-
+        if irline[3] == '=alloc':
+            code.addLine('li $a0, '+str(irline[2]))
+            code.addLine('li $v0, 9')
+            code.addLine('syscall')
+            reg1 = code.getReg(irline[0])
+            code.addLine('move '+reg1+', $v0')
+            code.flushVar(irline[0])
+        if irline[3] == '=_derefstore':
+            reg1 = code.getReg(irline[1])
+            reg2 = code.getFreeReg()
+            code.addLine('lw '+reg2+', 4($sp)')
+            addr = ST.baseEnv.addrtable[irline[0]]['address']
+            code.addLine('sw '+reg1+', '+str(addr)+'('+reg2+')')
+        if irline[3] == '=_derefload':
+            reg1 = code.getReg(irline[0])
+            reg2 = code.getFreeReg()
+            code.addLine('lw '+reg2+', 4($sp)')
+            addr = ST.baseEnv.addrtable[irline[1]]['address']
+            code.addLine('lw '+reg1+', '+str(addr)+'('+reg2+')')
+            code.flushVar(irline[0])
+        if irline[3] == '=_obj':
+            if irline[0].find('@')>=0:
+                var, member = irline[0].split('@')
+                reg1 = code.getReg(irline[1])
+                reg2 = code.getReg(var)
+                addr = ST.baseEnv.addrtable[member]['address']
+                code.addLine('sw '+reg1+', '+str(addr)+'('+reg2+')')
+            elif irline[1].find('@')>=0:
+                var, member = irline[1].split('@')
+                reg1 = code.getReg(irline[0])
+                reg2 = code.getReg(var)
+                addr = ST.baseEnv.addrtable[member]['address']
+                code.addLine('lw '+reg1+', '+str(addr)+'('+reg2+')')
+                code.flushVar(irline[0])
         # TODO : Complete this list
     code.printCode()
     return code
@@ -334,5 +371,10 @@ if __name__ == '__main__':
         f.write('\n')
         f.write('.text\n')
         f.write('main:\n')
+        # Jump to main class
+        mainclass = code.ST.mainClass()
+        if mainclass:
+            f.write('b '+mainclass.name+'_Main\n')
+        # Emit code
         for line in code.code:
             f.write(line+'\n')
