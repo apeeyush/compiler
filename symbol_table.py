@@ -117,6 +117,10 @@ class Env:
         self.argtypelist = argtypelist
         return self.argtypelist
 
+    def adduppertypelist(self, uppertypelist):
+        self.uppertypelist = uppertypelist
+        return self.uppertypelist
+
     def getStartEnv(self):
         env = self
         while env.prev_env != None and env.type != 'classType':
@@ -268,6 +272,9 @@ class SymbolTable:
 
     def addargtypelist(self, argtypelist):
         return self.curr_env.addargtypelist(argtypelist)
+
+    def adduppertypelist(self, uppertypelist):
+        return self.curr_env.adduppertypelist(uppertypelist)
 
     def addString(self, place, value):
         self.stringInit[place] = value

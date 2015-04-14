@@ -14,6 +14,7 @@ def getwidth(vartype):
 
 def genCode(inputFile):
     ST, TAC = parser.getIR(inputFile)
+    print ST.printTable();
     code = mipsCode.mipsCode(ST)
     print 'Three Address Code..'
     TAC.printCode()

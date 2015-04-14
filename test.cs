@@ -1,10 +1,8 @@
 class B{
-    int [6] a;
+    int a;
 
-    void printc(int index)
+    void printc(int[2] index)
     {
-        a[1]=5;
-        console.writeline(a[index]);
         return;
     }
 }
@@ -12,9 +10,9 @@ class A
 {
     int Main()
     {
-        int a=1;
-        B b = new B();
-        b.printc(a);
+        int[2] a;
+        B b1 = new B();
+        b1.printc(a);
         return 0;
     }
 }

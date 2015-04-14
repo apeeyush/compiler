@@ -44,13 +44,17 @@ def showCompilationStatus():
     else:
         cprint('Compilation Successful', 'green')
 
-def getWidthForArgtypelist(argtypelist):
+def getWidthForArgtypelist(argtypelist, uppertypelist):
     dic = {"int":4,"double":8,"bool":4,"char":4}
     widthlist = []
     width = 0
-    for item in argtypelist:
+    for i in range(len(argtypelist)):
+        item = argtypelist[i]
         widthlist.append(width)
-        width+=dic[item]
+        if uppertypelist[i] != 'simple':
+            width+=4
+        else:
+            width+=dic.get('item',4)
     return widthlist
 
 def p_compilation_unit(p):
@@ -197,12 +201,13 @@ def p_simple_type(p):
              |         DOUBLE
              |         STRING
              '''
-    p[0] = {'type' : p[1]}
+    p[0] = {'type' : p[1], 'uppertype': 'simple'}
 
 def p_array_type(p):
     ''' array-type :         simple-type OPEN_BRACKET ICONST CLOSE_BRACKET
              '''
     p[0] = p[1]
+    p[0]['uppertype'] = 'array'
     p[0]['array'] = True
     p[0]['size'] = p[3]
     if int(p[3]) < 0:
@@ -627,12 +632,14 @@ def p_invocation_expression_1(p):
     funcEnv = ST.searchFunc(p[1])
     if funcEnv:
         argtypelist = []
+        uppertypelist = []
         for argument in p[3]:
             argtypelist.append(argument['type'])
-        if funcEnv.argtypelist == argtypelist:
+            uppertypelist.append(argument.get('uppertype','simple'))
+        if funcEnv.argtypelist == argtypelist and uppertypelist == funcEnv.uppertypelist:
             # Print function parameters
             TAC.emit("@self",'',str(funcEnv.Class)+'_'+p[1],'param')
-            widthlist = getWidthForArgtypelist(argtypelist)
+            widthlist = getWidthForArgtypelist(argtypelist, uppertypelist)
             for i in range(len(p[3])):
                 argument = p[3][i]
                 TAC.emit(argument['place'],widthlist[i],str(funcEnv.Class)+'_'+p[1],'param')
@@ -657,13 +664,16 @@ def p_invocation_expression_2(p):
             funcEnv = ST.searchFuncinClass(p[3],var['type'])
             if funcEnv:
                 argtypelist = []
+                uppertypelist = []
                 for argument in p[5]:
                     argtypelist.append(argument['type'])
-                if funcEnv.argtypelist == argtypelist:
-
+                    uppertypelist.append(argument['uppertype'])
+                if funcEnv.argtypelist == argtypelist and uppertypelist == funcEnv.uppertypelist:
                     # Print function parameters
                     TAC.emit("@object",var['place'],str(funcEnv.Class)+'_'+p[3],'param')
-                    widthlist = getWidthForArgtypelist(argtypelist)
+                    print argtypelist, uppertypelist
+                    widthlist = getWidthForArgtypelist(argtypelist, uppertypelist)
+                    print widthlist
                     for i in range(len(p[5])):
                         argument = p[5][i]
                         TAC.emit(argument['place'],widthlist[i],str(funcEnv.Class)+'_'+p[3],'param')
@@ -910,12 +920,15 @@ def p_method_header_type(p):
     TAC.emit('','',str(classname)+'_'+p[2],'Label')
     TAC.emit('','','','storereturn')
     argtypelist = []
+    uppertypelist = []
     ST.addvar("@returnVar","int")
     ST.addvar("@self","int")
     for parameter in p[4]:
         ST.addvar(parameter['identifier_name'], parameter['type'])
         argtypelist.append(parameter['type'])
+        uppertypelist.append(parameter['uppertype'])
     ST.addargtypelist(argtypelist)
+    ST.adduppertypelist(uppertypelist)
 
 def p_method_header_void(p):
     ''' method-header :         VOID IDENTIFIER OPEN_PAREN formal-parameter-list-opt CLOSE_PAREN
@@ -927,12 +940,21 @@ def p_method_header_void(p):
     TAC.emit('','','','storereturn')
     ST.begin_scope(p[2],'methodType','void',Class=classname)
     argtypelist = []
+    uppertypelist = []
     ST.addvar("@returnVar","int")
     ST.addvar("@self","int")
     for parameter in p[4]:
-        ST.addvar(parameter['identifier_name'], parameter['type'])
+        if parameter['uppertype'] != 'simple':
+            tmp_var = ST.addvar(parameter['identifier_name'], 'int')
+            tmp_var['type'] = parameter['type']
+            tmp_var['uppertype'] = parameter['uppertype']
+            tmp_var['isPointer'] = True
+        else:
+            ST.addvar(parameter['identifier_name'], parameter['type'])
         argtypelist.append(parameter['type'])
+        uppertypelist.append(parameter['uppertype'])
     ST.addargtypelist(argtypelist)
+    ST.adduppertypelist(uppertypelist)
 
 def p_formal_parameter_list_opt(p):
     ''' formal-parameter-list-opt :         formal-parameter-list
@@ -957,7 +979,7 @@ def p_fixed_parameters(p):
 def p_fixed_parameter(p):
     ''' fixed-parameter :          type IDENTIFIER
              '''
-    p[0] = {'type' : p[1]['type'], 'identifier_name' : p[2]}
+    p[0] = {'type' : p[1]['type'], 'identifier_name' : p[2], 'uppertype' : p[1].get('uppertype','simple')}
 
 def p_method_body(p):
     ''' method-body :         method-block
