@@ -1,3 +1,25 @@
+class Program
+{
+    int Main()
+    {
+        int a=0,b=5;
+        int [5]aa = {1,2,3,4,5};
+        int [5]dd = {1,2,3,4,5};
+        while(a<5)
+        {
+            aa[a] = ~3;
+            if(true)
+            {
+                console.writeline(a,2,aa[a],"\n");
+                console.writeline(a,2,dd[a],"\n");
+                console.writeline(a,2,dd[a],"\n");
+            }
+            a+=1;
+        }
+        return 0;
+    }
+}
+/*
 class D{
     int d;
     void setD(){
@@ -29,3 +51,4 @@ class A
         return 0;
     }
 }
+*/

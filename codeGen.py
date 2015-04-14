@@ -20,7 +20,7 @@ def genCode(inputFile):
     # print ST.printTable()
     # print ST.baseEnv.addrtable
     # print 'Three Address Code..'
-    # TAC.printCode()
+    TAC.printCode()
     # print '\n'
 
     for i in range(len(TAC.code)):
@@ -425,6 +425,7 @@ def genCode(inputFile):
             src = irline[0]
             dest = irline[1]
             ST.baseEnv.addrtable[src]['address']=dest
+        code.flushAll()
     return errorFlag, code
 
 if __name__ == '__main__':
