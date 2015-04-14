@@ -1578,12 +1578,53 @@ sub $sp, $sp, 36
 jal B_binary
 add $sp, $sp, 36
 L_298:
+lw $s1, 296($sp)
+li $s1,8
+sw $s1, 296($sp)
+L_299:
+lw $s1, 296($sp)
+lw $s2, 300($sp)
+li $s5, 4
+mult $s1, $s5
+mflo $s5
+addi $s5, $s5, 0
+lw $t0, 12($sp)
+add $s5, $t0, $s5
+lw $s2, ($s5)
+sw $s2, 300($sp)
+L_300:
+lw $s2, 304($sp)
+li $s2,9
+sw $s2, 304($sp)
+L_301:
+lw $s2, 304($sp)
+lw $t6, 308($sp)
+li $s3, 4
+mult $s2, $s3
+mflo $s3
+addi $s3, $s3, 0
+lw $t0, 12($sp)
+add $s3, $t0, $s3
+lw $t6, ($s3)
+sw $t6, 308($sp)
+L_302:
+lw $t6, 300($sp)
+lw $s0, 308($sp)
+lw $t4, 312($sp)
+add $t4, $t6, $s0
+sw $t4, 312($sp)
+L_303:
+lw $t4, 312($sp)
+move $a0, $t4
+li $v0, 1
+syscall
+L_304:
 lw $ra, 0($sp)
 jr $ra
-L_299:
-sub $sp, $sp, 296
+L_305:
+sub $sp, $sp, 316
 jal B_Main
-add $sp, $sp, 296
-L_300:
+add $sp, $sp, 316
+L_306:
 li $v0, 10
 syscall

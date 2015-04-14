@@ -17,8 +17,8 @@ def genCode(inputFile):
     code = mipsCode.mipsCode(ST)
     print ST.printTable()
     print 'Three Address Code..'
-    TAC.printCode()
-    print ST.baseEnv.addrtable
+    # TAC.printCode()
+    # print ST.baseEnv.addrtable
     print '\n'
 
     for i in range(len(TAC.code)):

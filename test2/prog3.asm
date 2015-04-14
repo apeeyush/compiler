@@ -171,7 +171,7 @@ la $a0, s0
 li $v0, 4
 syscall
 L_34:
-b L_54
+b L_53
 L_35:
 lw $t3, 92($sp)
 li $t3,0
@@ -239,7 +239,7 @@ la $a0, s1
 li $v0, 4
 syscall
 L_48:
-b L_54
+b L_53
 L_49:
 lw $s6, 84($sp)
 li $s6,1

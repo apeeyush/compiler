@@ -30,7 +30,7 @@ class A
 			return gcd(b,a%b);
 		}
 	}
-	void Main(int a)
+	void Main()
 	{
 	    int i=1,mod = 17;
 	    while(i<mod)

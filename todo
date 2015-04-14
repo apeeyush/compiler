@@ -1,5 +1,3 @@
-1.) Fix empty statement bug
-2.) Switch case can have only literals, no expressions
-3.) remove propogation of break from switch to loops
-4.) Properly handle condop,right now it first evaluates both the expressions and then assign it to thr variable
+
+4.) Properly handle condop,right now it first evaluates both the expressions and then assign it to the variable
 5.) Array over size 1000 not working

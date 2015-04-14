@@ -1,7 +1,7 @@
 //Bubble Sort
 class Program
 {
-    int Main(int a)
+    int Main()
     {
         int i,j;
         int [15]arr = {1,2,3,4,5,1,4,-1,6,10,-113,32,2,22,24325};

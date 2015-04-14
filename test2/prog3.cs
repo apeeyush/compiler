@@ -1,7 +1,7 @@
 //Switch case - issue here
 class A
 {
-    int Main(int a)
+    int Main()
     {
         int i,j=1;
         int [5]arr = {1,53,5,3,1};
