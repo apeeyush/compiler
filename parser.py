@@ -667,13 +667,11 @@ def p_invocation_expression_2(p):
                 uppertypelist = []
                 for argument in p[5]:
                     argtypelist.append(argument['type'])
-                    uppertypelist.append(argument['uppertype'])
+                    uppertypelist.append(argument.get('uppertype','simple'))
                 if funcEnv.argtypelist == argtypelist and uppertypelist == funcEnv.uppertypelist:
                     # Print function parameters
                     TAC.emit("@object",var['place'],str(funcEnv.Class)+'_'+p[3],'param')
-                    print argtypelist, uppertypelist
                     widthlist = getWidthForArgtypelist(argtypelist, uppertypelist)
-                    print widthlist
                     for i in range(len(p[5])):
                         argument = p[5][i]
                         TAC.emit(argument['place'],widthlist[i],str(funcEnv.Class)+'_'+p[3],'param')
@@ -924,9 +922,14 @@ def p_method_header_type(p):
     ST.addvar("@returnVar","int")
     ST.addvar("@self","int")
     for parameter in p[4]:
-        ST.addvar(parameter['identifier_name'], parameter['type'])
+        if parameter.get('uppertype','simple') != 'simple':
+            ST.addvar(parameter['identifier_name'], parameter['type'], parameter.get('uppertype','simple'),4)
+        else:
+            ST.addvar(parameter['identifier_name'], parameter['type'])
         argtypelist.append(parameter['type'])
         uppertypelist.append(parameter['uppertype'])
+        if parameter['uppertype'] == 'array':
+            error('unsupportedType', 'Array passing not supported on method', str(p.lexer.lineno))
     ST.addargtypelist(argtypelist)
     ST.adduppertypelist(uppertypelist)
 
@@ -944,15 +947,14 @@ def p_method_header_void(p):
     ST.addvar("@returnVar","int")
     ST.addvar("@self","int")
     for parameter in p[4]:
-        if parameter['uppertype'] != 'simple':
-            tmp_var = ST.addvar(parameter['identifier_name'], 'int')
-            tmp_var['type'] = parameter['type']
-            tmp_var['uppertype'] = parameter['uppertype']
-            tmp_var['isPointer'] = True
+        if parameter.get('uppertype','simple') != 'simple':
+            ST.addvar(parameter['identifier_name'], parameter['type'], parameter.get('uppertype','simple'),4)
         else:
             ST.addvar(parameter['identifier_name'], parameter['type'])
         argtypelist.append(parameter['type'])
         uppertypelist.append(parameter['uppertype'])
+        if parameter['uppertype'] == 'array':
+            error('unsupportedType', 'Array passing not supported on method', str(p.lexer.lineno))
     ST.addargtypelist(argtypelist)
     ST.adduppertypelist(uppertypelist)
 

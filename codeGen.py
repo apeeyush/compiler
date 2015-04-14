@@ -14,7 +14,6 @@ def getwidth(vartype):
 
 def genCode(inputFile):
     ST, TAC = parser.getIR(inputFile)
-    print ST.printTable();
     code = mipsCode.mipsCode(ST)
     print 'Three Address Code..'
     TAC.printCode()
@@ -30,17 +29,17 @@ def genCode(inputFile):
         if irline[3] == '=dec':
             reg = code.getReg(irline[0])
             code.addLine('li '+reg+','+str(irline[1]))
-            print irline[3]
+            # print irline[3]
             code.flushVar(irline[0])
         if irline[3] == '=':
             reg1 = code.getReg(irline[0])
             reg2 = code.getReg(irline[1])
             code.addLine('move ' + reg1 + ', '+reg2)
-            print irline[3]
-            print reg1,reg2
+            # print irline[3]
+            # print reg1,reg2
             code.flushVar(irline[0])
         if irline[3] == 'cond_goto':
-            print irline[3]
+            # print irline[3]
             reg1 = code.getReg(irline[0])
             if irline[1] == 0:
                 code.addLine('beqz '+reg1+', L_'+str(irline[2]))
@@ -285,6 +284,7 @@ def genCode(inputFile):
             code.addLine('add $sp, $sp, '+str(width))
         if irline[3] == '=arr':
             if irline[1].find('|')>=0:
+                obj = None
                 var,offset=irline[1].split('|')
                 if offset.isdigit():
                     reg1 = code.getFreeReg()
@@ -292,6 +292,8 @@ def genCode(inputFile):
                 else:
                     reg1 = code.getReg(offset)
                 reg2 = code.getReg(irline[0])
+                if var.find('@')>=0:
+                    obj, var = var.split('@')
                 free_reg = code.getFreeReg()
                 width = getwidth(ST.baseEnv.addrtable[var]['type'])
                 code.addLine('li '+free_reg+', '+str(width))
@@ -299,10 +301,15 @@ def genCode(inputFile):
                 code.addLine('mflo '+free_reg)
                 addr = ST.baseEnv.addrtable[var]['address']
                 code.addLine('addi '+free_reg+', '+free_reg+', '+str(addr))
-                code.addLine('add '+free_reg+', $sp, '+free_reg)
+                if obj:
+                    reg3=code.getReg(obj)
+                    code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
+                else:
+                    code.addLine('add '+free_reg+', $sp, '+free_reg)
                 code.addLine('lw '+ reg2 + ', ('+free_reg+')')
                 code.flushVar(irline[0])
             elif irline[0].find('|')>=0:
+                obj = None
                 var,offset=irline[0].split('|')
                 if offset.isdigit():
                     reg1 = code.getFreeReg()
@@ -310,6 +317,8 @@ def genCode(inputFile):
                 else:
                     reg1 = code.getReg(offset)
                 reg2 = code.getReg(irline[1])
+                if var.find('@')>=0:
+                    obj, var = var.split('@')
                 free_reg = code.getFreeReg()
                 width = getwidth(ST.baseEnv.addrtable[var]['type'])
                 code.addLine('li '+free_reg+', '+str(width))
@@ -317,7 +326,11 @@ def genCode(inputFile):
                 code.addLine('mflo '+free_reg)
                 addr = ST.baseEnv.addrtable[var]['address']
                 code.addLine('addi '+free_reg+', '+free_reg+', '+str(addr))
-                code.addLine('add '+free_reg+', $sp, '+free_reg)
+                if obj:
+                    reg3=code.getReg(obj)
+                    code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
+                else:
+                    code.addLine('add '+free_reg+', $sp, '+free_reg)
                 code.addLine('sw '+ reg2 + ', ('+free_reg+')')
                 # code.flushVar(irline[0])
         if irline[3] == '=alloc':
@@ -394,7 +407,7 @@ def genCode(inputFile):
             code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
             code.addLine('sw '+ reg2 + ', ('+free_reg+')')
         # TODO : Complete this list
-    code.printCode()
+    # code.printCode()
     return code
 
 if __name__ == '__main__':
