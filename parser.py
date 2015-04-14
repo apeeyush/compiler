@@ -107,7 +107,8 @@ def p_class_header(p):
                     width=parentclass.varlist[varname]['width']
                     if parentclass.varlist[varname]['uppertype'] == 'array':
                         width=width/dic[parentclass.varlist[varname]['type']]
-                    ST.addvar(varname, parentclass.varlist[varname]['type'],parentclass.varlist[varname]['uppertype'],width)
+                    var = ST.addvar(varname, parentclass.varlist[varname]['type'],parentclass.varlist[varname]['uppertype'],width)
+                    var['modifier'] = parentclass.varlist[varname].get('modifier','public')
             else:
                 error('Class error','Base class not declared',str(p.lexer.lineno)) 
         else:
@@ -1179,7 +1180,7 @@ def p_local_constant_declaration(p):
 def p_empty_statement(p):
     ''' empty-statement :         DELIM
              '''
-    p[0]=['empty_statement']+[p[i] for i in range(1,len(p))]
+    p[0]={}
 
 def p_expression_statement(p):
     ''' expression-statement :         statement-expression DELIM
@@ -1264,7 +1265,8 @@ def p_switch_statement(p):
     TAC.backpatch(p[7]['nextList'],TAC.getNextQuad())
 
     p[0]['loopBeginList'] = p[7].get('loopBeginList', [])
-    p[0]['loopEndList'] = p[7].get('loopEndList', [])
+    # Don't propagate loop end list
+    # p[0]['loopEndList'] = p[7].get('loopEndList', [])
 
 
 def p_M_switch(p):

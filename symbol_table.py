@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from pprint import pprint
 baseEnv = None
 idnum=-1
@@ -27,7 +28,7 @@ class Env:
         self.name = scopeName
         self.Class=Class
         self.parentClass = parentClass
-        self.varlist = {}
+        self.varlist = OrderedDict()
         self.funclist={}
         self.addrtable = {}
         self.children = []
@@ -136,15 +137,17 @@ class Env:
         if func_env:
             return func_env
         else:
-            if start_env.parentClass:
-                parent_class = self.searchClass(start_env.parentClass)
+            parent_name = start_env.parentClass
+            while parent_name:
+                parent_class = self.searchClass(parent_name)
                 func_env=None
                 for child in parent_class.children:
                     if child.type == 'methodType' and child.name == funcName:
                         func_env = child
-                return func_env
-            else:
-                return None
+                if func_env:
+                    return func_env
+                parent_name = parent_class.parentClass
+            return None
 
     def searchFuncinClass(self,funcName,className):
         func_class=self.searchClass(className)
@@ -152,14 +155,21 @@ class Env:
         for child in func_class.children:
             if child.type == 'methodType' and child.name == funcName:
                 func_env = child
-        if not func_env:
-            if func_class.parentClass:
-                parent_class = self.searchClass(func_class.parentClass)
+        if func_env:
+            return func_env
+        else:
+            parent_name = func_class.parentClass
+            while parent_name:
+                parent_class = self.searchClass(parent_name)
+                func_env=None
                 for child in parent_class.children:
                     if child.type == 'methodType' and child.name == funcName:
                         func_env = child
-        return func_env
-            
+                if func_env:
+                    return func_env
+                parent_name = parent_class.parentClass
+            return None
+
     def searchClass(self,className):
         start_env=baseEnv
         for child in start_env.children:

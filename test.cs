@@ -1,71 +1,21 @@
-//Binary-search
-class Binary
-{
-    int [10]arr;
-    int b;
-    void setarr()
-    {
-        int i;
-        for(i=1;i<11;i=i+1)
-        {
-            arr[i-1]=i;
-        }
-        return;
+class D{
+    int d;
+    void setD(){
+        d = 20;
     }
-    int binary(int l,int r,int key)
-    {
-        if(l>r)
-        {
-            return -1;
-        }
-        int m = (l+r)/2;
-        if(l==r)
-        {
-            //return (arr[m]==key?m:-1);
-            if(arr[m]==key)
-            {
-                return m;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-        if(arr[m]==key)
-        {
-            return m;
-        }
-        else if(arr[m]>key)
-        {
-            return binary(l,m-1,key);
-        }
-        else
-        {
-            return binary(m+1,r,key);   
-        }
-    }    
 }
-class A
-{
-    int Main()
-    {
-        Binary temp = new Binary();
-        int i,a;
-        temp.setarr();
-        for(i=0;i<10;i=i+1)
-        {
-            console.writeline(temp.arr[i],"\n");
-        }
-        a = temp.binary(0,9,12);
-        console.writeline(a,"\n");
-    }   
+class C:D{
+    int a;
+    void cisworking(){
+        a = 1000;
+        console.writeline(1000,"\n");
+    }
 }
-
-/*
-class B{
-    int[10] nb;
-    void fun(B b){
-        console.writeline(b.nb[5]);
+class B:C{
+    private int ab;
+    void fun(){
+        ab = 1;
+        console.writeline(ab,"\n");
     }
 }
 class A
@@ -74,9 +24,11 @@ class A
     {
         int [3]na={8,9,10};
         B b = new B();
-        b.nb[5] = 6;
-        b.fun(b);
+        b.fun();
+        b.cisworking();
+        console.writeline(b.a,"\n");
+        b.setD();
+        console.writeline(b.d);
         return 0;
     }
 }
-*/
