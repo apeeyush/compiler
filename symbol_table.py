@@ -57,7 +57,7 @@ class Env:
     def genstring(self):
         varwidth = 200
         place = generatestring()
-        self.addrtable[place] = {'address':None,'width':varwidth,'type':'string','uppertype':'simple','register': None}
+        self.addrtable[place] = {'address':place,'width':varwidth,'type':'string','uppertype':'simple','register': None}
         return place
 
     def getwidth(self,vartype,uppertype='simple',width=-1):
@@ -81,8 +81,8 @@ class Env:
             return self.varlist[varname]
         else:
             place = generatestring()
-            self.varlist[varname] = {"type":'string','uppertype':'simple','address':None,"width":200,"place":place}
-            self.addrtable[place] = {'address':None,'width':200,'type':'string','uppertype':'simple','register': None}
+            self.varlist[varname] = {"type":'string','uppertype':'simple','address':place,"width":200,"place":place}
+            self.addrtable[place] = {'address':place,'width':200,'type':'string','uppertype':'simple','register': None}
             return self.varlist[varname]
 
     def lookupvar(self, varname):

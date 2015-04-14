@@ -754,11 +754,13 @@ def p_assignment_identifier(p):
             if var['type']!=p[3]['type']:
                 error('typeError', 'Type mismatch in assignment', str(p.lexer.lineno))
             else:
-                if var['type'] == 'string':
+                # If string assignment
+                if var['type']=='string':
                     if p[2] == '=':
-                        ST.addString(p[0]['place'], p[1]['value'])
+                        TAC.emit(var['place'],p[3]['place'],'','=str')
                     else:
-                        error('unsupportedOperation', 'Operation not supported on string datatype', str(p.lexer.lineno))
+                        error('unsupportedOperation', 'Operation '+p[2]+' not supported on string datatype.')
+                # If not string
                 else:
                     TAC.emit(var['place'], p[3]['place'], '', p[2])
                     p[0]['place']=var['place']
@@ -842,7 +844,8 @@ def p_assignment_operator(p):
 def p_field_declaration_mod(p):
     ''' field-declaration :         modifier type variable-declarators DELIM
              '''
-    # TODO
+    if p[2]['type'] == 'string':
+        error('unsupportedType','String type not supported on field declaration', str(p.lexer.lineno))
     for identifier in p[3]:
         if ST.lookupvar_curr(identifier['identifier_name']):
             error('alreadyDeclared','Class field already declared', str(p.lexer.lineno))
@@ -870,6 +873,8 @@ def p_field_declaration_mod(p):
 def p_field_declaration(p):
     ''' field-declaration :         type variable-declarators DELIM
              '''
+    if p[1]['type'] == 'string':
+        error('unsupportedType','String type not supported on field declaration', str(p.lexer.lineno))
     for identifier in p[2]:
         if ST.lookupvar_curr(identifier['identifier_name']):
             error('alreadyDeclared','Class field already declared', str(p.lexer.lineno))
@@ -1148,6 +1153,10 @@ def p_local_variable_declaration(p):
                     TAC.emit(newVar['place'],p[2][0]['initializer']['place'],'','=')
                 else:
                     error("Class error","Class doesn't match",str(p.lexer.lineno))
+            # If string type
+            elif p[1]['type'] == 'string':
+                newVar = ST.addvar(identifier['identifier_name'], 'string')
+                ST.addString(newVar['place'],'')
             # If variable is not initialized
             elif not identifier.get('initializer'):
                 if p[1].get('array', False):

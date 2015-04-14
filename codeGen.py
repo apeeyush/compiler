@@ -234,7 +234,8 @@ def genCode(inputFile):
             code.addLine('li $v0, 11')
             code.addLine('syscall')
         if irline[3] == 'PrintString':
-            code.addLine('la $a0, '+ irline[2])
+            location=ST.baseEnv.addrtable[irline[2]].get('address',irline[2])
+            code.addLine('la $a0, '+ location)
             code.addLine('li $v0, 4')
             code.addLine('syscall')
         if irline[3] == 'ReadInt':
@@ -249,6 +250,12 @@ def genCode(inputFile):
             code.addLine('syscall')
             code.addLine('move '+reg1+', $v0')
             code.flushVar(irline[1])
+        if irline[3] == 'ReadString':
+            code.addLine('li $v0, 8')
+            code.addLine('la $a0, '+irline[1])
+            code.addLine('li $a1 '+str(irline[2]))
+            code.addLine('syscall')
+            ST.baseEnv.addrtable[irline[1]]['address']=irline[1]
         if irline[3] == 'Label':
             code.addLine(irline[2]+':')
         if irline[3] == 'storereturn':
@@ -409,6 +416,10 @@ def genCode(inputFile):
             code.addLine('lw '+reg3 + ', 4($sp)')
             code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
             code.addLine('sw '+ reg2 + ', ('+free_reg+')')
+        if irline[3] == '=str':
+            src = irline[0]
+            dest = irline[1]
+            ST.baseEnv.addrtable[src]['address']=dest
     return errorFlag, code
 
 if __name__ == '__main__':
@@ -419,9 +430,12 @@ if __name__ == '__main__':
         with open(filename, 'w') as f:
             f.write('.data\n')
             for key, value in code.ST.stringInit.iteritems():
-                f.write(key+':\t.asciiz\t')
-                f.write(value)
-                f.write('\n')
+                if not value:
+                    f.write(key+':\t.space 200\n')
+                else:
+                    f.write(key+':\t.asciiz\t')
+                    f.write(value)
+                    f.write('\n')
             f.write('\n')
             f.write('.text\n')
             f.write('main:\n')
