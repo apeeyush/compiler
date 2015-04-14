@@ -1,7 +1,9 @@
 .data
+s3:	.asciiz	" "
 s2:	.asciiz	"\n"
 s1:	.asciiz	"\n"
 s0:	.asciiz	"\n"
+s4:	.asciiz	"\n"
 
 .text
 main:
@@ -1609,22 +1611,29 @@ lw $t6, ($s3)
 sw $t6, 308($sp)
 L_302:
 lw $t6, 300($sp)
-lw $s0, 308($sp)
-lw $t4, 312($sp)
-add $t4, $t6, $s0
-sw $t4, 312($sp)
-L_303:
-lw $t4, 312($sp)
-move $a0, $t4
+move $a0, $t6
 li $v0, 1
 syscall
+L_303:
+la $a0, s3
+li $v0, 4
+syscall
 L_304:
+lw $s0, 308($sp)
+move $a0, $s0
+li $v0, 1
+syscall
+L_305:
+la $a0, s4
+li $v0, 4
+syscall
+L_306:
 lw $ra, 0($sp)
 jr $ra
-L_305:
-sub $sp, $sp, 316
+L_307:
+sub $sp, $sp, 312
 jal B_Main
-add $sp, $sp, 316
-L_306:
+add $sp, $sp, 312
+L_308:
 li $v0, 10
 syscall

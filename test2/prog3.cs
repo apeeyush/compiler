@@ -1,4 +1,4 @@
-//Switch case - issue here
+//Switch case,check of control flow for break statements
 class A
 {
     int Main()
@@ -31,5 +31,6 @@ class A
                     break;
             }
         }
+        console.writeline("\n");
     }
 }

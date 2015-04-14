@@ -1,5 +1,5 @@
 .data
-s0:	.asciiz	" "
+s0:	.asciiz	"\n"
 
 .text
 main:

@@ -1,7 +1,7 @@
-//Bubble Sort
+//Bubble Sort,for loop
 class Program
 {
-    int Main()
+    void Main()
     {
         int i,j;
         int [15]arr = {1,2,3,4,5,1,4,-1,6,10,-113,32,2,22,24325};
@@ -26,7 +26,7 @@ class Program
         }
         for(i=0;i<15;i=i+1)
         {
-            console.writeline(arr[i]," ");
+            console.writeline(arr[i],"\n");
         }
     }
 }
