@@ -62,6 +62,14 @@ class A
         }
         a = temp.binary(0,9,8);
         console.writeline(a,"\n");
+        Binary temp2 = temp;
+        for(i=0;i<10;i=i+1)
+        {
+            console.writeline(temp2.arr[i],"\n");
+        }
+        a = temp2.binary(0,9,8);
+        console.writeline(a,"\n");
+
     }   
 }
 

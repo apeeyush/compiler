@@ -128,6 +128,6 @@ class B
         temp.array[19] = -200000000;
         MergeSort(20,temp);
         binary(20,99,temp);
-        console.writeline(temp.array[8]+temp.array[9]);
+        console.writeline(temp.array[8]," ",temp.array[9],"\n");
     }
 }

@@ -1,0 +1,30 @@
+NOTE: For blocks, braces required for single statement as well.
+1.) Language Features :-
+    a.) Data Types - int,bool,string(of size < 200),arrays,objects
+    b.) Operators
+            For int:
+            - Unary -> !,-,~,+
+            - Relational ->  <, >, <=, >=, ==, !=
+            - Arithmetic -> +,-,/,%
+            - Bitwise -> <<,>>,&,|,^
+            - Logical ops -> &&,||
+            - Assignment -> =,+=,-=,*=,/=,%=,^=,&=,|= (only work for identifiers,not member/element access)
+            For bool:
+            - Unary-> !
+            - Logical -> &&,||
+            - Assignment -> =
+            Objects:
+            - Assignment -> = (copies data of object)
+    c.) Loops -> for, while, do-while
+    d.) Selection statements -> if-else, switch
+    e.) Jump statements -> return, continue, break
+    f.) Arrays -> 1-D of types - {int,bool}
+    g.) Classes
+        - Inheritence (from a chain of parents as well)
+        - Exactly one class must have a function Main(), this class does not have variables as class members(only methods allowed although method may have any variables/arrays/objects)
+        - scope modifiers- {public,private} for data members of class only(not functions)
+    h.) Functions
+        - Allowed return types -> int,bool,void
+        - Allowed arguement types -> int,bool,objects, (no arrays)
+        - Return statements supported within blocks as well;garbage/void value returned if no return statement according to return type
+        

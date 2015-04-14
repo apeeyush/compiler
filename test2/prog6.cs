@@ -1,8 +1,8 @@
-//Class objects
+//Class inheritence
 class B
 {
-    int b;
-    int fun1()
+    //int b;
+    int fun1(int b)
     {
         return b*b;
     }
@@ -14,22 +14,16 @@ class B
         return adss;
     }
 }
-class Program
+class Program:B
 {
-    int fun1(int b)
-    {
-        return b;
-    }
     void Main()
     {
         /* local variable definition */
         int a = 10;
-        B temp = new B();
         /* while loop execution */
         while (a < 20)
         {
-            temp.b = a;
-            console.writeline(temp.fun1()," ");
+            console.writeline(fun1(a)," ");
             a+=1;
         }
         char x;

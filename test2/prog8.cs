@@ -3,7 +3,7 @@ class sieve
     int [1001]p;
     int count;
     int n;
-    int [1000]prime;
+    public int [1000]prime;
     void initialize()
     {
         int i;
@@ -36,13 +36,14 @@ class sieve
                 }
             }
         }
-        for(i = i;i<=n;i=i+2)
+        for(;i<=n;)
         {
             if(p[i]==1)
             {
                 prime[count] = i;
                 count = count +1;
             }
+            i+=2;
         }
     }
 }
@@ -51,13 +52,18 @@ class Program
 {
     void Main()
     {
-        int i;
+        int i=0;
         sieve s = new sieve();
         s.initialize();
         s.findPrimes();
-        for(i=0;i<s.count;i=i+1)
+        for(;;)
         {
+            if(i==s.count)
+            {
+                break;
+            }
             console.writeline(s.prime[i],"\n");
+            i+=1;
         }
     }
 }

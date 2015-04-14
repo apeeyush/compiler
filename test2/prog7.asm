@@ -1,4 +1,6 @@
 .data
+s3:	.asciiz	"\n"
+s2:	.asciiz	"\n"
 s1:	.asciiz	"\n"
 s0:	.asciiz	"\n"
 
@@ -516,12 +518,126 @@ la $a0, s1
 li $v0, 4
 syscall
 L_119:
+lw $t3, 80($sp)
+lw $t1, 12($sp)
+move $t3, $t1
+sw $t3, 80($sp)
+L_120:
+lw $t3, 84($sp)
+li $t3,0
+sw $t3, 84($sp)
+L_121:
+lw $s4, 16($sp)
+lw $t3, 84($sp)
+move $s4, $t3
+sw $s4, 16($sp)
+L_122:
+lw $s4, 88($sp)
+li $s4,10
+sw $s4, 88($sp)
+L_123:
+lw $s4, 16($sp)
+lw $t5, 88($sp)
+lw $t0, 92($sp)
+slt $t0, $s4, $t5
+sw $t0, 92($sp)
+L_124:
+lw $t0, 92($sp)
+beqz $t0, L_134
+L_125:
+b L_130
+L_126:
+lw $t2, 96($sp)
+li $t2,1
+sw $t2, 96($sp)
+L_127:
+lw $s4, 16($sp)
+lw $t2, 96($sp)
+lw $s6, 100($sp)
+add $s6, $s4, $t2
+sw $s6, 100($sp)
+L_128:
+lw $s4, 16($sp)
+lw $s6, 100($sp)
+move $s4, $s6
+sw $s4, 16($sp)
+L_129:
+b L_122
+L_130:
+lw $s4, 16($sp)
+lw $s2, 104($sp)
+li $s3, 4
+mult $s4, $s3
+mflo $s3
+addi $s3, $s3, 0
+lw $s5, 80($sp)
+add $s3, $s5, $s3
+lw $s2, ($s3)
+sw $s2, 104($sp)
+L_131:
+lw $s2, 104($sp)
+move $a0, $s2
+li $v0, 1
+syscall
+L_132:
+la $a0, s2
+li $v0, 4
+syscall
+L_133:
+b L_126
+L_134:
+lw $s7, 104($sp)
+li $s7,0
+sw $s7, 104($sp)
+L_135:
+lw $s7, 108($sp)
+li $s7,9
+sw $s7, 108($sp)
+L_136:
+lw $s7, 112($sp)
+li $s7,8
+sw $s7, 112($sp)
+L_137:
+lw $s7, 80($sp)
+sw $s7, -68($sp)
+L_138:
+lw $s0, 104($sp)
+sw $s0, -64($sp)
+L_139:
+lw $t7, 108($sp)
+sw $t7, -60($sp)
+L_140:
+lw $s1, 112($sp)
+sw $s1, -56($sp)
+L_141:
+sub $sp, $sp, 72
+jal Binary_binary
+add $sp, $sp, 72
+L_142:
+lw $t4, 116($sp)
+move $t4, $v0
+sw $t4, 116($sp)
+L_143:
+lw $t6, 20($sp)
+lw $t4, 116($sp)
+move $t6, $t4
+sw $t6, 20($sp)
+L_144:
+lw $t6, 20($sp)
+move $a0, $t6
+li $v0, 1
+syscall
+L_145:
+la $a0, s3
+li $v0, 4
+syscall
+L_146:
 lw $ra, 0($sp)
 jr $ra
-L_120:
-sub $sp, $sp, 80
+L_147:
+sub $sp, $sp, 120
 jal A_Main
-add $sp, $sp, 80
-L_121:
+add $sp, $sp, 120
+L_148:
 li $v0, 10
 syscall

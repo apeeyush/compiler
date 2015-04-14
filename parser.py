@@ -59,7 +59,6 @@ def getWidthForArgtypelist(argtypelist, uppertypelist):
 
 def p_compilation_unit(p):
     ''' compilation-unit :         class-declarations-opt
-             |         statement-list
              ''' #remove method declaration from statement-list at the end
     mainclass, mainmethod, mainCount = ST.mainClass()
     if mainCount > 1:
@@ -1084,6 +1083,8 @@ def p_write_statement(p):
             TAC.emit('','',dic['place'],'PrintChar')
         elif dic['type'] == 'string':
             TAC.emit('','',dic['place'],'PrintString')
+        elif dic['type'] == 'bool':
+            TAC.emit('','',dic['place'],'PrintBool')
         else:
             TAC.emit('','',dic['place'],'Print')
     p[0] = {}
@@ -1418,6 +1419,16 @@ def p_for_condition(p):
     TAC.emit(p[1]['place'],0,-1,'cond_goto')
     p[0]['trueList'] = [TAC.getNextQuad()]
     TAC.emit('','',-1,'goto')
+
+def p_for_condition_empty(p):
+    ''' for-condition :         empty
+             '''
+    p[0] = p[1]
+    p[0]['falseList'] = [TAC.getNextQuad()]
+    TAC.emit('','','','')
+    p[0]['trueList'] = [TAC.getNextQuad()]
+    p[0]['type']='bool';
+    # TAC.emit('','',-1,'goto')
 
 def p_for_iterator_opt(p):
     ''' for-iterator-opt :         for-iterator

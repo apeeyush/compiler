@@ -238,6 +238,11 @@ def genCode(inputFile):
             code.addLine('la $a0, '+ location)
             code.addLine('li $v0, 4')
             code.addLine('syscall')
+        if irline[3] == 'PrintBool':
+            reg1 = code.getReg(irline[2])
+            code.addLine('move $a0, '+ reg1)
+            code.addLine('li $v0, 1')
+            code.addLine('syscall')
         if irline[3] == 'ReadInt':
             reg1 = code.getReg(irline[1])
             code.addLine('li $v0, 5')
