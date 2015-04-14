@@ -2,10 +2,13 @@
 s2:	.asciiz	"\n"
 s1:	.asciiz	"\n"
 s0:	.asciiz	"\n"
-
 .text
 main:
-b Program_Main
+sub $sp, $sp, 152
+jal Program_Main
+add $sp, $sp, 152
+li $v0, 10
+syscall
 L_0:
 Program_Main:
 L_1:
@@ -330,10 +333,3 @@ jr $ra
 L_59:
 lw $ra, 0($sp)
 jr $ra
-L_60:
-sub $sp, $sp, 152
-jal Program_Main
-add $sp, $sp, 152
-L_61:
-li $v0, 10
-syscall

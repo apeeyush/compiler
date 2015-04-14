@@ -20,9 +20,27 @@ def genCode(inputFile):
     # print ST.printTable()
     # print ST.baseEnv.addrtable
     # print 'Three Address Code..'
-    TAC.printCode()
+    # TAC.printCode()
     # print '\n'
 
+    # Initialize MIPS Code
+    code.addLine('.data')
+    for key, value in code.ST.stringInit.iteritems():
+        if not value:
+            code.addLine(key+':\t.space 200')
+        else:
+            code.addLine(key+':\t.asciiz\t'+value)
+    code.addLine('.text')
+    code.addLine('main:')
+    # Jump to main class
+    mainclass, mainmethod, mainCount = code.ST.mainClass()
+    if mainclass:
+        code.addLine('sub $sp, $sp, '+str(mainmethod.width))
+        code.addLine('jal '+mainclass.name+'_Main')
+        code.addLine('add $sp, $sp, '+str(mainmethod.width))
+        code.addLine('li $v0, 10')
+        code.addLine('syscall')
+    # Print code based on TAC
     for i in range(len(TAC.code)):
         irline = TAC.code[i]
         code.addLine('L_'+str(i)+':')
@@ -422,9 +440,9 @@ def genCode(inputFile):
             code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
             code.addLine('sw '+ reg2 + ', ('+free_reg+')')
         if irline[3] == '=str':
-            src = irline[0]
-            dest = irline[1]
-            ST.baseEnv.addrtable[src]['address']=dest
+            dest = irline[0]
+            src = irline[1]
+            ST.baseEnv.addrtable[dest]['address']=ST.baseEnv.addrtable[src]['address']
         code.flushAll()
     return errorFlag, code
 
@@ -434,21 +452,8 @@ if __name__ == '__main__':
     if not errorflag:
         filename = inputFile.split('.')[0] + '.asm'
         with open(filename, 'w') as f:
-            f.write('.data\n')
-            for key, value in code.ST.stringInit.iteritems():
-                if not value:
-                    f.write(key+':\t.space 200\n')
-                else:
-                    f.write(key+':\t.asciiz\t')
-                    f.write(value)
-                    f.write('\n')
-            f.write('\n')
-            f.write('.text\n')
-            f.write('main:\n')
-            # Jump to main class
-            mainclass, mainmethod, mainCount = code.ST.mainClass()
-            if mainclass:
-                f.write('b '+mainclass.name+'_Main\n')
             # Emit code
             for line in code.code:
                 f.write(line+'\n')
+        for line in code.code:
+            print line

@@ -15,7 +15,7 @@ reserved_keywords = [
     'BOOL', 'BREAK',
     'CASE', 'CHAR', 'CLASS', 'CONST', 'CONTINUE',
     'DEFAULT', 'DO', 'ELSE',
-    'FALSE', 'FOR', 'GOTO', 'IF', 'INT', 'STRING',
+    'FALSE', 'FOR', 'IF', 'INT', 'STRING',
     'NEW', 'PRIVATE', 'PUBLIC', 'RETURN',
     'SWITCH', 'TRUE',
     'VOID', 'WHILE', 'CONSOLE', 'READLINE', 'WRITELINE'
