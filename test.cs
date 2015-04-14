@@ -22,15 +22,22 @@ class A
 {
     int Main()
     {
-        int [3]na={8,9,10};
-        int fdnks=0;
-        B b = new B();
-        b.fun();
-        b.cisworking();
-        console.writeline(b.a,"\n");
-        b.setD();
-        console.writeline(b.d,"\n");
-        console.writeline(fdnks);
+        string mystring;
+        // int [3]na={8,9,10};
+        // int fdnks=0;
+        // B b = new B();
+        // b.fun();
+        // b.cisworking();
+        // console.writeline(b.a,"\n");
+        // b.setD();
+        // console.writeline(b.d,"\n");
+        // console.writeline(fdnks);
+        // console.writeline("hello world!\n");
+        console.readline(mystring);
+        mystring = "hahahaha\n";
+        console.writeline(mystring);
+        console.readline(mystring);
+        console.writeline(mystring);
         return 0;
     }
 }
