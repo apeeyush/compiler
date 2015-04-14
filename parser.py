@@ -1560,6 +1560,7 @@ def runParser(inputFile):
 def getIR(filename):
     inputFile = filename
     parse = runParser(inputFile)
+    showCompilationStatus()
     return ST, TAC
 
 if __name__ == "__main__":
