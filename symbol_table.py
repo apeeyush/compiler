@@ -196,12 +196,16 @@ class SymbolTable:
 
     def mainClass(self):
         searchedNode = None
+        mainmethod = None
+        mainCount = 0
         for node in baseEnv.children:
             if node.type == 'classType': 
                 for child in node.children:
                     if child.type == 'methodType' and child.name == 'Main':
                         searchedNode = node
-        return searchedNode
+                        mainmethod = child
+                        mainCount+=1
+        return searchedNode, mainmethod, mainCount
 
     def addvar(self,varname,vartype,uppertype='simple',varwidth=-1):
         return self.curr_env.addvar(varname,vartype,uppertype,varwidth)

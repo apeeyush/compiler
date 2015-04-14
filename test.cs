@@ -12,7 +12,7 @@ class C:D{
     }
 }
 class B:C{
-    private int ab;
+    int ab;
     void fun(){
         ab = 1;
         console.writeline(ab,"\n");
@@ -23,12 +23,14 @@ class A
     int Main()
     {
         int [3]na={8,9,10};
+        int fdnks=0;
         B b = new B();
         b.fun();
         b.cisworking();
         console.writeline(b.a,"\n");
         b.setD();
-        console.writeline(b.d);
+        console.writeline(b.d,"\n");
+        console.writeline(fdnks);
         return 0;
     }
 }

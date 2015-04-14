@@ -13,13 +13,14 @@ def getwidth(vartype):
     return dic[vartype]
 
 def genCode(inputFile):
-    ST, TAC = parser.getIR(inputFile)
+    errorFlag, ST, TAC = parser.getIR(inputFile)
     code = mipsCode.mipsCode(ST)
-    print ST.printTable()
-    print 'Three Address Code..'
-    TAC.printCode()
-    print ST.baseEnv.addrtable
-    print '\n'
+    # print 'Symbol table info..'
+    # print ST.printTable()
+    # print ST.baseEnv.addrtable
+    # print 'Three Address Code..'
+    # TAC.printCode()
+    # print '\n'
 
     for i in range(len(TAC.code)):
         irline = TAC.code[i]
@@ -407,28 +408,26 @@ def genCode(inputFile):
             code.addLine('lw '+reg3 + ', 4($sp)')
             code.addLine('add '+free_reg+', '+reg3+', '+free_reg)
             code.addLine('sw '+ reg2 + ', ('+free_reg+')')
-        # TODO : Complete this list
-    # code.printCode()
-    return code
+    return errorFlag, code
 
 if __name__ == '__main__':
     inputFile = argv[1]
-    code = genCode(inputFile)
-
-    filename = inputFile.split('.')[0] + '.asm'
-    with open(filename, 'w') as f:
-        f.write('.data\n')
-        for key, value in code.ST.stringInit.iteritems():
-            f.write(key+':\t.asciiz\t')
-            f.write(value)
+    errorflag, code = genCode(inputFile)
+    if not errorflag:
+        filename = inputFile.split('.')[0] + '.asm'
+        with open(filename, 'w') as f:
+            f.write('.data\n')
+            for key, value in code.ST.stringInit.iteritems():
+                f.write(key+':\t.asciiz\t')
+                f.write(value)
+                f.write('\n')
             f.write('\n')
-        f.write('\n')
-        f.write('.text\n')
-        f.write('main:\n')
-        # Jump to main class
-        mainclass = code.ST.mainClass()
-        if mainclass:
-            f.write('b '+mainclass.name+'_Main\n')
-        # Emit code
-        for line in code.code:
-            f.write(line+'\n')
+            f.write('.text\n')
+            f.write('main:\n')
+            # Jump to main class
+            mainclass, mainmethod, mainCount = code.ST.mainClass()
+            if mainclass:
+                f.write('b '+mainclass.name+'_Main\n')
+            # Emit code
+            for line in code.code:
+                f.write(line+'\n')

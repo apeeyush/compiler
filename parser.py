@@ -61,8 +61,14 @@ def p_compilation_unit(p):
     ''' compilation-unit :         class-declarations-opt
              |         statement-list
              ''' #remove method declaration from statement-list at the end
-    mainclass = ST.mainClass()
+    mainclass, mainmethod, mainCount = ST.mainClass()
+    if mainCount > 1:
+        error('badStructure', 'Main function defined more that once', str(p.lexer.lineno))
     if mainclass:
+        if bool(mainclass.varlist):
+            error('badStructure', 'Class with main method cannot have data members', str(p.lexer.lineno))
+        if mainmethod.argtypelist:
+            error('badStructure', 'Arguments not allowed in main method', str(p.lexer.lineno))
         TAC.emit('','',mainclass.name+'_Main','jumplabel')
     else:
         error('badStructure', 'Main function not found', str(p.lexer.lineno))
@@ -763,6 +769,8 @@ def p_assignment_identifier(p):
         var=ST.lookupvar_Class(p[1])
         if var:
             if not var.get('isConstant', False):
+                if p[2] != '=':
+                    error('unsupportedOperation', 'Operation'+p[2]+'not supported here.', str(p.lexer.lineno))
                 TAC.emit(var['place'],p[3]['place'],'',p[2]+'_derefstore')
                 p[0]['place']=var['place']
                 p[0]['type']=var['type']
@@ -784,6 +792,8 @@ def p_assignment_member(p):
     elif member.get('isConstant',False):
         error('constantError',"Cannot assign value to constant",str(p.lexer.lineno))
     else:
+        if p[2] != '=':
+            error('unsupportedOperation', 'Operation'+p[2]+'not supported here.', str(p.lexer.lineno))
         TAC.emit(var['place']+"@"+member['place'], p[3]['place'], '', p[2]+'_obj')
         p[0]['place']=ST.gentmp(member['type'])
         p[0]['type']=member['type']
@@ -802,9 +812,13 @@ def p_assignment_element(p):
             p[0]['type']=var['type']
             p[0]['place']=ST.gentmp(p[0]['type'])
             if p[1].get('fromclass',False):
+                if p[2] != '=':
+                    error('unsupportedOperation', 'Operation'+p[2]+'not supported here.', str(p.lexer.lineno))
                 TAC.emit(var['place']+'|'+p[1]['exp']['place'], p[3]['place'], '', p[2]+'arr_derefstore')
                 TAC.emit( p[0]['place'], var['place']+'|'+p[1]['exp']['place'],'', p[2]+'arr_derefload')
             else:
+                if p[2] != '=':
+                    error('unsupportedOperation', 'Operation'+p[2]+'not supported here.', str(p.lexer.lineno))
                 TAC.emit(var['place']+'|'+p[1]['exp']['place'], p[3]['place'], '', p[2]+'arr')
                 TAC.emit( p[0]['place'], var['place']+'|'+p[1]['exp']['place'],'', p[2]+'arr')
     else:
@@ -1561,7 +1575,7 @@ def getIR(filename):
     inputFile = filename
     parse = runParser(inputFile)
     showCompilationStatus()
-    return ST, TAC
+    return errorFlag, ST, TAC
 
 if __name__ == "__main__":
     # lex.runmain(lexer)
