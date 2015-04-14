@@ -1,6 +1,6 @@
 .data
-s3:	.asciiz	"hahahaha\n"
-s2:	.space 200
+s3:	.space 200
+s2:	.asciiz	"asdf"
 s1:	.asciiz	"\n"
 s0:	.asciiz	"\n"
 
@@ -84,41 +84,36 @@ A_Main:
 L_22:
 sw $ra, 0($sp)
 L_23:
-li $v0, 8
+L_24:
 la $a0, s2
+li $v0, 4
+syscall
+L_25:
+li $v0, 8
+la $a0, s3
 li $a1 200
 syscall
-L_24:
-L_25:
+L_26:
 la $a0, s3
 li $v0, 4
 syscall
-L_26:
-li $v0, 8
-la $a0, s2
-li $a1 200
-syscall
 L_27:
-la $a0, s2
-li $v0, 4
-syscall
-L_28:
 lw $t6, 8($sp)
 li $t6,0
 sw $t6, 8($sp)
-L_29:
+L_28:
 lw $t6, 8($sp)
 move $v0, $t6
+L_29:
+lw $ra, 0($sp)
+jr $ra
 L_30:
 lw $ra, 0($sp)
 jr $ra
 L_31:
-lw $ra, 0($sp)
-jr $ra
-L_32:
 sub $sp, $sp, 12
 jal A_Main
 add $sp, $sp, 12
-L_33:
+L_32:
 li $v0, 10
 syscall

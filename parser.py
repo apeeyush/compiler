@@ -1157,6 +1157,8 @@ def p_local_variable_declaration(p):
             elif p[1]['type'] == 'string':
                 newVar = ST.addvar(identifier['identifier_name'], 'string')
                 ST.addString(newVar['place'],'')
+                if identifier.get('initializer'):
+                    TAC.emit(newVar['place'],identifier['initializer']['place'],'','=str')
             # If variable is not initialized
             elif not identifier.get('initializer'):
                 if p[1].get('array', False):
