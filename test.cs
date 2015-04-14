@@ -51,12 +51,16 @@ class A
     {
         Binary temp = new Binary();
         int i,a;
-        temp.setarr();
+        //temp.setarr();
+        for(i=0;i<10;i=i+1)
+        {
+            temp.arr[i]=i+1;
+        }
         for(i=0;i<10;i=i+1)
         {
             console.writeline(temp.arr[i],"\n");
         }
-        a = temp.binary(0,9,12);
+        a = temp.binary(0,9,8);
         console.writeline(a,"\n");
     }   
 }

@@ -333,128 +333,195 @@ lw $s2, 8($sp)
 move $s4, $s2
 sw $s4, 12($sp)
 L_78:
-lw $s4, 12($sp)
-sw $s4, -40($sp)
+lw $s4, 24($sp)
+li $s4,0
+sw $s4, 24($sp)
 L_79:
-sub $sp, $sp, 44
-jal Binary_setarr
-add $sp, $sp, 44
-L_80:
+lw $s4, 16($sp)
 lw $s5, 24($sp)
-li $s5,0
-sw $s5, 24($sp)
+move $s4, $s5
+sw $s4, 16($sp)
+L_80:
+lw $s4, 28($sp)
+li $s4,10
+sw $s4, 28($sp)
 L_81:
-lw $s5, 16($sp)
-lw $s3, 24($sp)
-move $s5, $s3
-sw $s5, 16($sp)
+lw $s4, 16($sp)
+lw $s3, 28($sp)
+lw $s7, 32($sp)
+slt $s7, $s4, $s3
+sw $s7, 32($sp)
 L_82:
-lw $s5, 28($sp)
-li $s5,10
-sw $s5, 28($sp)
+lw $s7, 32($sp)
+beqz $s7, L_93
 L_83:
-lw $s5, 16($sp)
-lw $s7, 28($sp)
-lw $s0, 32($sp)
-slt $s0, $s5, $s7
-sw $s0, 32($sp)
+b L_88
 L_84:
-lw $s0, 32($sp)
-beqz $s0, L_94
+lw $s0, 36($sp)
+li $s0,1
+sw $s0, 36($sp)
 L_85:
-b L_90
+lw $s4, 16($sp)
+lw $s0, 36($sp)
+lw $t7, 40($sp)
+add $t7, $s4, $s0
+sw $t7, 40($sp)
 L_86:
-lw $t7, 36($sp)
-li $t7,1
-sw $t7, 36($sp)
+lw $s4, 16($sp)
+lw $t7, 40($sp)
+move $s4, $t7
+sw $s4, 16($sp)
 L_87:
-lw $s5, 16($sp)
-lw $t7, 36($sp)
-lw $s1, 40($sp)
-add $s1, $s5, $t7
-sw $s1, 40($sp)
+b L_80
 L_88:
-lw $s5, 16($sp)
-lw $s1, 40($sp)
-move $s5, $s1
-sw $s5, 16($sp)
+lw $s4, 44($sp)
+li $s4,1
+sw $s4, 44($sp)
 L_89:
-b L_82
+lw $s4, 16($sp)
+lw $s1, 44($sp)
+lw $t6, 48($sp)
+add $t6, $s4, $s1
+sw $t6, 48($sp)
 L_90:
-lw $s5, 16($sp)
-lw $t6, 44($sp)
+lw $s4, 16($sp)
+lw $t6, 48($sp)
 li $t4, 4
-mult $s5, $t4
+mult $s4, $t4
 mflo $t4
 addi $t4, $t4, 0
 lw $t3, 12($sp)
 add $t4, $t3, $t4
-lw $t6, ($t4)
-sw $t6, 44($sp)
+sw $t6, ($t4)
 L_91:
-lw $t6, 44($sp)
-move $a0, $t6
-li $v0, 1
-syscall
+lw $s4, 16($sp)
+lw $t5, 52($sp)
+li $t1, 4
+mult $s4, $t1
+mflo $t1
+addi $t1, $t1, 0
+lw $t3, 12($sp)
+add $t1, $t3, $t1
+lw $t5, ($t1)
+sw $t5, 52($sp)
 L_92:
-la $a0, s0
-li $v0, 4
-syscall
+b L_84
 L_93:
-b L_86
-L_94:
 lw $t5, 44($sp)
 li $t5,0
 sw $t5, 44($sp)
+L_94:
+lw $s4, 16($sp)
+lw $t5, 44($sp)
+move $s4, $t5
+sw $s4, 16($sp)
 L_95:
-lw $t5, 48($sp)
-li $t5,9
-sw $t5, 48($sp)
+lw $s4, 48($sp)
+li $s4,10
+sw $s4, 48($sp)
 L_96:
-lw $t5, 52($sp)
-li $t5,12
-sw $t5, 52($sp)
-L_97:
-lw $t5, 12($sp)
-sw $t5, -68($sp)
-L_98:
-lw $t1, 44($sp)
-sw $t1, -64($sp)
-L_99:
+lw $s4, 16($sp)
 lw $t0, 48($sp)
-sw $t0, -60($sp)
-L_100:
 lw $t2, 52($sp)
-sw $t2, -56($sp)
-L_101:
-sub $sp, $sp, 72
-jal Binary_binary
-add $sp, $sp, 72
-L_102:
+slt $t2, $s4, $t0
+sw $t2, 52($sp)
+L_97:
+lw $t2, 52($sp)
+beqz $t2, L_107
+L_98:
+b L_103
+L_99:
 lw $s6, 56($sp)
-move $s6, $v0
+li $s6,1
 sw $s6, 56($sp)
+L_100:
+lw $s4, 16($sp)
+lw $s6, 56($sp)
+lw $s2, 60($sp)
+add $s2, $s4, $s6
+sw $s2, 60($sp)
+L_101:
+lw $s4, 16($sp)
+lw $s2, 60($sp)
+move $s4, $s2
+sw $s4, 16($sp)
+L_102:
+b L_95
 L_103:
-lw $s6, 20($sp)
-lw $s2, 56($sp)
-move $s6, $s2
-sw $s6, 20($sp)
+lw $s4, 16($sp)
+lw $s5, 64($sp)
+li $s3, 4
+mult $s4, $s3
+mflo $s3
+addi $s3, $s3, 0
+lw $t3, 12($sp)
+add $s3, $t3, $s3
+lw $s5, ($s3)
+sw $s5, 64($sp)
 L_104:
-lw $s6, 20($sp)
-move $a0, $s6
+lw $s5, 64($sp)
+move $a0, $s5
 li $v0, 1
 syscall
 L_105:
-la $a0, s1
+la $a0, s0
 li $v0, 4
 syscall
 L_106:
+b L_99
+L_107:
+lw $s7, 64($sp)
+li $s7,0
+sw $s7, 64($sp)
+L_108:
+lw $s7, 68($sp)
+li $s7,9
+sw $s7, 68($sp)
+L_109:
+lw $s7, 72($sp)
+li $s7,8
+sw $s7, 72($sp)
+L_110:
+lw $s7, 12($sp)
+sw $s7, -68($sp)
+L_111:
+lw $s0, 64($sp)
+sw $s0, -64($sp)
+L_112:
+lw $t7, 68($sp)
+sw $t7, -60($sp)
+L_113:
+lw $s1, 72($sp)
+sw $s1, -56($sp)
+L_114:
+sub $sp, $sp, 72
+jal Binary_binary
+add $sp, $sp, 72
+L_115:
+lw $t6, 76($sp)
+move $t6, $v0
+sw $t6, 76($sp)
+L_116:
+lw $t6, 20($sp)
+lw $t4, 76($sp)
+move $t6, $t4
+sw $t6, 20($sp)
+L_117:
+lw $t6, 20($sp)
+move $a0, $t6
+li $v0, 1
+syscall
+L_118:
+la $a0, s1
+li $v0, 4
+syscall
+L_119:
 lw $ra, 0($sp)
 jr $ra
-L_107:
-sub $sp, $sp, 60
+L_120:
+sub $sp, $sp, 80
 jal A_Main
-add $sp, $sp, 60
-L_108:
+add $sp, $sp, 80
+L_121:
 li $v0, 10
 syscall
