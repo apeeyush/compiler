@@ -1,4 +1,5 @@
 .data
+s3:	.asciiz	"\n"
 s2:	.asciiz	"\n"
 s1:	.asciiz	"\n"
 s0:	.asciiz	"\n"
@@ -122,11 +123,8 @@ addi $s6, $s6, 20
 add $s6, $sp, $s6
 sw $s7, ($s6)
 L_29:
-li $a0, 12
-li $v0, 9
-syscall
 lw $s5, 32($sp)
-move $s5, $v0
+li $s5,0
 sw $s5, 32($sp)
 L_30:
 lw $s5, 36($sp)
@@ -134,67 +132,88 @@ lw $s4, 32($sp)
 move $s5, $s4
 sw $s5, 36($sp)
 L_31:
-lw $s5, 36($sp)
-sw $s5, -12($sp)
+li $a0, 12
+li $v0, 9
+syscall
+lw $s5, 40($sp)
+move $s5, $v0
+sw $s5, 40($sp)
 L_32:
+lw $s5, 44($sp)
+lw $s3, 40($sp)
+move $s5, $s3
+sw $s5, 44($sp)
+L_33:
+lw $s5, 44($sp)
+sw $s5, -12($sp)
+L_34:
 sub $sp, $sp, 16
 jal B_fun
 add $sp, $sp, 16
-L_33:
-lw $s3, 36($sp)
-sw $s3, -12($sp)
-L_34:
+L_35:
+lw $s2, 44($sp)
+sw $s2, -12($sp)
+L_36:
 sub $sp, $sp, 16
 jal C_cisworking
 add $sp, $sp, 16
-L_35:
-lw $s2, 40($sp)
-lw $s1, 36($sp)
-lw $s2, 4($s1)
-sw $s2, 40($sp)
-L_36:
-lw $s2, 40($sp)
-move $a0, $s2
+L_37:
+lw $s1, 48($sp)
+lw $t7, 44($sp)
+lw $s1, 4($t7)
+sw $s1, 48($sp)
+L_38:
+lw $s1, 48($sp)
+move $a0, $s1
 li $v0, 1
 syscall
-L_37:
+L_39:
 la $a0, s2
 li $v0, 4
 syscall
-L_38:
-lw $t7, 36($sp)
-sw $t7, -8($sp)
-L_39:
+L_40:
+lw $s0, 44($sp)
+sw $s0, -8($sp)
+L_41:
 sub $sp, $sp, 12
 jal D_setD
 add $sp, $sp, 12
-L_40:
-lw $s0, 44($sp)
-lw $s1, 36($sp)
-lw $s0, 0($s1)
-sw $s0, 44($sp)
-L_41:
-lw $s0, 44($sp)
-move $a0, $s0
+L_42:
+lw $t6, 52($sp)
+lw $t7, 44($sp)
+lw $t6, 0($t7)
+sw $t6, 52($sp)
+L_43:
+lw $t6, 52($sp)
+move $a0, $t6
 li $v0, 1
 syscall
-L_42:
-lw $t6, 48($sp)
-li $t6,0
-sw $t6, 48($sp)
-L_43:
-lw $t6, 48($sp)
-move $v0, $t6
 L_44:
-lw $ra, 0($sp)
-jr $ra
+la $a0, s3
+li $v0, 4
+syscall
 L_45:
+lw $t5, 36($sp)
+move $a0, $t5
+li $v0, 1
+syscall
+L_46:
+lw $t4, 56($sp)
+li $t4,0
+sw $t4, 56($sp)
+L_47:
+lw $t4, 56($sp)
+move $v0, $t4
+L_48:
 lw $ra, 0($sp)
 jr $ra
-L_46:
-sub $sp, $sp, 52
+L_49:
+lw $ra, 0($sp)
+jr $ra
+L_50:
+sub $sp, $sp, 60
 jal A_Main
-add $sp, $sp, 52
-L_47:
+add $sp, $sp, 60
+L_51:
 li $v0, 10
 syscall
