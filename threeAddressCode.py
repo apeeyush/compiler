@@ -1,3 +1,4 @@
+# Three Address Code helper class for Parser
 class ThreeAddressCode:
     def __init__(self):
         self.code = []

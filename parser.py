@@ -310,7 +310,6 @@ def p_conditional_and_expression(p):
             TAC.emit(p[0]['place'],p[4]['place'],'','=')
             plc = [TAC.getNextQuad()]
             TAC.emit('','',-1,'goto')
-            #place=ST.gentmp()
             TAC.backpatch(p[2],TAC.getNextQuad())
             TAC.emit(p[0]['place'],0,'','=dec')
             TAC.backpatch(plc,TAC.getNextQuad())
@@ -1288,16 +1287,12 @@ def p_switch_statement(p):
     TAC.backpatch(p[7]['nextList'],TAC.getNextQuad())
 
     p[0]['loopBeginList'] = p[7].get('loopBeginList', [])
-    # Don't propagate loop end list
-    # p[0]['loopEndList'] = p[7].get('loopEndList', [])
-
 
 def p_M_switch(p):
     ''' M_switch :        empty
              '''
     p[0]=[TAC.getNextQuad()]
     TAC.emit('','',-1,'goto')
-
 
 def p_switch_block(p):
     ''' switch-block :         BLOCK_BEGIN M_bstart switch-sections BLOCK_END
@@ -1341,7 +1336,7 @@ def p_switch_label(p):
              |         DEFAULT COLON
              '''
     if len(p)==4:
-        p[0]=p[2] #gives value and type
+        p[0]=p[2]
     else:
         p[0]={'value':None,'type':None}
 
@@ -1386,7 +1381,6 @@ def p_do_statement(p):
 def p_for_statement(p):
     ''' for-statement :         FOR OPEN_PAREN for-initializer-opt DELIM M_quad for-condition DELIM M_quad for-iterator-opt CLOSE_PAREN M_quad block 
              '''
-    #12
     p[0] = {}
     if p[6]['type']=='bool':
         p[0]['nextList']=p[6]['falseList']+p[12]['loopEndList']
@@ -1395,7 +1389,6 @@ def p_for_statement(p):
         TAC.emit('','',p[8],'goto')
     else:
         error('typeError','For condition not bool', str(p.lexer.lineno))
-
 
 def p_for_initializer_opt(p):
     ''' for-initializer-opt :         for-initializer
@@ -1425,7 +1418,6 @@ def p_for_condition_empty(p):
     TAC.emit('','','','')
     p[0]['trueList'] = [TAC.getNextQuad()]
     p[0]['type']='bool';
-    # TAC.emit('','',-1,'goto')
 
 def p_for_iterator_opt(p):
     ''' for-iterator-opt :         for-iterator
@@ -1433,7 +1425,6 @@ def p_for_iterator_opt(p):
              '''
     p[0]={}
     TAC.emit('','',p[-4],'goto')
-
 
 def p_for_iterator(p):
     ''' for-iterator :         statement-expression-list
@@ -1535,10 +1526,6 @@ def p_error(p):
         print 'Token : {}'.format(p)
     else:
         error('SyntaxError', "Syntax error")
-    # while True:
-    #     tok = yacc.token()
-    #     if not tok or tok.type == 'DELIM': break
-    # yacc.restart()
     flag = 0
     while 1:
         token = yacc.token()
@@ -1550,16 +1537,6 @@ def p_error(p):
     if flag == 1:
         yacc.errok()
         return token
-    # if flag:
-    #     yacc.errok()
-    #     return token
-    # # global flag_for_error
-    # # flag_for_error = 1
-    # # if p is not None:
-    # #     errors_list.append("Error %s"%(p.lineno))
-    # #     yacc.errok()
-    # # else:
-    # #     print("Unexpected end of input")
 
 parser = yacc.yacc()
 

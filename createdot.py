@@ -1,4 +1,5 @@
-def createdotfile(var, idnum, fName):
+# Definitions to create a dot file (for visualizing parse tree created by parser)
+def addToFile(var, idnum, fName):
 	if not isinstance(var,list):
 		str_var = str(var).replace("\"","")
 		fName.write("id"+str(idnum[0])+"[label=\""+str_var+"\"];\n")
@@ -7,15 +8,15 @@ def createdotfile(var, idnum, fName):
 		ids=[]
 		for i in range(len(var)):
 			ids.append(idnum[0])
-			createdotfile(var[i], idnum, fName)
+			addToFile(var[i], idnum, fName)
 		for i in range(1,len(ids)):
 			fName.write("id"+str(ids[0])+"->id"+str(ids[i])+";\n")
 
-def createFile(var, filename):
+def createDotFile(var, filename):
 	idnum = [0]
 	fName = open(filename,"wb")
 	fName.write("digraph G{\n")
-	createdotfile(var, idnum, fName)
+	addToFile(var, idnum, fName)
 	fName.write("}")
 	fName.close()
 

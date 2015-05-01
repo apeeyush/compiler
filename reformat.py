@@ -1,3 +1,7 @@
+# Used to reformat the code generated for parser using grammar.
+# Example usage
+# 	python genCode.py gram.txt > out
+# 	python reformat.py out
 import sys
 import fileinput
 

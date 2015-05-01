@@ -1,3 +1,4 @@
+# MIPS code generator
 import sys
 import ply.lex as lex
 import ply.yacc as yacc
@@ -8,10 +9,13 @@ from threeAddressCode import *
 import parser
 import mipsCode
 
+# Returns width of various data types
 def getwidth(vartype):
     dic = {"int":4,"double":8,"bool":4,"char":4, "void":0}
     return dic[vartype]
 
+# Generates MIPS code for code contained in inputFile
+# Uses parser to generate three address code which is then used to generate MIPS code
 def genCode(inputFile):
     errorFlag, ST, TAC = parser.getIR(inputFile)
     code = mipsCode.mipsCode(ST)
@@ -50,17 +54,13 @@ def genCode(inputFile):
         if irline[3] == '=dec':
             reg = code.getReg(irline[0])
             code.addLine('li '+reg+','+str(irline[1]))
-            # print irline[3]
             code.flushVar(irline[0])
         if irline[3] == '=':
             reg1 = code.getReg(irline[0])
             reg2 = code.getReg(irline[1])
             code.addLine('move ' + reg1 + ', '+reg2)
-            # print irline[3]
-            # print reg1,reg2
             code.flushVar(irline[0])
         if irline[3] == 'cond_goto':
-            # print irline[3]
             reg1 = code.getReg(irline[0])
             if irline[1] == 0:
                 code.addLine('beqz '+reg1+', L_'+str(irline[2]))
