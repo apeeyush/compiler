@@ -1,10 +1,19 @@
 //Binary-search
-class A
+class Binary
 {
-    int [10]arr = {1,2,3,4,5,6,7,8,9,10};
-    int binary_search(int l,int r,int key)
+    int [10]arr;
+    int b;
+    void setarr()
     {
-        
+        int i;
+        for(i=1;i<11;i=i+1)
+        {
+            arr[i-1]=i;
+        }
+        return;
+    }
+    int binary(int l,int r,int key)
+    {
         if(l>r)
         {
             return -1;
@@ -28,22 +37,58 @@ class A
         }
         else if(arr[m]>key)
         {
-            return binary_search(l,m-1,key);
+            return binary(l,m-1,key);
         }
         else
         {
-            return binary_search(m+1,r,key);   
+            return binary(m+1,r,key);   
         }
-    }
-
-    int Main(int a)
+    }    
+}
+class A
+{
+    int Main()
     {
-        a = binary_search(0,9,8);
-        console.writeline(a);
+        Binary temp = new Binary();
+        int i,a;
+        //temp.setarr();
+        for(i=0;i<10;i=i+1)
+        {
+            temp.arr[i]=i+1;
+        }
+        for(i=0;i<10;i=i+1)
+        {
+            console.writeline(temp.arr[i],"\n");
+        }
+        a = temp.binary(0,9,8);
+        console.writeline(a,"\n");
+        Binary temp2 = temp;
+        for(i=0;i<10;i=i+1)
+        {
+            console.writeline(temp2.arr[i],"\n");
+        }
+        a = temp2.binary(0,9,8);
+        console.writeline(a,"\n");
+
     }   
 }
 
-
-
-
-
+/*
+class B{
+    int[10] nb;
+    void fun(B b){
+        console.writeline(b.nb[5]);
+    }
+}
+class A
+{
+    int Main()
+    {
+        int [3]na={8,9,10};
+        B b = new B();
+        b.nb[5] = 6;
+        b.fun(b);
+        return 0;
+    }
+}
+*/

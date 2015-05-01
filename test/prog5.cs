@@ -1,38 +1,22 @@
-//This is to check do-while and conditional constructs within loops
+//Tower of Hanoi
 class A
 {
-    void Main(int a)
+    void TOH(int num, char x, char y, char z) 
     {
-        int i=0,j=1;
-        do
+        if (num > 0)
         {
-            switch(j)
-            {
-                case 1:
-                    if(j<0)
-                    {
-                        console.writeline(-j);
-                    }
-                    else
-                    {
-                        continue;
-                        console.writeline(j);
-                    }
-                    break;
-                case 2:
-                    if(j<0)
-                    {
-                        console.writeline(-j*2);
-                    }
-                    else
-                    {
-                        console.writeline(j*2);
-                        
-                    }
-                    break;
-            }
-            continue;
-            i+=1;
-        }while(i<20);
+            TOH(num - 1, x, z, y);
+            console.writeline("\n",x,"->",y);
+            TOH(num-1, z, y, x);
+        }
+    } 
+    int Main() 
+    {
+        int num;
+        console.writeline("Enter number of plates:\n");
+        console.readline(num);
+        TOH(num, 'A', 'B', 'C');
+        console.writeline("\n");
+        return (0);
     }
 }

@@ -1,13 +1,13 @@
-//Bubble Sort
+//Bubble Sort,for loop
 class Program
 {
-    int Main(int a)
+    void Main()
     {
         int i,j;
-        int [5]arr = {1,2,3,4,5};
-        for(i=0;i<20;i+=1)
+        int [15]arr = {1,2,3,4,5,1,4,-1,6,10,-113,32,2,22,24325};
+        for(i=0;i<15;i=i+1)
         {
-            for(j=i+1;j<20;j+=1)
+            for(j=i+1;j<15;j=j+1)
             {
                 if(arr[i]>arr[j])
                 {
@@ -23,6 +23,10 @@ class Program
                     }
                 }
             }
+        }
+        for(i=0;i<15;i=i+1)
+        {
+            console.writeline(arr[i],"\n");
         }
     }
 }

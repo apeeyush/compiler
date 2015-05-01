@@ -1,6 +1,0 @@
-1.) Insert CCONST code
-2.) Modify p_return_type rule to check type in the closest function rather than current env. //done
-3.) Type-Checking : check type as well as uppertype
-4.) Array index checking
-6.) Continue not working in switch
-7.) TAC is from shetty.. Change it!

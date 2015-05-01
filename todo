@@ -1,3 +1,0 @@
-3.) Removr UINT,CHAR,DOUBLE
-4.) Properly handle condop,right now it first evaluates both the expressions and then assign it to the variable
-5.) Array over size 1000 not working

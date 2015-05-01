@@ -1,4 +1,4 @@
-//This program is to test for recurrsion and for return-statements within blocks of methods
+//This program is to test for recurrsion and for return-statements within blocks of methods,also do-while
 class Program
 {
     int helloworld(int a,int b)
@@ -7,21 +7,24 @@ class Program
         {
             return a;
         }
-        return helloworld(a+=1,b);
+        return helloworld(a=a+1,b);
     }
 
-    int Main(int a)
+    int Main()
     {
-        int i=4,j=5;
-        int c = i= 3;
-        if(1==2)
+        int a=0,b=5;
+        bool [5]aa = {true,true,false,false,true};
+        do
         {
-            console.writeline(3+helloworld(i,j));
-        }
-        else
-        {
-            console.writeline(j);
-        }
+            console.writeline(helloworld(a,b),"\n");
+            aa[a] = !false;
+            if(false || true)
+            {
+                console.writeline(aa[a],"\n");
+            }
+            a+=1;
+            a = +a;
+        }while(a<b);
         return 0;
     }
 }
